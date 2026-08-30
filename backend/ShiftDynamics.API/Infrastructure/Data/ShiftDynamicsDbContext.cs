@@ -14,6 +14,8 @@ public class ShiftDynamicsDbContext : DbContext
 
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
 
+    public DbSet<Appointment> Appointments => Set<Appointment>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
