@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("f7190a8a-509d-42fc-9386-29522f267213")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("ShiftDynamics.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a7667efb8d01b7472b462f6ab89228309852c44e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+987e46355ec155128969871003e2ef430a0e6768")]
 [assembly: System.Reflection.AssemblyProductAttribute("ShiftDynamics.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ShiftDynamics.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

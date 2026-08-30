@@ -1,1 +1,23 @@
-appsettings.Development.json
+# Build output
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Rider
+.idea/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# .NET User Secrets
+appsettings.Local.json
+
+# OS
+.DS_Store
+Thumbs.db
