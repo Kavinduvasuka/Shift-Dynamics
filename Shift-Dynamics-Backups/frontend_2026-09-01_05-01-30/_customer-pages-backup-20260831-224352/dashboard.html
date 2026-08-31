@@ -1,0 +1,2172 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Customer Dashboard | Shift Dynamics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Zen+Dots&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/customer-dashboard.css"
+    >
+</head>
+
+<body>
+
+    <div class="sd-dashboard-layout">
+
+        <!-- =====================================================
+             SIDEBAR
+             ===================================================== -->
+
+        <aside
+            class="sd-sidebar"
+            id="sidebar"
+        >
+
+            <div class="sd-sidebar-header">
+
+                <a
+                    href="../index.html"
+                    class="sd-dashboard-brand"
+                >
+
+                    <img
+                        src="../assets/images/shift-dynamics-logo.png.png"
+                        alt="Shift Dynamics"
+                        class="sd-dashboard-logo"
+                    >
+
+                    <span class="sd-dashboard-brand-name">
+                        SHIFT <span>DYNAMICS</span>
+                    </span>
+
+                </a>
+
+                <button
+                    class="sd-sidebar-close"
+                    id="sidebarClose"
+                    type="button"
+                    aria-label="Close menu"
+                >
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+            </div>
+
+
+            <div class="sd-sidebar-user">
+
+                <div class="sd-user-avatar">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+
+                <div>
+                    <strong>Customer</strong>
+                    <span>customer@test.com</span>
+                </div>
+
+            </div>
+
+
+            <nav class="sd-sidebar-nav">
+
+                <button
+                    class="sd-nav-item active"
+                    data-section="overview"
+                    type="button"
+                >
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Overview</span>
+                </button>
+
+
+                <a href="vehicles.html" class="sd-nav-item">
+                    <i class="bi bi-car-front-fill"></i>
+                    <span>My Vehicles</span>
+                </a>
+
+
+                <button
+                    class="sd-nav-item"
+                    data-section="booking"
+                    type="button"
+                >
+                    <i class="bi bi-calendar-check-fill"></i>
+                    <span>Service Booking</span>
+                </button>
+
+
+                <button
+                    class="sd-nav-item"
+                    data-section="estimates"
+                    type="button"
+                >
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Estimates</span>
+                </button>
+
+
+                <button
+                    class="sd-nav-item"
+                    data-section="tracker"
+                    type="button"
+                >
+                    <i class="bi bi-activity"></i>
+                    <span>Service Tracker</span>
+                </button>
+                
+                <button
+                    class="sd-nav-item"
+                    data-section="history"
+                    type="button"
+                >
+                    <i class="bi bi-clock-history"></i>
+                    <span>Service History</span>
+                </button>
+
+                <button
+                    class="sd-nav-item"
+                    data-section="emergency-history"
+                    type="button"
+                >
+                    <i class="bi bi-life-preserver"></i>
+                    <span>Emergency History</span>
+                </button>
+                <button
+                    class="sd-nav-item"
+                    data-section="modifications"
+                    type="button"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Modifications</span>
+                </button>
+
+
+                <button
+                    class="sd-nav-item"
+                    data-section="payments"
+                    type="button"
+                >
+                    <i class="bi bi-credit-card-fill"></i>
+                    <span>Payments</span>
+                </button>
+
+
+                <button
+                    class="sd-nav-item"
+                    data-section="profile"
+                    type="button"
+                >
+                    <i class="bi bi-person-circle"></i>
+                    <span>Profile</span>
+                </button>
+
+            </nav>
+
+
+            <div class="sd-sidebar-footer">
+
+                <a
+                    href="../emergency.html"
+                    class="sd-emergency-link"
+                >
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    Emergency Assistance
+                </a>
+
+
+                <a
+                    href="../login.html"
+                    class="sd-logout-link"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    Logout
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <div
+            class="sd-sidebar-overlay"
+            id="sidebarOverlay"
+        ></div>
+
+
+        <!-- =====================================================
+             MAIN
+             ===================================================== -->
+
+        <main class="sd-dashboard-main">
+
+            <!-- TOPBAR -->
+
+            <header class="sd-topbar">
+
+                <div class="sd-topbar-left">
+
+                    <button
+                        class="sd-menu-button"
+                        id="menuButton"
+                        type="button"
+                        aria-label="Open menu"
+                    >
+                        <i class="bi bi-list"></i>
+                    </button>
+
+                    <div>
+                        <h1 id="pageTitle">
+                            Dashboard Overview
+                        </h1>
+
+                        <p id="pageSubtitle">
+                            Welcome back to Shift Dynamics.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="sd-topbar-actions">
+
+                    <button
+                        class="sd-notification-button"
+                        type="button"
+                        aria-label="Notifications"
+                    >
+                        <i class="bi bi-bell"></i>
+                        <span></span>
+                    </button>
+
+                    <div class="sd-topbar-profile">
+
+                        <div class="sd-topbar-avatar">
+                            C
+                        </div>
+
+                        <div class="sd-topbar-profile-text">
+                            <strong>Customer</strong>
+                            <span>Customer Account</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <div class="sd-dashboard-content">
+
+                <!-- =================================================
+                     OVERVIEW
+                     ================================================= -->
+
+                <section
+                    class="sd-dashboard-section active"
+                    id="overview"
+                >
+
+                    <div class="sd-welcome-card">
+
+                        <div>
+
+                            <span class="sd-small-label">
+                                CUSTOMER PORTAL
+                            </span>
+
+                            <h2>
+                                Your vehicle care,
+                                <span>all in one place.</span>
+                            </h2>
+
+                            <p>
+                                Manage vehicles, book workshop services,
+                                approve estimates and track your vehicle
+                                service progress.
+                            </p>
+
+                            <button
+                                class="sd-primary-button sd-section-shortcut"
+                                data-target="booking"
+                                type="button"
+                            >
+                                <i class="bi bi-calendar-plus"></i>
+                                Book a Service
+                            </button>
+
+                        </div>
+
+                        <div class="sd-welcome-visual">
+
+                            <div class="sd-welcome-icon">
+                                <i class="bi bi-car-front-fill"></i>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-stats-grid">
+
+                        <article class="sd-stat-card">
+
+                            <div class="sd-stat-icon">
+                                <i class="bi bi-car-front"></i>
+                            </div>
+
+                            <div>
+                                <span>Registered Vehicles</span>
+                                <strong>1</strong>
+                            </div>
+
+                        </article>
+
+
+                        <article class="sd-stat-card">
+
+                            <div class="sd-stat-icon">
+                                <i class="bi bi-calendar2-check"></i>
+                            </div>
+
+                            <div>
+                                <span>Upcoming Services</span>
+                                <strong>1</strong>
+                            </div>
+
+                        </article>
+
+
+                        <article class="sd-stat-card">
+
+                            <div class="sd-stat-icon">
+                                <i class="bi bi-wrench-adjustable"></i>
+                            </div>
+
+                            <div>
+                                <span>Active Jobs</span>
+                                <strong>1</strong>
+                            </div>
+
+                        </article>
+
+
+                        <article class="sd-stat-card">
+
+                            <div class="sd-stat-icon">
+                                <i class="bi bi-file-earmark-check"></i>
+                            </div>
+
+                            <div>
+                                <span>Pending Estimates</span>
+                                <strong>1</strong>
+                            </div>
+
+                        </article>
+
+                    </div>
+
+
+                    <div class="sd-overview-grid">
+
+                        <article class="sd-panel">
+
+                            <div class="sd-panel-header">
+
+                                <div>
+                                    <span class="sd-panel-label">
+                                        CURRENT SERVICE
+                                    </span>
+
+                                    <h3>Service Progress</h3>
+                                </div>
+
+                                <button
+                                    class="sd-text-button sd-section-shortcut"
+                                    data-target="tracker"
+                                    type="button"
+                                >
+                                    View Tracker
+                                </button>
+
+                            </div>
+
+
+                            <div class="sd-current-job">
+
+                                <div class="sd-job-title">
+
+                                    <div>
+                                        <strong>
+                                            Toyota Corolla
+                                        </strong>
+
+                                        <span>
+                                            WP CAB-1234
+                                        </span>
+                                    </div>
+
+                                    <span class="sd-status-badge in-progress">
+                                        In Progress
+                                    </span>
+
+                                </div>
+
+
+                                <div class="sd-progress-bar">
+                                    <span style="width: 65%;"></span>
+                                </div>
+
+
+                                <div class="sd-progress-info">
+
+                                    <span>
+                                        General Service & Inspection
+                                    </span>
+
+                                    <strong>65%</strong>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+
+                        <article class="sd-panel">
+
+                            <div class="sd-panel-header">
+
+                                <div>
+                                    <span class="sd-panel-label">
+                                        NEXT APPOINTMENT
+                                    </span>
+
+                                    <h3>Upcoming Booking</h3>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-appointment">
+
+                                <div class="sd-date-box">
+                                    <span>SEP</span>
+                                    <strong>05</strong>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Full Vehicle Inspection
+                                    </strong>
+
+                                    <p>
+                                        09:30 AM â€¢ Shift Dynamics Workshop
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     VEHICLES
+                     ================================================= -->
+
+                <section
+                    class="sd-dashboard-section"
+                    id="vehicles"
+                >
+
+                    <div class="sd-section-heading">
+
+                        <div>
+                            <h2>My Vehicles</h2>
+
+                            <p>
+                                Manage vehicles linked to your account.
+                            </p>
+                        </div>
+
+                        <button
+                            class="sd-primary-button"
+                            id="addVehicleButton"
+                            type="button"
+                        >
+                            <i class="bi bi-plus-lg"></i>
+                            Add Vehicle
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="sd-vehicle-grid"
+                        id="vehicleGrid"
+                    >
+
+                        <!-- PRIMARY DEMO VEHICLE -->
+
+                        <article
+                            class="sd-vehicle-card"
+                            data-make="Toyota"
+                            data-model="Corolla"
+                            data-year="2020"
+                            data-plate="WP CAB-1234"
+                            data-trim="Sedan â€¢ Automatic"
+                            data-engine="1.8L Petrol"
+                            data-vin="JTDBR32E..."
+                        >
+
+                            <div class="sd-vehicle-top">
+
+                                <div class="sd-vehicle-icon">
+                                    <i class="bi bi-car-front-fill"></i>
+                                </div>
+
+                                <span class="sd-status-badge active">
+                                    Primary
+                                </span>
+
+                            </div>
+
+
+                            <h3>Toyota Corolla</h3>
+
+                            <p>
+                                2020 â€¢ Sedan â€¢ Automatic
+                            </p>
+
+
+                            <div class="sd-vehicle-details">
+
+                                <div>
+                                    <span>License Plate</span>
+
+                                    <strong>
+                                        WP CAB-1234
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>Engine</span>
+
+                                    <strong>
+                                        1.8L Petrol
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>VIN</span>
+
+                                    <strong>
+                                        JTDBR32E...
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>Year</span>
+
+                                    <strong>
+                                        2020
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-vehicle-actions">
+
+                                <button
+                                    class="sd-secondary-button sd-edit-vehicle"
+                                    type="button"
+                                >
+                                    <i class="bi bi-pencil"></i>
+                                    Edit
+                                </button>
+
+
+                                <button
+                                    class="sd-delete-button sd-delete-vehicle"
+                                    type="button"
+                                >
+                                    <i class="bi bi-trash3"></i>
+                                    Delete
+                                </button>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     BOOKING
+                     ================================================= -->
+
+                <section
+                    class="sd-dashboard-section"
+                    id="booking"
+                >
+
+                    <div class="sd-section-heading">
+
+                        <div>
+                            <h2>Book a Service</h2>
+
+                            <p>
+                                Request a workshop appointment for your vehicle.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-form-panel">
+
+                        <form id="serviceBookingForm">
+
+                            <div class="sd-form-grid">
+
+                                <div class="sd-form-group">
+
+                                    <label for="bookingVehicle">
+                                        Vehicle
+                                    </label>
+
+                                    <select
+                                        id="bookingVehicle"
+                                        required
+                                    >
+                                        <option value="">
+                                            Select vehicle
+                                        </option>
+
+                                        <option value="Toyota Corolla">
+                                            Toyota Corolla - WP CAB-1234
+                                        </option>
+                                    </select>
+
+                                </div>
+
+
+                             <div class="sd-form-group">
+
+                                    <label for="serviceType">
+                                        Service Package
+                                    </label>
+
+                                    <select
+                                        id="serviceType"
+                                        required
+                                    >
+                                        <option value="">
+                                            Select service package
+                                        </option>
+
+                                        <option value="General Service">
+                                            General Service
+                                        </option>
+
+                                        <option value="Vehicle Inspection">
+                                            Vehicle Inspection
+                                        </option>
+
+                                        <option value="Engine Diagnostic">
+                                            Engine Diagnostic
+                                        </option>
+
+                                        <option value="Brake Service">
+                                            Brake Service
+                                        </option>
+
+                                        <option value="Modification Consultation">
+                                            Modification Consultation
+                                        </option>
+                                    </select>
+
+                                </div>   
+
+                                <div
+                                    class="sd-service-package-info"
+                                    id="servicePackageInfo"
+                                    hidden
+                                >
+
+                                    <div class="sd-service-package-icon">
+                                        <i
+                                            class="bi bi-tools"
+                                            id="servicePackageIcon"
+                                        ></i>
+                                    </div>
+
+                                    <div class="sd-service-package-content">
+
+                                        <span class="sd-service-package-label">
+                                            SELECTED PACKAGE
+                                        </span>
+
+                                        <h3 id="servicePackageTitle">
+                                            Service Package
+                                        </h3>
+
+                                        <p id="servicePackageDescription">
+                                            Package information will appear here.
+                                        </p>
+
+                                        <div class="sd-service-package-meta">
+
+                                            <span>
+                                                <i class="bi bi-clock"></i>
+                                                <strong id="servicePackageDuration">
+                                                    Duration
+                                                </strong>
+                                            </span>
+
+                                            <span>
+                                                <i class="bi bi-info-circle"></i>
+                                                Final price after inspection
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>  
+                                
+                                <div class="sd-form-group">
+
+                                    <label for="bookingDate">
+                                        Preferred Date
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        id="bookingDate"
+                                        required
+                                    >
+
+                                </div>
+
+
+                                <div class="sd-form-group">
+
+                                    <label for="bookingTime">
+                                        Preferred Time
+                                    </label>
+
+                                    <input
+                                        type="time"
+                                        id="bookingTime"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-form-group">
+
+                                <label for="bookingNotes">
+                                    Additional Notes
+                                </label>
+
+                                <textarea
+                                    id="bookingNotes"
+                                    rows="5"
+                                    placeholder="Describe any issues or special requests..."
+                                ></textarea>
+
+                            </div>
+
+
+                            <div
+                                class="sd-form-message"
+                                id="bookingMessage"
+                            ></div>
+
+
+                            <button
+                                class="sd-primary-button"
+                                type="submit"
+                            >
+                                <i class="bi bi-calendar-check"></i>
+                                Submit Booking Request
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     ESTIMATES
+                     ================================================= -->
+
+                <section
+                    class="sd-dashboard-section"
+                    id="estimates"
+                >
+
+                    <div class="sd-section-heading">
+
+                        <div>
+                            <h2>Digital Estimates</h2>
+
+                            <p>
+                                Review workshop estimates before work proceeds.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <article class="sd-estimate-card">
+
+                        <div class="sd-estimate-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    ESTIMATE #EST-1024
+                                </span>
+
+                                <h3>
+                                    Toyota Corolla
+                                </h3>
+
+                                <p>
+                                    General Service & Brake Inspection
+                                </p>
+
+                            </div>
+
+
+                            <span class="sd-status-badge pending">
+                                Pending Approval
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-estimate-lines">
+
+                            <div>
+                                <span>Engine Oil & Filter</span>
+                                <strong>LKR 18,500</strong>
+                            </div>
+
+
+                            <div>
+                                <span>Brake Inspection</span>
+                                <strong>LKR 4,500</strong>
+                            </div>
+
+
+                            <div>
+                                <span>Labour</span>
+                                <strong>LKR 8,000</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-estimate-total">
+
+                            <span>Estimated Total</span>
+
+                            <strong>LKR 31,000</strong>
+
+                        </div>
+
+
+                        <div class="sd-estimate-actions">
+
+                            <button
+                                class="sd-secondary-button request-estimate-changes"
+                                type="button"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                                Request Changes
+                            </button>
+
+                            <button
+                                class="sd-primary-button approve-estimate"
+                                type="button"
+                            >
+                                <i class="bi bi-check2-circle"></i>
+                                Approve Estimate
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                </section>
+
+
+                <!-- =================================================
+                     TRACKER
+                     ================================================= -->
+
+                <section
+                    class="sd-dashboard-section"
+                    id="tracker"
+                >
+
+                    <div class="sd-section-heading">
+
+                        <div>
+                            <h2>Live Service Tracker</h2>
+
+                            <p>
+                                Follow the current workshop progress.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-tracker-card">
+
+                        <div class="sd-tracker-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    JOB CARD #JC-2041
+                                </span>
+
+                                <h3>
+                                    Toyota Corolla
+                                </h3>
+
+                                <p>
+                                    General Service & Inspection
+                                </p>
+
+                            </div>
+
+
+                            <span class="sd-status-badge in-progress">
+                                In Progress
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-tracker-progress">
+
+                            <div class="sd-tracker-step completed">
+
+                                <div class="sd-step-marker">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Vehicle Received
+                                    </strong>
+
+                                    <span>
+                                        08:45 AM
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-tracker-step completed">
+
+                                <div class="sd-step-marker">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Inspection Completed
+                                    </strong>
+
+                                    <span>
+                                        09:30 AM
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-tracker-step current">
+
+                                <div class="sd-step-marker">
+                                    <i class="bi bi-wrench-adjustable"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Repair / Service Work
+                                    </strong>
+
+                                    <span>
+                                        Currently in progress
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-tracker-step">
+
+                                <div class="sd-step-marker">
+                                    <i class="bi bi-search"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Final Quality Check
+                                    </strong>
+
+                                    <span>
+                                        Pending
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-tracker-step">
+
+                                <div class="sd-step-marker">
+                                    <i class="bi bi-key"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Ready for Handover
+                                    </strong>
+
+                                    <span>
+                                        Pending
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     MODIFICATIONS
+                     ================================================= -->
+<!-- =================================================
+     MODIFICATIONS
+     ================================================= -->
+
+<section
+    class="sd-dashboard-section"
+    id="modifications"
+>
+
+    <div class="sd-section-heading">
+
+        <div>
+            <h2>Modification Catalog</h2>
+
+            <p>
+                Explore performance, styling and
+                customization options for your vehicle.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="sd-modification-grid">
+
+        <!-- Performance Exhaust -->
+
+        <article class="sd-mod-card">
+
+            <div class="sd-mod-icon">
+                <i class="bi bi-soundwave"></i>
+            </div>
+
+            <h3>Performance Exhaust</h3>
+
+            <p>
+                Exhaust upgrades for improved sound,
+                airflow and performance.
+            </p>
+
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="exhaust"
+            >
+                View Options
+            </button>
+
+        </article>
+
+
+        <!-- Wheels & Rims -->
+
+        <article class="sd-mod-card">
+
+            <div class="sd-mod-icon">
+                <i class="bi bi-circle"></i>
+            </div>
+
+            <h3>Wheels & Rims</h3>
+
+            <p>
+                Browse styling and performance
+                wheel and rim upgrade packages.
+            </p>
+
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="wheels"
+            >
+                View Options
+            </button>
+
+        </article>
+
+
+        <!-- ECU Tuning -->
+
+        <article class="sd-mod-card">
+
+            <div class="sd-mod-icon">
+                <i class="bi bi-speedometer2"></i>
+            </div>
+
+            <h3>ECU Tuning</h3>
+
+            <p>
+                Performance tuning consultation
+                based on your vehicle configuration.
+            </p>
+
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="tuning"
+            >
+                View Options
+            </button>
+
+        </article>
+
+
+        <!-- Suspension Upgrades -->
+
+        <article class="sd-mod-card">
+
+            <div class="sd-mod-icon">
+                <i class="bi bi-arrows-collapse-vertical"></i>
+            </div>
+
+            <h3>Suspension Upgrades</h3>
+
+            <p>
+                Improve handling, ride height and
+                stability with suspension upgrades.
+            </p>
+
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="suspension"
+            >
+                View Options
+            </button>
+
+        </article>
+
+
+        <!-- Brake Upgrades -->
+
+        <article class="sd-mod-card">
+
+            <div class="sd-mod-icon">
+                <i class="bi bi-disc"></i>
+            </div>
+
+            <h3>Brake Upgrades</h3>
+
+            <p>
+                Improve braking performance with
+                upgraded pads, discs and components.
+            </p>
+
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="brakes"
+            >
+                View Options
+            </button>
+
+        </article>
+
+
+        <!-- Body Kits -->
+
+        <article class="sd-mod-card">
+
+            <div class="sd-mod-icon">
+                <i class="bi bi-car-front"></i>
+            </div>
+
+            <h3>Body Kits</h3>
+
+            <p>
+                Explore body kits, spoilers and
+                exterior styling upgrades.
+            </p>
+
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="body-kit"
+            >
+                View Options
+            </button>
+
+        </article>
+
+
+        <!-- Interior Customization -->
+
+        <article class="sd-mod-card">
+
+            <div class="sd-mod-icon">
+                <i class="bi bi-stars"></i>
+            </div>
+
+            <h3>Interior Customization</h3>
+
+            <p>
+                Personalize the cabin with trim,
+                comfort and styling upgrades.
+            </p>
+
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="interior"
+            >
+                View Options
+            </button>
+
+        </article>
+
+
+        <!-- Audio Systems -->
+
+        <article class="sd-mod-card">
+
+            <div class="sd-mod-icon">
+                <i class="bi bi-speaker"></i>
+            </div>
+
+            <h3>Audio Systems</h3>
+
+            <p>
+                Upgrade speakers, audio components
+                and in-car entertainment systems.
+            </p>
+
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="audio"
+            >
+                View Options
+            </button>
+
+        </article>
+
+    </div>
+
+</section>
+                
+<!-- =================================================
+     EMERGENCY REQUEST HISTORY
+     ================================================= -->
+
+<section
+    class="sd-dashboard-section"
+    id="emergency-history"
+>
+
+    <div class="sd-section-heading">
+
+        <div>
+            <h2>Emergency Request History</h2>
+
+            <p>
+                Review your previous towing and
+                mobile mechanic assistance requests.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="sd-table-wrapper">
+
+        <table class="sd-data-table">
+
+            <thead>
+
+                <tr>
+                    <th>Request ID</th>
+                    <th>Date</th>
+                    <th>Service</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>#EMG-1001</td>
+
+                    <td>18 Aug 2026</td>
+
+                    <td>Towing Service</td>
+
+                    <td>Colombo 07</td>
+
+                    <td>
+                        <span class="sd-status-badge paid">
+                            Completed
+                        </span>
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <td>#EMG-1002</td>
+
+                    <td>24 Aug 2026</td>
+
+                    <td>Mobile Mechanic</td>
+
+                    <td>Nugegoda</td>
+
+                    <td>
+                        <span class="sd-status-badge pending">
+                            Requested
+                        </span>
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+                <!-- =================================================
+                     PAYMENTS
+                     ================================================= -->
+
+                <section
+                    class="sd-dashboard-section"
+                    id="payments"
+                >
+
+                    <div class="sd-section-heading">
+
+                        <div>
+                            <h2>Payments & Invoices</h2>
+
+                            <p>
+                                View invoices and payment status.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-table-card">
+
+                        <div class="sd-table-responsive">
+
+                            <table>
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Invoice</th>
+                                        <th>Vehicle</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+                                    <tr>
+
+                                        <td>#INV-1008</td>
+
+                                        <td>Toyota Corolla</td>
+
+                                        <td>12 Aug 2026</td>
+
+                                        <td>LKR 24,500</td>
+
+                                        <td>
+
+                                            <span class="sd-status-badge paid">
+                                                Paid
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <button
+                                                class="sd-table-action sd-view-invoice"
+                                                type="button"
+                                            >
+                                                View
+                                            </button>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>#INV-1012</td>
+
+                                        <td>Toyota Corolla</td>
+
+                                        <td>28 Aug 2026</td>
+
+                                        <td>LKR 31,000</td>
+
+                                        <td>
+                                            <span class="sd-status-badge pending">
+                                                Pending
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <button
+                                                class="sd-table-action sd-pay-now"
+                                                type="button"
+                                                data-invoice="INV-1012"
+                                                data-amount="31000"
+                                            >
+                                                Pay Now
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     PROFILE
+                     ================================================= -->
+
+                <section
+                    class="sd-dashboard-section"
+                    id="profile"
+                >
+
+                    <div class="sd-section-heading">
+
+                        <div>
+                            <h2>Profile Settings</h2>
+
+                            <p>
+                                Manage your customer account information.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-form-panel">
+
+                        <form id="profileForm">
+
+                            <div class="sd-form-grid">
+
+                                <div class="sd-form-group">
+
+                                    <label for="profileName">
+                                        Full Name
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="profileName"
+                                        value="Customer"
+                                    >
+
+                                </div>
+
+
+                                <div class="sd-form-group">
+
+                                    <label for="profileEmail">
+                                        Email Address
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        id="profileEmail"
+                                        value="customer@test.com"
+                                    >
+
+                                </div>
+
+
+                                <div class="sd-form-group">
+
+                                    <label for="profilePhone">
+                                        Phone Number
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        id="profilePhone"
+                                        value="0771234567"
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div
+                                class="sd-form-message"
+                                id="profileMessage"
+                            ></div>
+
+
+                            <button
+                                class="sd-primary-button"
+                                type="submit"
+                            >
+                                <i class="bi bi-check-lg"></i>
+                                Save Changes
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+    </div>
+
+<!-- =====================================================
+     INVOICE MODAL
+     ===================================================== -->
+
+<div
+    class="sd-modal"
+    id="invoiceModal"
+    aria-hidden="true"
+>
+
+    <div
+        class="sd-modal-overlay"
+        data-close-invoice
+    ></div>
+
+    <div class="sd-modal-card">
+
+        <div class="sd-modal-header">
+
+            <div>
+                <span class="sd-panel-label">
+                    INVOICE #INV-1008
+                </span>
+
+                <h2>Invoice Details</h2>
+
+                <p>
+                    Toyota Corolla â€¢ 12 Aug 2026
+                </p>
+            </div>
+
+            <button
+                class="sd-modal-close"
+                id="invoiceModalClose"
+                type="button"
+                aria-label="Close invoice"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+        <div class="sd-estimate-lines">
+
+            <div>
+                <span>General Service</span>
+                <strong>LKR 16,500</strong>
+            </div>
+
+            <div>
+                <span>Engine Oil & Filter</span>
+                <strong>LKR 5,000</strong>
+            </div>
+
+            <div>
+                <span>Labour</span>
+                <strong>LKR 3,000</strong>
+            </div>
+
+        </div>
+
+        <div class="sd-estimate-total">
+            <span>Total Paid</span>
+            <strong>LKR 24,500</strong>
+        </div>
+
+        <div class="sd-modal-actions">
+
+            <button
+                class="sd-secondary-button"
+                data-close-invoice
+                type="button"
+            >
+                Close
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- =====================================================
+     MODIFICATION DETAILS MODAL
+     ===================================================== -->
+
+<div
+    class="sd-modal"
+    id="modificationModal"
+    aria-hidden="true"
+>
+
+    <div
+        class="sd-modal-overlay"
+        data-close-modification
+    ></div>
+
+    <div class="sd-modal-card">
+
+        <div class="sd-modal-header">
+
+            <div>
+                <span class="sd-panel-label">
+                    MODIFICATION OPTION
+                </span>
+
+                <h2 id="modificationModalTitle">
+                    Modification Details
+                </h2>
+
+                <p id="modificationModalDescription">
+                    Select a modification option to view details.
+                </p>
+            </div>
+
+            <button
+                class="sd-modal-close"
+                id="modificationModalClose"
+                type="button"
+                aria-label="Close modification details"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+        <div class="sd-estimate-lines">
+
+            <div>
+                <span>Estimated Price</span>
+
+                <strong id="modificationModalPrice">
+                    LKR 0
+                </strong>
+            </div>
+
+            <div>
+                <span>Estimated Installation Time</span>
+
+                <strong id="modificationModalTime">
+                    â€”
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="sd-modal-actions">
+
+            <button
+                class="sd-secondary-button"
+                data-close-modification
+                type="button"
+            >
+                Close
+            </button>
+
+            <button
+                class="sd-primary-button"
+                id="requestModificationButton"
+                type="button"
+            >
+                <i class="bi bi-send"></i>
+                Request Consultation
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- =====================================================
+     ONLINE PAYMENT MODAL
+     ===================================================== -->
+
+<div
+    class="sd-modal"
+    id="paymentModal"
+    aria-hidden="true"
+>
+
+    <div
+        class="sd-modal-overlay"
+        data-close-payment
+    ></div>
+
+    <div class="sd-modal-card">
+
+        <div class="sd-modal-header">
+
+            <div>
+                <span class="sd-panel-label">
+                    SECURE PAYMENT
+                </span>
+
+                <h2>Pay Invoice</h2>
+
+                <p id="paymentInvoiceText">
+                    Invoice #INV-1012
+                </p>
+            </div>
+
+            <button
+                class="sd-modal-close"
+                id="paymentModalClose"
+                type="button"
+                aria-label="Close payment"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+
+        <div class="sd-estimate-total">
+
+            <span>Amount to Pay</span>
+
+            <strong id="paymentAmount">
+                LKR 31,000
+            </strong>
+
+        </div>
+
+
+        <form id="paymentForm">
+
+            <div class="sd-form-grid">
+
+                <div class="sd-form-group sd-form-full">
+
+                    <label for="cardHolder">
+                        Cardholder Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cardHolder"
+                        placeholder="Name on card"
+                        autocomplete="cc-name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="sd-form-group sd-form-full">
+
+                    <label for="cardNumber">
+                        Card Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cardNumber"
+                        inputmode="numeric"
+                        placeholder="1234 5678 9012 3456"
+                        maxlength="19"
+                        autocomplete="cc-number"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="sd-form-group">
+
+                    <label for="cardExpiry">
+                        Expiry Date
+                    </label>
+
+                    <input
+                        type="text"
+                        id="cardExpiry"
+                        inputmode="numeric"
+                        placeholder="MM/YY"
+                        maxlength="5"
+                        autocomplete="cc-exp"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="sd-form-group">
+
+                    <label for="cardCvv">
+                        CVV
+                    </label>
+
+                    <input
+                        type="password"
+                        id="cardCvv"
+                        inputmode="numeric"
+                        placeholder="123"
+                        maxlength="4"
+                        autocomplete="cc-csc"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="sd-modal-actions">
+
+                <button
+                    class="sd-secondary-button"
+                    data-close-payment
+                    type="button"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    class="sd-primary-button"
+                    id="completePaymentButton"
+                    type="submit"
+                >
+                    <i class="bi bi-lock-fill"></i>
+                    Pay LKR 31,000
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+    <!-- =====================================================
+         ADD / EDIT VEHICLE MODAL
+         ===================================================== -->
+
+    <div
+        class="sd-modal"
+        id="vehicleModal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="sd-modal-overlay"
+            data-close-modal
+        ></div>
+
+
+        <div class="sd-modal-card">
+
+            <div class="sd-modal-header">
+
+                <div>
+
+                    <h2>
+                        Add Vehicle
+                    </h2>
+
+                    <p>
+                        Add or edit a vehicle in your customer profile.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="sd-modal-close"
+                    id="vehicleModalClose"
+                    type="button"
+                    aria-label="Close vehicle form"
+                >
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+            </div>
+
+
+            <form id="vehicleForm">
+
+                <div class="sd-form-grid">
+
+                    <div class="sd-form-group">
+
+                        <label for="vehicleMake">
+                            Make
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehicleMake"
+                            placeholder="Toyota"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="sd-form-group">
+
+                        <label for="vehicleModel">
+                            Model
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehicleModel"
+                            placeholder="Corolla"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="sd-form-group">
+
+                        <label for="vehicleYear">
+                            Year
+                        </label>
+
+                        <input
+                            type="number"
+                            id="vehicleYear"
+                            placeholder="2020"
+                            min="1950"
+                            max="2100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="sd-form-group">
+
+                        <label for="vehiclePlate">
+                            License Plate
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehiclePlate"
+                            placeholder="WP CAB-1234"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="sd-form-group">
+
+                        <label for="vehicleTrim">
+                            Trim
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehicleTrim"
+                            placeholder="Optional"
+                        >
+
+                    </div>
+
+
+                    <div class="sd-form-group">
+
+                        <label for="vehicleEngine">
+                            Engine
+                        </label>
+
+                        <input
+                            type="text"
+                            id="vehicleEngine"
+                            placeholder="1.8L Petrol"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="sd-form-group">
+
+                    <label for="vehicleVin">
+                        VIN
+                    </label>
+
+                    <input
+                        type="text"
+                        id="vehicleVin"
+                        placeholder="Vehicle Identification Number"
+                    >
+
+                </div>
+
+
+                <div class="sd-modal-actions">
+
+                    <button
+                        class="sd-secondary-button"
+                        data-close-modal
+                        type="button"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        class="sd-primary-button"
+                        id="vehicleSubmitButton"
+                        type="submit"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+
+                        <span id="vehicleSubmitText">
+                            Add Vehicle
+                        </span>
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script src="../assets/js/customer-dashboard.js"></script>
+
+</body>
+
+</html>
+

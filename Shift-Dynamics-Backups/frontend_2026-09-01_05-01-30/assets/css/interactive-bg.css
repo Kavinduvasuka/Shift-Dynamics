@@ -1,0 +1,352 @@
+/* =========================================================
+   SHIFT DYNAMICS
+   FINAL INTERACTIVE BACKGROUND SYSTEM
+   ========================================================= */
+
+
+/* =========================================================
+   SHARED VARIABLES
+   ========================================================= */
+
+:root {
+    --sd-parallax-orange-x: 0px;
+    --sd-parallax-orange-y: 0px;
+
+    --sd-parallax-navy-x: 0px;
+    --sd-parallax-navy-y: 0px;
+
+    --sd-parallax-soft-x: 0px;
+    --sd-parallax-soft-y: 0px;
+
+    --sd-pointer-x: 50%;
+    --sd-pointer-y: 50%;
+}
+
+
+/* =========================================================
+   HOME HERO
+   ========================================================= */
+
+.sd-hero {
+    position: relative;
+    isolation: isolate;
+}
+
+
+/* Existing hero content stays above effects */
+
+.sd-hero > .container {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* =========================================================
+   EXISTING HERO GLOWS
+   ========================================================= */
+
+.sd-hero .sd-hero-glow {
+    pointer-events: none;
+
+    will-change: transform;
+
+    /*
+       Mouse movement now controls these existing glows.
+       This prevents two animations fighting each other.
+    */
+    animation: none !important;
+}
+
+
+/* Top-right orange glow */
+
+.sd-hero .sd-glow-one {
+    transform: translate3d(
+        var(--sd-parallax-orange-x),
+        var(--sd-parallax-orange-y),
+        0
+    );
+}
+
+
+/* Bottom-left navy glow */
+
+.sd-hero .sd-glow-two {
+    transform: translate3d(
+        var(--sd-parallax-navy-x),
+        var(--sd-parallax-navy-y),
+        0
+    );
+}
+
+
+/* =========================================================
+   POINTER-RESPONSIVE LIGHT
+   ========================================================= */
+
+.sd-hero::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            520px circle at
+            var(--sd-pointer-x)
+            var(--sd-pointer-y),
+
+            rgba(249, 115, 22, 0.06) 0%,
+            rgba(249, 115, 22, 0.025) 28%,
+            rgba(249, 115, 22, 0) 68%
+        );
+
+    opacity: 1;
+}
+
+
+/* =========================================================
+   SUBTLE GRID DEPTH
+   ========================================================= */
+
+.sd-hero::before {
+    content: "";
+
+    position: absolute;
+
+    inset: -40px;
+
+    z-index: 0;
+
+    pointer-events: none;
+
+    opacity: 0.11;
+
+    background-image:
+        linear-gradient(
+            rgba(11, 19, 43, 0.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(11, 19, 43, 0.035) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        78px 78px;
+
+    transform: translate3d(
+        var(--sd-parallax-soft-x),
+        var(--sd-parallax-soft-y),
+        0
+    );
+
+    will-change: transform;
+
+    -webkit-mask-image:
+        linear-gradient(
+            to bottom,
+            transparent 0%,
+            #000 20%,
+            #000 80%,
+            transparent 100%
+        );
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            transparent 0%,
+            #000 20%,
+            #000 80%,
+            transparent 100%
+        );
+}
+
+
+/* =========================================================
+   WORKSHOP CARD DEPTH
+   ========================================================= */
+
+.sd-workshop-card {
+    transform:
+        translate3d(
+            calc(var(--sd-parallax-soft-x) * -0.18),
+            calc(var(--sd-parallax-soft-y) * -0.18),
+            0
+        );
+
+    will-change: transform;
+}
+
+
+/* =========================================================
+   EMERGENCY PAGE SUPPORT
+   ========================================================= */
+
+/*
+   Works only if these classes exist.
+   It does not affect pages where they are absent.
+*/
+
+.sd-emergency-hero,
+.sd-emergency-section {
+    --sd-emergency-x: 0px;
+    --sd-emergency-y: 0px;
+
+    position: relative;
+    isolation: isolate;
+}
+
+
+/* Subtle emergency-page depth light */
+
+.sd-emergency-hero::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    z-index: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            480px circle at
+            var(--sd-pointer-x)
+            var(--sd-pointer-y),
+
+            rgba(249, 115, 22, 0.055) 0%,
+            rgba(249, 115, 22, 0.018) 32%,
+            transparent 70%
+        );
+}
+
+
+/* Preserve actual content */
+
+.sd-emergency-hero > .container,
+.sd-emergency-section > .container {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* =========================================================
+   INTERACTION SAFETY
+   ========================================================= */
+
+.sd-hero::before,
+.sd-hero::after,
+.sd-emergency-hero::after {
+    pointer-events: none !important;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .sd-hero::before {
+        opacity: 0.07;
+    }
+
+    .sd-hero::after {
+        opacity: 0.72;
+    }
+
+    .sd-workshop-card {
+        transform: none;
+    }
+}
+
+
+/* =========================================================
+   TOUCH / MOBILE
+   ========================================================= */
+
+@media (hover: none), (pointer: coarse) {
+
+    .sd-hero .sd-glow-one,
+    .sd-hero .sd-glow-two,
+    .sd-workshop-card,
+    .sd-hero::before {
+        transform: none !important;
+    }
+
+    .sd-hero::before {
+        opacity: 0.05;
+    }
+
+    .sd-hero::after {
+        background:
+            radial-gradient(
+                460px circle at 80% 15%,
+                rgba(249, 115, 22, 0.04),
+                transparent 68%
+            );
+    }
+
+    .sd-emergency-hero::after {
+        background:
+            radial-gradient(
+                420px circle at 80% 20%,
+                rgba(249, 115, 22, 0.04),
+                transparent 70%
+            );
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 575px) {
+
+    .sd-hero::before {
+        display: none;
+    }
+
+    .sd-hero::after {
+        opacity: 0.55;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sd-hero .sd-glow-one,
+    .sd-hero .sd-glow-two,
+    .sd-workshop-card,
+    .sd-hero::before {
+        transform: none !important;
+
+        will-change: auto;
+    }
+
+    .sd-hero::before {
+        opacity: 0.04;
+    }
+
+    .sd-hero::after,
+    .sd-emergency-hero::after {
+        background:
+            radial-gradient(
+                450px circle at 80% 20%,
+                rgba(249, 115, 22, 0.035),
+                transparent 70%
+            );
+    }
+}
