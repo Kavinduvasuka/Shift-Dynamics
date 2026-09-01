@@ -33,11 +33,6 @@
         rel="stylesheet"
         href="../assets/css/customer-dashboard.css"
     >
-
-    <link
-        rel="stylesheet"
-        href="../assets/css/dashboard-states.css"
-    >
 </head>
 
 <body>
@@ -101,7 +96,7 @@
             <nav class="sd-sidebar-nav">
     <a
         href="dashboard.html"
-        class="sd-nav-item active"
+        class="sd-nav-item"
     >
         <i class="bi bi-grid-1x2-fill"></i>
         <span>Overview</span>
@@ -164,7 +159,7 @@
     </a>
     <a
         href="profile.html"
-        class="sd-nav-item"
+        class="sd-nav-item active"
     >
         <i class="bi bi-person-circle"></i>
         <span>Profile</span>
@@ -224,9 +219,9 @@
                     </button>
 
                     <div>
-                        <h1 id="pageTitle">Dashboard Overview</h1>
+                        <h1 id="pageTitle">Profile Settings</h1>
 
-                        <p id="pageSubtitle">Welcome back to Shift Dynamics.</p>
+                        <p id="pageSubtitle">Manage your account information.</p>
                     </div>
 
                 </div>
@@ -265,205 +260,90 @@
 
 <section
                     class="sd-dashboard-section active"
-                    id="overview"
+                    id="profile"
                 >
 
-                    <div class="sd-welcome-card">
+                    <div class="sd-section-heading">
 
                         <div>
-
-                            <span class="sd-small-label">
-                                CUSTOMER PORTAL
-                            </span>
-
-                            <h2>
-                                Your vehicle care,
-                                <span>all in one place.</span>
-                            </h2>
+                            <h2>Profile Settings</h2>
 
                             <p>
-                                Manage vehicles, book workshop services,
-                                approve estimates and track your vehicle
-                                service progress.
+                                Manage your customer account information.
                             </p>
-
-                            <a href="booking.html" class="sd-primary-button sd-section-shortcut">
-                                <i class="bi bi-calendar-plus"></i>
-                                Book a Service
-                            </a>
-
-                        </div>
-
-                        <div class="sd-welcome-visual">
-
-                            <div class="sd-welcome-icon">
-                                <i class="bi bi-car-front-fill"></i>
-                            </div>
-
                         </div>
 
                     </div>
 
 
-                    <div class="sd-stats-grid">
+                    <div class="sd-form-panel">
 
-                        <article class="sd-stat-card">
+                        <form id="profileForm">
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-car-front"></i>
-                            </div>
+                            <div class="sd-form-grid">
 
-                            <div>
-                                <span>Registered Vehicles</span>
-                                <strong>1</strong>
-                            </div>
+                                <div class="sd-form-group">
 
-                        </article>
+                                    <label for="profileName">
+                                        Full Name
+                                    </label>
 
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-calendar2-check"></i>
-                            </div>
-
-                            <div>
-                                <span>Upcoming Services</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-wrench-adjustable"></i>
-                            </div>
-
-                            <div>
-                                <span>Active Jobs</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-file-earmark-check"></i>
-                            </div>
-
-                            <div>
-                                <span>Pending Estimates</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-                    </div>
-
-
-                    <div class="sd-overview-grid">
-
-                        <article class="sd-panel">
-
-                            <div class="sd-panel-header">
-
-                                <div>
-                                    <span class="sd-panel-label">
-                                        CURRENT SERVICE
-                                    </span>
-
-                                    <h3>Service Progress</h3>
-                                </div>
-
-                                <a href="tracker.html" class="sd-text-button sd-section-shortcut">
-                                    View Tracker
-                                </a>
-
-                            </div>
-
-
-                            <div class="sd-current-job">
-
-                                <div class="sd-job-title">
-
-                                    <div>
-                                        <strong>
-                                            Toyota Corolla
-                                        </strong>
-
-                                        <span>
-                                            WP CAB-1234
-                                        </span>
-                                    </div>
-
-                                    <span class="sd-status-badge in-progress">
-                                        In Progress
-                                    </span>
+                                    <input
+                                        type="text"
+                                        id="profileName"
+                                        value="Customer"
+                                    >
 
                                 </div>
 
 
-                                <div class="sd-progress-bar">
-                                    <span style="width: 65%;"></span>
+                                <div class="sd-form-group">
+
+                                    <label for="profileEmail">
+                                        Email Address
+                                    </label>
+
+                                    <input
+                                        type="email"
+                                        id="profileEmail"
+                                        value="customer@test.com"
+                                    >
+
                                 </div>
 
 
-                                <div class="sd-progress-info">
+                                <div class="sd-form-group">
 
-                                    <span>
-                                        General Service & Inspection
-                                    </span>
+                                    <label for="profilePhone">
+                                        Phone Number
+                                    </label>
 
-                                    <strong>65%</strong>
+                                    <input
+                                        type="tel"
+                                        id="profilePhone"
+                                        value="0771234567"
+                                    >
 
                                 </div>
 
                             </div>
 
-                        </article>
+
+                            <div
+                                class="sd-form-message"
+                                id="profileMessage"
+                            ></div>
 
 
-                        <article class="sd-panel">
+                            <button
+                                class="sd-primary-button"
+                                type="submit"
+                            >
+                                <i class="bi bi-check-lg"></i>
+                                Save Changes
+                            </button>
 
-                            <div class="sd-panel-header">
-
-                                <div>
-                                    <span class="sd-panel-label">
-                                        NEXT APPOINTMENT
-                                    </span>
-
-                                    <h3>Upcoming Booking</h3>
-                                </div>
-
-                            </div>
-
-
-                            <div class="sd-appointment">
-
-                                <div class="sd-date-box">
-                                    <span>SEP</span>
-                                    <strong>05</strong>
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Full Vehicle Inspection
-                                    </strong>
-
-                                    <p>
-                                        09:30 AM â€¢ Shift Dynamics Workshop
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </article>
+                        </form>
 
                     </div>
 
@@ -1000,11 +880,8 @@
 
     <script src="../assets/js/customer-dashboard.js"></script>
 
-
-<script src="../assets/js/dashboard-states.js"></script>
 </body>
 
 </html>
-
 
 

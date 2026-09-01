@@ -1373,3 +1373,109 @@
     }
 
 }
+/* =========================================================
+   SHIFT DYNAMICS - SHARED PUBLIC FOOTER
+   Home / Emergency / Contact visual consistency
+========================================================= */
+
+.sd-shared-footer {
+    padding: 30px 0 18px !important;
+    background: #0B132B !important;
+    color: #FFFFFF !important;
+}
+
+.sd-shared-footer .sd-footer-inner {
+    padding-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+.sd-shared-footer .sd-shared-footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sd-shared-footer .sd-shared-footer-brand img {
+    width: 65px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.sd-shared-footer .sd-shared-footer-brand strong,
+.sd-shared-footer .sd-shared-footer-brand small {
+    display: block;
+}
+
+.sd-shared-footer .sd-shared-footer-brand strong {
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
+.sd-shared-footer .sd-shared-footer-brand strong span {
+    color: #F97316;
+}
+
+.sd-shared-footer .sd-shared-footer-brand small {
+    margin-top: 3px;
+    color: #94A3B8;
+    font-size: 11px;
+}
+
+.sd-shared-footer .sd-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.sd-shared-footer .sd-footer-links a {
+    color: #CBD5E1;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: color .2s ease;
+}
+
+.sd-shared-footer .sd-footer-links a:hover {
+    color: #F97316;
+}
+
+.sd-shared-footer .sd-footer-bottom {
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    color: #94A3B8;
+    font-size: 11px;
+}
+
+.sd-shared-footer p {
+    margin: 0;
+}
+
+@media (max-width: 700px) {
+
+    .sd-shared-footer .sd-footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sd-shared-footer .sd-footer-links {
+        justify-content: flex-start;
+        gap: 14px;
+    }
+
+    .sd-shared-footer .sd-footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+

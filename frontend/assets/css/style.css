@@ -1969,3 +1969,213 @@ button {
     }
 
 }
+/* =====================================================
+   LOGIN DROPDOWN
+   ===================================================== */
+
+.sd-login-menu {
+    position: relative;
+}
+
+.sd-login-toggle {
+    border: 0;
+    cursor: pointer;
+}
+
+.sd-login-chevron {
+    margin-left: 6px;
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+.sd-login-menu.open .sd-login-chevron {
+    transform: rotate(180deg);
+}
+
+.sd-login-dropdown {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    z-index: 1000;
+
+    width: 290px;
+    padding: 8px;
+
+    background: var(--sd-white);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 14px;
+
+    box-shadow:
+        0 18px 45px rgba(11, 19, 43, 0.16);
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+}
+
+.sd-login-menu.open .sd-login-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.sd-login-dropdown a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 13px 14px;
+
+    color: var(--sd-text);
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    transition: background 0.2s ease;
+}
+
+.sd-login-dropdown a:hover {
+    background: var(--sd-orange-light);
+}
+
+.sd-login-dropdown > a > i {
+    flex: 0 0 auto;
+
+    width: 36px;
+    height: 36px;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--sd-orange);
+
+    background: var(--sd-orange-light);
+    border-radius: 9px;
+}
+
+.sd-login-dropdown strong,
+.sd-login-dropdown span {
+    display: block;
+}
+
+.sd-login-dropdown strong {
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+}
+
+.sd-login-dropdown span {
+    color: var(--sd-text-secondary);
+    font-size: 0.75rem;
+    line-height: 1.35;
+}
+/* =========================================================
+   SHIFT DYNAMICS - SHARED PUBLIC FOOTER
+   Home / Emergency / Contact visual consistency
+========================================================= */
+
+.sd-shared-footer {
+    padding: 30px 0 18px !important;
+    background: #0B132B !important;
+    color: #FFFFFF !important;
+}
+
+.sd-shared-footer .sd-footer-inner {
+    padding-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+}
+
+.sd-shared-footer .sd-shared-footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sd-shared-footer .sd-shared-footer-brand img {
+    width: 65px;
+    height: 44px;
+    object-fit: contain;
+}
+
+.sd-shared-footer .sd-shared-footer-brand strong,
+.sd-shared-footer .sd-shared-footer-brand small {
+    display: block;
+}
+
+.sd-shared-footer .sd-shared-footer-brand strong {
+    color: #FFFFFF;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
+.sd-shared-footer .sd-shared-footer-brand strong span {
+    color: #F97316;
+}
+
+.sd-shared-footer .sd-shared-footer-brand small {
+    margin-top: 3px;
+    color: #94A3B8;
+    font-size: 11px;
+}
+
+.sd-shared-footer .sd-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.sd-shared-footer .sd-footer-links a {
+    color: #CBD5E1;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition: color .2s ease;
+}
+
+.sd-shared-footer .sd-footer-links a:hover {
+    color: #F97316;
+}
+
+.sd-shared-footer .sd-footer-bottom {
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    color: #94A3B8;
+    font-size: 11px;
+}
+
+.sd-shared-footer p {
+    margin: 0;
+}
+
+@media (max-width: 700px) {
+
+    .sd-shared-footer .sd-footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sd-shared-footer .sd-footer-links {
+        justify-content: flex-start;
+        gap: 14px;
+    }
+
+    .sd-shared-footer .sd-footer-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+

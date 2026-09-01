@@ -33,11 +33,6 @@
         rel="stylesheet"
         href="../assets/css/customer-dashboard.css"
     >
-
-    <link
-        rel="stylesheet"
-        href="../assets/css/dashboard-states.css"
-    >
 </head>
 
 <body>
@@ -101,7 +96,7 @@
             <nav class="sd-sidebar-nav">
     <a
         href="dashboard.html"
-        class="sd-nav-item active"
+        class="sd-nav-item"
     >
         <i class="bi bi-grid-1x2-fill"></i>
         <span>Overview</span>
@@ -150,7 +145,7 @@
     </a>
     <a
         href="modifications.html"
-        class="sd-nav-item"
+        class="sd-nav-item active"
     >
         <i class="bi bi-tools"></i>
         <span>Modifications</span>
@@ -224,9 +219,9 @@
                     </button>
 
                     <div>
-                        <h1 id="pageTitle">Dashboard Overview</h1>
+                        <h1 id="pageTitle">Modification Catalog</h1>
 
-                        <p id="pageSubtitle">Welcome back to Shift Dynamics.</p>
+                        <p id="pageSubtitle">Explore vehicle upgrade options.</p>
                     </div>
 
                 </div>
@@ -264,210 +259,236 @@
             <div class="sd-dashboard-content">
 
 <section
-                    class="sd-dashboard-section active"
-                    id="overview"
-                >
+    class="sd-dashboard-section active"
+    id="modifications"
+>
 
-                    <div class="sd-welcome-card">
+    <div class="sd-section-heading">
 
-                        <div>
+        <div>
+            <h2>Modification Catalog</h2>
 
-                            <span class="sd-small-label">
-                                CUSTOMER PORTAL
-                            </span>
+            <p>
+                Explore performance, styling and
+                customization options for your vehicle.
+            </p>
+        </div>
 
-                            <h2>
-                                Your vehicle care,
-                                <span>all in one place.</span>
-                            </h2>
+    </div>
 
-                            <p>
-                                Manage vehicles, book workshop services,
-                                approve estimates and track your vehicle
-                                service progress.
-                            </p>
 
-                            <a href="booking.html" class="sd-primary-button sd-section-shortcut">
-                                <i class="bi bi-calendar-plus"></i>
-                                Book a Service
-                            </a>
+    <div class="sd-modification-grid">
 
-                        </div>
+        <!-- Performance Exhaust -->
 
-                        <div class="sd-welcome-visual">
+        <article class="sd-mod-card">
 
-                            <div class="sd-welcome-icon">
-                                <i class="bi bi-car-front-fill"></i>
-                            </div>
+            <div class="sd-mod-icon">
+                <i class="bi bi-soundwave"></i>
+            </div>
 
-                        </div>
+            <h3>Performance Exhaust</h3>
 
-                    </div>
+            <p>
+                Exhaust upgrades for improved sound,
+                airflow and performance.
+            </p>
 
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="exhaust"
+            >
+                View Options
+            </button>
 
-                    <div class="sd-stats-grid">
+        </article>
 
-                        <article class="sd-stat-card">
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-car-front"></i>
-                            </div>
+        <!-- Wheels & Rims -->
 
-                            <div>
-                                <span>Registered Vehicles</span>
-                                <strong>1</strong>
-                            </div>
+        <article class="sd-mod-card">
 
-                        </article>
+            <div class="sd-mod-icon">
+                <i class="bi bi-circle"></i>
+            </div>
 
+            <h3>Wheels & Rims</h3>
 
-                        <article class="sd-stat-card">
+            <p>
+                Browse styling and performance
+                wheel and rim upgrade packages.
+            </p>
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-calendar2-check"></i>
-                            </div>
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="wheels"
+            >
+                View Options
+            </button>
 
-                            <div>
-                                <span>Upcoming Services</span>
-                                <strong>1</strong>
-                            </div>
+        </article>
 
-                        </article>
 
+        <!-- ECU Tuning -->
 
-                        <article class="sd-stat-card">
+        <article class="sd-mod-card">
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-wrench-adjustable"></i>
-                            </div>
+            <div class="sd-mod-icon">
+                <i class="bi bi-speedometer2"></i>
+            </div>
 
-                            <div>
-                                <span>Active Jobs</span>
-                                <strong>1</strong>
-                            </div>
+            <h3>ECU Tuning</h3>
 
-                        </article>
+            <p>
+                Performance tuning consultation
+                based on your vehicle configuration.
+            </p>
 
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="tuning"
+            >
+                View Options
+            </button>
 
-                        <article class="sd-stat-card">
+        </article>
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-file-earmark-check"></i>
-                            </div>
 
-                            <div>
-                                <span>Pending Estimates</span>
-                                <strong>1</strong>
-                            </div>
+        <!-- Suspension Upgrades -->
 
-                        </article>
+        <article class="sd-mod-card">
 
-                    </div>
+            <div class="sd-mod-icon">
+                <i class="bi bi-arrows-collapse-vertical"></i>
+            </div>
 
+            <h3>Suspension Upgrades</h3>
 
-                    <div class="sd-overview-grid">
+            <p>
+                Improve handling, ride height and
+                stability with suspension upgrades.
+            </p>
 
-                        <article class="sd-panel">
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="suspension"
+            >
+                View Options
+            </button>
 
-                            <div class="sd-panel-header">
+        </article>
 
-                                <div>
-                                    <span class="sd-panel-label">
-                                        CURRENT SERVICE
-                                    </span>
 
-                                    <h3>Service Progress</h3>
-                                </div>
+        <!-- Brake Upgrades -->
 
-                                <a href="tracker.html" class="sd-text-button sd-section-shortcut">
-                                    View Tracker
-                                </a>
+        <article class="sd-mod-card">
 
-                            </div>
+            <div class="sd-mod-icon">
+                <i class="bi bi-disc"></i>
+            </div>
 
+            <h3>Brake Upgrades</h3>
 
-                            <div class="sd-current-job">
+            <p>
+                Improve braking performance with
+                upgraded pads, discs and components.
+            </p>
 
-                                <div class="sd-job-title">
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="brakes"
+            >
+                View Options
+            </button>
 
-                                    <div>
-                                        <strong>
-                                            Toyota Corolla
-                                        </strong>
+        </article>
 
-                                        <span>
-                                            WP CAB-1234
-                                        </span>
-                                    </div>
 
-                                    <span class="sd-status-badge in-progress">
-                                        In Progress
-                                    </span>
+        <!-- Body Kits -->
 
-                                </div>
+        <article class="sd-mod-card">
 
+            <div class="sd-mod-icon">
+                <i class="bi bi-car-front"></i>
+            </div>
 
-                                <div class="sd-progress-bar">
-                                    <span style="width: 65%;"></span>
-                                </div>
+            <h3>Body Kits</h3>
 
+            <p>
+                Explore body kits, spoilers and
+                exterior styling upgrades.
+            </p>
 
-                                <div class="sd-progress-info">
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="body-kit"
+            >
+                View Options
+            </button>
 
-                                    <span>
-                                        General Service & Inspection
-                                    </span>
+        </article>
 
-                                    <strong>65%</strong>
 
-                                </div>
+        <!-- Interior Customization -->
 
-                            </div>
+        <article class="sd-mod-card">
 
-                        </article>
+            <div class="sd-mod-icon">
+                <i class="bi bi-stars"></i>
+            </div>
 
+            <h3>Interior Customization</h3>
 
-                        <article class="sd-panel">
+            <p>
+                Personalize the cabin with trim,
+                comfort and styling upgrades.
+            </p>
 
-                            <div class="sd-panel-header">
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="interior"
+            >
+                View Options
+            </button>
 
-                                <div>
-                                    <span class="sd-panel-label">
-                                        NEXT APPOINTMENT
-                                    </span>
+        </article>
 
-                                    <h3>Upcoming Booking</h3>
-                                </div>
 
-                            </div>
+        <!-- Audio Systems -->
 
+        <article class="sd-mod-card">
 
-                            <div class="sd-appointment">
+            <div class="sd-mod-icon">
+                <i class="bi bi-speaker"></i>
+            </div>
 
-                                <div class="sd-date-box">
-                                    <span>SEP</span>
-                                    <strong>05</strong>
-                                </div>
+            <h3>Audio Systems</h3>
 
-                                <div>
+            <p>
+                Upgrade speakers, audio components
+                and in-car entertainment systems.
+            </p>
 
-                                    <strong>
-                                        Full Vehicle Inspection
-                                    </strong>
+            <button
+                class="sd-secondary-button sd-view-modification"
+                type="button"
+                data-modification="audio"
+            >
+                View Options
+            </button>
 
-                                    <p>
-                                        09:30 AM â€¢ Shift Dynamics Workshop
-                                    </p>
+        </article>
 
-                                </div>
+    </div>
 
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                </section>
+</section>
 
 </div>
 
@@ -1000,11 +1021,8 @@
 
     <script src="../assets/js/customer-dashboard.js"></script>
 
-
-<script src="../assets/js/dashboard-states.js"></script>
 </body>
 
 </html>
-
 
 

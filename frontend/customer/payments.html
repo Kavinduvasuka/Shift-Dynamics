@@ -33,11 +33,6 @@
         rel="stylesheet"
         href="../assets/css/customer-dashboard.css"
     >
-
-    <link
-        rel="stylesheet"
-        href="../assets/css/dashboard-states.css"
-    >
 </head>
 
 <body>
@@ -101,7 +96,7 @@
             <nav class="sd-sidebar-nav">
     <a
         href="dashboard.html"
-        class="sd-nav-item active"
+        class="sd-nav-item"
     >
         <i class="bi bi-grid-1x2-fill"></i>
         <span>Overview</span>
@@ -157,7 +152,7 @@
     </a>
     <a
         href="payments.html"
-        class="sd-nav-item"
+        class="sd-nav-item active"
     >
         <i class="bi bi-credit-card-fill"></i>
         <span>Payments</span>
@@ -224,9 +219,9 @@
                     </button>
 
                     <div>
-                        <h1 id="pageTitle">Dashboard Overview</h1>
+                        <h1 id="pageTitle">Payments &amp; Invoices</h1>
 
-                        <p id="pageSubtitle">Welcome back to Shift Dynamics.</p>
+                        <p id="pageSubtitle">Manage invoices and payment information.</p>
                     </div>
 
                 </div>
@@ -265,205 +260,108 @@
 
 <section
                     class="sd-dashboard-section active"
-                    id="overview"
+                    id="payments"
                 >
 
-                    <div class="sd-welcome-card">
+                    <div class="sd-section-heading">
 
                         <div>
-
-                            <span class="sd-small-label">
-                                CUSTOMER PORTAL
-                            </span>
-
-                            <h2>
-                                Your vehicle care,
-                                <span>all in one place.</span>
-                            </h2>
+                            <h2>Payments & Invoices</h2>
 
                             <p>
-                                Manage vehicles, book workshop services,
-                                approve estimates and track your vehicle
-                                service progress.
+                                View invoices and payment status.
                             </p>
-
-                            <a href="booking.html" class="sd-primary-button sd-section-shortcut">
-                                <i class="bi bi-calendar-plus"></i>
-                                Book a Service
-                            </a>
-
-                        </div>
-
-                        <div class="sd-welcome-visual">
-
-                            <div class="sd-welcome-icon">
-                                <i class="bi bi-car-front-fill"></i>
-                            </div>
-
                         </div>
 
                     </div>
 
 
-                    <div class="sd-stats-grid">
+                    <div class="sd-table-card">
 
-                        <article class="sd-stat-card">
+                        <div class="sd-table-responsive">
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-car-front"></i>
-                            </div>
+                            <table>
 
-                            <div>
-                                <span>Registered Vehicles</span>
-                                <strong>1</strong>
-                            </div>
+                                <thead>
 
-                        </article>
+                                    <tr>
+                                        <th>Invoice</th>
+                                        <th>Vehicle</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
 
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-calendar2-check"></i>
-                            </div>
-
-                            <div>
-                                <span>Upcoming Services</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
+                                </thead>
 
 
-                        <article class="sd-stat-card">
+                                <tbody>
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-wrench-adjustable"></i>
-                            </div>
+                                    <tr>
 
-                            <div>
-                                <span>Active Jobs</span>
-                                <strong>1</strong>
-                            </div>
+                                        <td>#INV-1008</td>
 
-                        </article>
+                                        <td>Toyota Corolla</td>
 
+                                        <td>12 Aug 2026</td>
 
-                        <article class="sd-stat-card">
+                                        <td>LKR 24,500</td>
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-file-earmark-check"></i>
-                            </div>
+                                        <td>
 
-                            <div>
-                                <span>Pending Estimates</span>
-                                <strong>1</strong>
-                            </div>
+                                            <span class="sd-status-badge paid">
+                                                Paid
+                                            </span>
 
-                        </article>
+                                        </td>
 
-                    </div>
+                                        <td>
 
+                                            <button
+                                                class="sd-table-action sd-view-invoice"
+                                                type="button"
+                                            >
+                                                View
+                                            </button>
 
-                    <div class="sd-overview-grid">
+                                        </td>
 
-                        <article class="sd-panel">
+                                    </tr>
 
-                            <div class="sd-panel-header">
+                                    <tr>
 
-                                <div>
-                                    <span class="sd-panel-label">
-                                        CURRENT SERVICE
-                                    </span>
+                                        <td>#INV-1012</td>
 
-                                    <h3>Service Progress</h3>
-                                </div>
+                                        <td>Toyota Corolla</td>
 
-                                <a href="tracker.html" class="sd-text-button sd-section-shortcut">
-                                    View Tracker
-                                </a>
+                                        <td>28 Aug 2026</td>
 
-                            </div>
+                                        <td>LKR 31,000</td>
 
+                                        <td>
+                                            <span class="sd-status-badge pending">
+                                                Pending
+                                            </span>
+                                        </td>
 
-                            <div class="sd-current-job">
+                                        <td>
+                                            <button
+                                                class="sd-table-action sd-pay-now"
+                                                type="button"
+                                                data-invoice="INV-1012"
+                                                data-amount="31000"
+                                            >
+                                                Pay Now
+                                            </button>
+                                        </td>
 
-                                <div class="sd-job-title">
+                                    </tr>
+                                </tbody>
 
-                                    <div>
-                                        <strong>
-                                            Toyota Corolla
-                                        </strong>
+                            </table>
 
-                                        <span>
-                                            WP CAB-1234
-                                        </span>
-                                    </div>
-
-                                    <span class="sd-status-badge in-progress">
-                                        In Progress
-                                    </span>
-
-                                </div>
-
-
-                                <div class="sd-progress-bar">
-                                    <span style="width: 65%;"></span>
-                                </div>
-
-
-                                <div class="sd-progress-info">
-
-                                    <span>
-                                        General Service & Inspection
-                                    </span>
-
-                                    <strong>65%</strong>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-panel">
-
-                            <div class="sd-panel-header">
-
-                                <div>
-                                    <span class="sd-panel-label">
-                                        NEXT APPOINTMENT
-                                    </span>
-
-                                    <h3>Upcoming Booking</h3>
-                                </div>
-
-                            </div>
-
-
-                            <div class="sd-appointment">
-
-                                <div class="sd-date-box">
-                                    <span>SEP</span>
-                                    <strong>05</strong>
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Full Vehicle Inspection
-                                    </strong>
-
-                                    <p>
-                                        09:30 AM â€¢ Shift Dynamics Workshop
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </article>
+                        </div>
 
                     </div>
 
@@ -1000,11 +898,8 @@
 
     <script src="../assets/js/customer-dashboard.js"></script>
 
-
-<script src="../assets/js/dashboard-states.js"></script>
 </body>
 
 </html>
-
 
 

@@ -33,11 +33,6 @@
         rel="stylesheet"
         href="../assets/css/customer-dashboard.css"
     >
-
-    <link
-        rel="stylesheet"
-        href="../assets/css/dashboard-states.css"
-    >
 </head>
 
 <body>
@@ -101,7 +96,7 @@
             <nav class="sd-sidebar-nav">
     <a
         href="dashboard.html"
-        class="sd-nav-item active"
+        class="sd-nav-item"
     >
         <i class="bi bi-grid-1x2-fill"></i>
         <span>Overview</span>
@@ -115,7 +110,7 @@
     </a>
     <a
         href="booking.html"
-        class="sd-nav-item"
+        class="sd-nav-item active"
     >
         <i class="bi bi-calendar-check-fill"></i>
         <span>Service Booking</span>
@@ -224,9 +219,9 @@
                     </button>
 
                     <div>
-                        <h1 id="pageTitle">Dashboard Overview</h1>
+                        <h1 id="pageTitle">Service Booking</h1>
 
-                        <p id="pageSubtitle">Welcome back to Shift Dynamics.</p>
+                        <p id="pageSubtitle">Request your next workshop appointment.</p>
                     </div>
 
                 </div>
@@ -263,207 +258,214 @@
 
             <div class="sd-dashboard-content">
 
+
+<div
+    id="vehicleGrid"
+    hidden
+>
+    <article
+        class="sd-vehicle-card"
+        data-make="Toyota"
+        data-model="Corolla"
+        data-plate="WP CAB-1234"
+        data-year="2020"
+        data-trim="Sedan"
+        data-engine="1.8L Petrol"
+        data-vin="JTDBR32E..."
+    ></article>
+</div>
 <section
                     class="sd-dashboard-section active"
-                    id="overview"
+                    id="booking"
                 >
 
-                    <div class="sd-welcome-card">
+                    <div class="sd-section-heading">
 
                         <div>
-
-                            <span class="sd-small-label">
-                                CUSTOMER PORTAL
-                            </span>
-
-                            <h2>
-                                Your vehicle care,
-                                <span>all in one place.</span>
-                            </h2>
+                            <h2>Book a Service</h2>
 
                             <p>
-                                Manage vehicles, book workshop services,
-                                approve estimates and track your vehicle
-                                service progress.
+                                Request a workshop appointment for your vehicle.
                             </p>
-
-                            <a href="booking.html" class="sd-primary-button sd-section-shortcut">
-                                <i class="bi bi-calendar-plus"></i>
-                                Book a Service
-                            </a>
-
-                        </div>
-
-                        <div class="sd-welcome-visual">
-
-                            <div class="sd-welcome-icon">
-                                <i class="bi bi-car-front-fill"></i>
-                            </div>
-
                         </div>
 
                     </div>
 
 
-                    <div class="sd-stats-grid">
+                    <div class="sd-form-panel">
 
-                        <article class="sd-stat-card">
+                        <form id="serviceBookingForm">
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-car-front"></i>
-                            </div>
+                            <div class="sd-form-grid">
 
-                            <div>
-                                <span>Registered Vehicles</span>
-                                <strong>1</strong>
-                            </div>
+                                <div class="sd-form-group">
 
-                        </article>
+                                    <label for="bookingVehicle">
+                                        Vehicle
+                                    </label>
 
+                                    <select
+                                        id="bookingVehicle"
+                                        required
+                                    >
+                                        <option value="">
+                                            Select vehicle
+                                        </option>
 
-                        <article class="sd-stat-card">
+                                        <option value="Toyota Corolla">
+                                            Toyota Corolla - WP CAB-1234
+                                        </option>
+                                    </select>
 
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-calendar2-check"></i>
-                            </div>
-
-                            <div>
-                                <span>Upcoming Services</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-wrench-adjustable"></i>
-                            </div>
-
-                            <div>
-                                <span>Active Jobs</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-file-earmark-check"></i>
-                            </div>
-
-                            <div>
-                                <span>Pending Estimates</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-                    </div>
-
-
-                    <div class="sd-overview-grid">
-
-                        <article class="sd-panel">
-
-                            <div class="sd-panel-header">
-
-                                <div>
-                                    <span class="sd-panel-label">
-                                        CURRENT SERVICE
-                                    </span>
-
-                                    <h3>Service Progress</h3>
                                 </div>
 
-                                <a href="tracker.html" class="sd-text-button sd-section-shortcut">
-                                    View Tracker
-                                </a>
 
-                            </div>
+                             <div class="sd-form-group">
 
+                                    <label for="serviceType">
+                                        Service Package
+                                    </label>
 
-                            <div class="sd-current-job">
+                                    <select
+                                        id="serviceType"
+                                        required
+                                    >
+                                        <option value="">
+                                            Select service package
+                                        </option>
 
-                                <div class="sd-job-title">
+                                        <option value="General Service">
+                                            General Service
+                                        </option>
 
-                                    <div>
-                                        <strong>
-                                            Toyota Corolla
-                                        </strong>
+                                        <option value="Vehicle Inspection">
+                                            Vehicle Inspection
+                                        </option>
 
-                                        <span>
-                                            WP CAB-1234
-                                        </span>
+                                        <option value="Engine Diagnostic">
+                                            Engine Diagnostic
+                                        </option>
+
+                                        <option value="Brake Service">
+                                            Brake Service
+                                        </option>
+
+                                        <option value="Modification Consultation">
+                                            Modification Consultation
+                                        </option>
+                                    </select>
+
+                                </div>   
+
+                                <div
+                                    class="sd-service-package-info"
+                                    id="servicePackageInfo"
+                                    hidden
+                                >
+
+                                    <div class="sd-service-package-icon">
+                                        <i
+                                            class="bi bi-tools"
+                                            id="servicePackageIcon"
+                                        ></i>
                                     </div>
 
-                                    <span class="sd-status-badge in-progress">
-                                        In Progress
-                                    </span>
+                                    <div class="sd-service-package-content">
+
+                                        <span class="sd-service-package-label">
+                                            SELECTED PACKAGE
+                                        </span>
+
+                                        <h3 id="servicePackageTitle">
+                                            Service Package
+                                        </h3>
+
+                                        <p id="servicePackageDescription">
+                                            Package information will appear here.
+                                        </p>
+
+                                        <div class="sd-service-package-meta">
+
+                                            <span>
+                                                <i class="bi bi-clock"></i>
+                                                <strong id="servicePackageDuration">
+                                                    Duration
+                                                </strong>
+                                            </span>
+
+                                            <span>
+                                                <i class="bi bi-info-circle"></i>
+                                                Final price after inspection
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>  
+                                
+                                <div class="sd-form-group">
+
+                                    <label for="bookingDate">
+                                        Preferred Date
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        id="bookingDate"
+                                        required
+                                    >
 
                                 </div>
 
 
-                                <div class="sd-progress-bar">
-                                    <span style="width: 65%;"></span>
-                                </div>
+                                <div class="sd-form-group">
 
+                                    <label for="bookingTime">
+                                        Preferred Time
+                                    </label>
 
-                                <div class="sd-progress-info">
-
-                                    <span>
-                                        General Service & Inspection
-                                    </span>
-
-                                    <strong>65%</strong>
+                                    <input
+                                        type="time"
+                                        id="bookingTime"
+                                        required
+                                    >
 
                                 </div>
 
                             </div>
 
-                        </article>
 
+                            <div class="sd-form-group">
 
-                        <article class="sd-panel">
+                                <label for="bookingNotes">
+                                    Additional Notes
+                                </label>
 
-                            <div class="sd-panel-header">
-
-                                <div>
-                                    <span class="sd-panel-label">
-                                        NEXT APPOINTMENT
-                                    </span>
-
-                                    <h3>Upcoming Booking</h3>
-                                </div>
+                                <textarea
+                                    id="bookingNotes"
+                                    rows="5"
+                                    placeholder="Describe any issues or special requests..."
+                                ></textarea>
 
                             </div>
 
 
-                            <div class="sd-appointment">
+                            <div
+                                class="sd-form-message"
+                                id="bookingMessage"
+                            ></div>
 
-                                <div class="sd-date-box">
-                                    <span>SEP</span>
-                                    <strong>05</strong>
-                                </div>
 
-                                <div>
+                            <button
+                                class="sd-primary-button"
+                                type="submit"
+                            >
+                                <i class="bi bi-calendar-check"></i>
+                                Submit Booking Request
+                            </button>
 
-                                    <strong>
-                                        Full Vehicle Inspection
-                                    </strong>
-
-                                    <p>
-                                        09:30 AM â€¢ Shift Dynamics Workshop
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </article>
+                        </form>
 
                     </div>
 
@@ -1000,11 +1002,8 @@
 
     <script src="../assets/js/customer-dashboard.js"></script>
 
-
-<script src="../assets/js/dashboard-states.js"></script>
 </body>
 
 </html>
-
 
 

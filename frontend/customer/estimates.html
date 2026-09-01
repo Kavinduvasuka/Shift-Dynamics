@@ -33,11 +33,6 @@
         rel="stylesheet"
         href="../assets/css/customer-dashboard.css"
     >
-
-    <link
-        rel="stylesheet"
-        href="../assets/css/dashboard-states.css"
-    >
 </head>
 
 <body>
@@ -101,7 +96,7 @@
             <nav class="sd-sidebar-nav">
     <a
         href="dashboard.html"
-        class="sd-nav-item active"
+        class="sd-nav-item"
     >
         <i class="bi bi-grid-1x2-fill"></i>
         <span>Overview</span>
@@ -122,7 +117,7 @@
     </a>
     <a
         href="estimates.html"
-        class="sd-nav-item"
+        class="sd-nav-item active"
     >
         <i class="bi bi-file-earmark-text-fill"></i>
         <span>Estimates</span>
@@ -224,9 +219,9 @@
                     </button>
 
                     <div>
-                        <h1 id="pageTitle">Dashboard Overview</h1>
+                        <h1 id="pageTitle">Digital Estimates</h1>
 
-                        <p id="pageSubtitle">Welcome back to Shift Dynamics.</p>
+                        <p id="pageSubtitle">Review and approve service estimates.</p>
                     </div>
 
                 </div>
@@ -265,207 +260,102 @@
 
 <section
                     class="sd-dashboard-section active"
-                    id="overview"
+                    id="estimates"
                 >
 
-                    <div class="sd-welcome-card">
+                    <div class="sd-section-heading">
 
                         <div>
-
-                            <span class="sd-small-label">
-                                CUSTOMER PORTAL
-                            </span>
-
-                            <h2>
-                                Your vehicle care,
-                                <span>all in one place.</span>
-                            </h2>
+                            <h2>Digital Estimates</h2>
 
                             <p>
-                                Manage vehicles, book workshop services,
-                                approve estimates and track your vehicle
-                                service progress.
+                                Review workshop estimates before work proceeds.
                             </p>
-
-                            <a href="booking.html" class="sd-primary-button sd-section-shortcut">
-                                <i class="bi bi-calendar-plus"></i>
-                                Book a Service
-                            </a>
-
-                        </div>
-
-                        <div class="sd-welcome-visual">
-
-                            <div class="sd-welcome-icon">
-                                <i class="bi bi-car-front-fill"></i>
-                            </div>
-
                         </div>
 
                     </div>
 
 
-                    <div class="sd-stats-grid">
+                    <article class="sd-estimate-card">
 
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-car-front"></i>
-                            </div>
+                        <div class="sd-estimate-header">
 
                             <div>
-                                <span>Registered Vehicles</span>
-                                <strong>1</strong>
+
+                                <span class="sd-panel-label">
+                                    ESTIMATE #EST-1024
+                                </span>
+
+                                <h3>
+                                    Toyota Corolla
+                                </h3>
+
+                                <p>
+                                    General Service & Brake Inspection
+                                </p>
+
                             </div>
 
-                        </article>
+
+                            <span class="sd-status-badge pending">
+                                Pending Approval
+                            </span>
+
+                        </div>
 
 
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-calendar2-check"></i>
-                            </div>
+                        <div class="sd-estimate-lines">
 
                             <div>
-                                <span>Upcoming Services</span>
-                                <strong>1</strong>
+                                <span>Engine Oil & Filter</span>
+                                <strong>LKR 18,500</strong>
                             </div>
 
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-wrench-adjustable"></i>
-                            </div>
 
                             <div>
-                                <span>Active Jobs</span>
-                                <strong>1</strong>
+                                <span>Brake Inspection</span>
+                                <strong>LKR 4,500</strong>
                             </div>
 
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-file-earmark-check"></i>
-                            </div>
 
                             <div>
-                                <span>Pending Estimates</span>
-                                <strong>1</strong>
+                                <span>Labour</span>
+                                <strong>LKR 8,000</strong>
                             </div>
 
-                        </article>
-
-                    </div>
+                        </div>
 
 
-                    <div class="sd-overview-grid">
+                        <div class="sd-estimate-total">
 
-                        <article class="sd-panel">
+                            <span>Estimated Total</span>
 
-                            <div class="sd-panel-header">
+                            <strong>LKR 31,000</strong>
 
-                                <div>
-                                    <span class="sd-panel-label">
-                                        CURRENT SERVICE
-                                    </span>
-
-                                    <h3>Service Progress</h3>
-                                </div>
-
-                                <a href="tracker.html" class="sd-text-button sd-section-shortcut">
-                                    View Tracker
-                                </a>
-
-                            </div>
+                        </div>
 
 
-                            <div class="sd-current-job">
+                        <div class="sd-estimate-actions">
 
-                                <div class="sd-job-title">
+                            <button
+                                class="sd-secondary-button request-estimate-changes"
+                                type="button"
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                                Request Changes
+                            </button>
 
-                                    <div>
-                                        <strong>
-                                            Toyota Corolla
-                                        </strong>
+                            <button
+                                class="sd-primary-button approve-estimate"
+                                type="button"
+                            >
+                                <i class="bi bi-check2-circle"></i>
+                                Approve Estimate
+                            </button>
 
-                                        <span>
-                                            WP CAB-1234
-                                        </span>
-                                    </div>
+                        </div>
 
-                                    <span class="sd-status-badge in-progress">
-                                        In Progress
-                                    </span>
-
-                                </div>
-
-
-                                <div class="sd-progress-bar">
-                                    <span style="width: 65%;"></span>
-                                </div>
-
-
-                                <div class="sd-progress-info">
-
-                                    <span>
-                                        General Service & Inspection
-                                    </span>
-
-                                    <strong>65%</strong>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-panel">
-
-                            <div class="sd-panel-header">
-
-                                <div>
-                                    <span class="sd-panel-label">
-                                        NEXT APPOINTMENT
-                                    </span>
-
-                                    <h3>Upcoming Booking</h3>
-                                </div>
-
-                            </div>
-
-
-                            <div class="sd-appointment">
-
-                                <div class="sd-date-box">
-                                    <span>SEP</span>
-                                    <strong>05</strong>
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Full Vehicle Inspection
-                                    </strong>
-
-                                    <p>
-                                        09:30 AM â€¢ Shift Dynamics Workshop
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    </div>
+                    </article>
 
                 </section>
 
@@ -1000,11 +890,8 @@
 
     <script src="../assets/js/customer-dashboard.js"></script>
 
-
-<script src="../assets/js/dashboard-states.js"></script>
 </body>
 
 </html>
-
 
 

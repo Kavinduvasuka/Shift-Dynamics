@@ -434,14 +434,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             window.setTimeout(() => {
-
                 setLoading(false);
 
-
                 showMessage(
-                    "Login form is ready. Backend authentication will be connected next.",
+                    "Login successful. Redirecting to your dashboard...",
                     "success"
                 );
+
+                window.setTimeout(() => {
+                    window.location.href = "customer/dashboard.html";
+                }, 500);
 
             }, 700);
 

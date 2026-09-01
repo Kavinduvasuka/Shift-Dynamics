@@ -33,11 +33,6 @@
         rel="stylesheet"
         href="../assets/css/customer-dashboard.css"
     >
-
-    <link
-        rel="stylesheet"
-        href="../assets/css/dashboard-states.css"
-    >
 </head>
 
 <body>
@@ -101,7 +96,7 @@
             <nav class="sd-sidebar-nav">
     <a
         href="dashboard.html"
-        class="sd-nav-item active"
+        class="sd-nav-item"
     >
         <i class="bi bi-grid-1x2-fill"></i>
         <span>Overview</span>
@@ -136,7 +131,7 @@
     </a>
     <a
         href="history.html"
-        class="sd-nav-item"
+        class="sd-nav-item active"
     >
         <i class="bi bi-clock-history"></i>
         <span>Service History</span>
@@ -224,9 +219,9 @@
                     </button>
 
                     <div>
-                        <h1 id="pageTitle">Dashboard Overview</h1>
+                        <h1 id="pageTitle">Service History</h1>
 
-                        <p id="pageSubtitle">Welcome back to Shift Dynamics.</p>
+                        <p id="pageSubtitle">View your completed workshop jobs and services.</p>
                     </div>
 
                 </div>
@@ -264,210 +259,34 @@
             <div class="sd-dashboard-content">
 
 <section
-                    class="sd-dashboard-section active"
-                    id="overview"
-                >
+    class="sd-dashboard-section active"
+    id="history"
+>
 
-                    <div class="sd-welcome-card">
+    <div class="sd-section-heading">
 
-                        <div>
+        <div>
+            <h2>Service History</h2>
 
-                            <span class="sd-small-label">
-                                CUSTOMER PORTAL
-                            </span>
+            <p>
+                View your completed workshop jobs and services.
+            </p>
+        </div>
 
-                            <h2>
-                                Your vehicle care,
-                                <span>all in one place.</span>
-                            </h2>
+    </div>
 
-                            <p>
-                                Manage vehicles, book workshop services,
-                                approve estimates and track your vehicle
-                                service progress.
-                            </p>
 
-                            <a href="booking.html" class="sd-primary-button sd-section-shortcut">
-                                <i class="bi bi-calendar-plus"></i>
-                                Book a Service
-                            </a>
+    <div class="sd-dashboard-card">
 
-                        </div>
+        <h3>Service History</h3>
 
-                        <div class="sd-welcome-visual">
+        <p class="sd-muted-text">
+            Your completed service records will appear here.
+        </p>
 
-                            <div class="sd-welcome-icon">
-                                <i class="bi bi-car-front-fill"></i>
-                            </div>
+    </div>
 
-                        </div>
-
-                    </div>
-
-
-                    <div class="sd-stats-grid">
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-car-front"></i>
-                            </div>
-
-                            <div>
-                                <span>Registered Vehicles</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-calendar2-check"></i>
-                            </div>
-
-                            <div>
-                                <span>Upcoming Services</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-wrench-adjustable"></i>
-                            </div>
-
-                            <div>
-                                <span>Active Jobs</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-stat-card">
-
-                            <div class="sd-stat-icon">
-                                <i class="bi bi-file-earmark-check"></i>
-                            </div>
-
-                            <div>
-                                <span>Pending Estimates</span>
-                                <strong>1</strong>
-                            </div>
-
-                        </article>
-
-                    </div>
-
-
-                    <div class="sd-overview-grid">
-
-                        <article class="sd-panel">
-
-                            <div class="sd-panel-header">
-
-                                <div>
-                                    <span class="sd-panel-label">
-                                        CURRENT SERVICE
-                                    </span>
-
-                                    <h3>Service Progress</h3>
-                                </div>
-
-                                <a href="tracker.html" class="sd-text-button sd-section-shortcut">
-                                    View Tracker
-                                </a>
-
-                            </div>
-
-
-                            <div class="sd-current-job">
-
-                                <div class="sd-job-title">
-
-                                    <div>
-                                        <strong>
-                                            Toyota Corolla
-                                        </strong>
-
-                                        <span>
-                                            WP CAB-1234
-                                        </span>
-                                    </div>
-
-                                    <span class="sd-status-badge in-progress">
-                                        In Progress
-                                    </span>
-
-                                </div>
-
-
-                                <div class="sd-progress-bar">
-                                    <span style="width: 65%;"></span>
-                                </div>
-
-
-                                <div class="sd-progress-info">
-
-                                    <span>
-                                        General Service & Inspection
-                                    </span>
-
-                                    <strong>65%</strong>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-
-                        <article class="sd-panel">
-
-                            <div class="sd-panel-header">
-
-                                <div>
-                                    <span class="sd-panel-label">
-                                        NEXT APPOINTMENT
-                                    </span>
-
-                                    <h3>Upcoming Booking</h3>
-                                </div>
-
-                            </div>
-
-
-                            <div class="sd-appointment">
-
-                                <div class="sd-date-box">
-                                    <span>SEP</span>
-                                    <strong>05</strong>
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Full Vehicle Inspection
-                                    </strong>
-
-                                    <p>
-                                        09:30 AM â€¢ Shift Dynamics Workshop
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    </div>
-
-                </section>
+</section>
 
 </div>
 
@@ -1000,11 +819,8 @@
 
     <script src="../assets/js/customer-dashboard.js"></script>
 
-
-<script src="../assets/js/dashboard-states.js"></script>
 </body>
 
 </html>
-
 
 
