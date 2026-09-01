@@ -209,15 +209,6 @@
 
                 
 
-
-            <a
-                href="../staff-login.html"
-                class="sd-logout-btn"
-            >
-                <i class="bi bi-box-arrow-left"></i>
-                Logout
-            </a>
-
             </div>
 
         </aside>

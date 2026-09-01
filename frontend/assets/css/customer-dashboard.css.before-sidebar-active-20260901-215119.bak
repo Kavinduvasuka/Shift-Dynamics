@@ -2351,21 +2351,3 @@ th {
     text-decoration: none;
 }
 
-
-/* =========================================================
-   SHIFT DYNAMICS - CUSTOMER UNIFIED ACTIVE SIDEBAR
-   Same selected style as Vendor / Storekeeper dashboards
-========================================================= */
-
-.sd-sidebar .sd-nav-item.active,
-.sd-sidebar a.sd-nav-item.active {
-    background: var(--sd-orange) !important;
-    color: var(--sd-white) !important;
-    box-shadow: none !important;
-}
-
-.sd-sidebar .sd-nav-item.active i,
-.sd-sidebar a.sd-nav-item.active i {
-    color: var(--sd-white) !important;
-}
-

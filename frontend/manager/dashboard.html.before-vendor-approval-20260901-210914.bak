@@ -163,25 +163,6 @@
                 <button
                     type="button"
                     class="sd-nav-item"
-                    data-section="vendor-registrations"
-                >
-                    <i class="bi bi-person-check"></i>
-
-                    <span>
-                        Vendor Registrations
-                    </span>
-
-                    <span
-                        class="sd-vendor-registration-nav-count"
-                        id="vendorRegistrationNavCount"
-                    >
-                        0
-                    </span>
-                </button>
-
-                <button
-                    type="button"
-                    class="sd-nav-item"
                     data-section="users"
                 >
                     <i class="bi bi-people"></i>
@@ -208,15 +189,6 @@
 
 
                 
-
-
-            <a
-                href="../staff-login.html"
-                class="sd-logout-btn"
-            >
-                <i class="bi bi-box-arrow-left"></i>
-                Logout
-            </a>
 
             </div>
 
@@ -3790,115 +3762,6 @@
             </section>
 
 
-            <!-- =============================================
-                 VENDOR REGISTRATION APPROVALS
-            ============================================== -->
-
-            <section
-                class="sd-content-section"
-                id="vendor-registrations"
-            >
-
-                <div class="sd-vendor-registration-header">
-
-                    <div>
-
-                        <span class="sd-panel-label">
-                            Vendor Onboarding
-                        </span>
-
-                        <h2>
-                            Vendor Registration Requests
-                        </h2>
-
-                        <p>
-                            Review spare-parts supplier registrations
-                            before activating vendor portal access.
-                        </p>
-
-                    </div>
-
-
-                    <div class="sd-vendor-pending-summary">
-
-                        <span>
-                            Pending Requests
-                        </span>
-
-                        <strong id="vendorRegistrationPendingCount">
-                            0
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <div class="sd-vendor-registration-toolbar">
-
-                    <div class="sd-vendor-registration-search">
-
-                        <i class="bi bi-search"></i>
-
-                        <input
-                            type="search"
-                            id="vendorRegistrationSearch"
-                            placeholder="Search business, contact or email..."
-                        >
-
-                    </div>
-
-
-                    <select id="vendorRegistrationFilter">
-
-                        <option value="all">
-                            All Requests
-                        </option>
-
-                        <option value="Pending Approval">
-                            Pending Approval
-                        </option>
-
-                        <option value="Approved">
-                            Approved
-                        </option>
-
-                        <option value="Rejected">
-                            Rejected
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div
-                    class="sd-vendor-registration-list"
-                    id="vendorRegistrationList"
-                ></div>
-
-
-                <div
-                    class="sd-vendor-registration-empty"
-                    id="vendorRegistrationEmpty"
-                    hidden
-                >
-
-                    <i class="bi bi-shop"></i>
-
-                    <h3>
-                        No vendor registration requests
-                    </h3>
-
-                    <p>
-                        New vendor applications will appear here
-                        after a supplier submits the registration form.
-                    </p>
-
-                </div>
-
-            </section>
-
             <section
                 class="sd-content-section"
                 id="users"
@@ -4328,7 +4191,6 @@
 </body>
 
 </html>
-
 
 
 

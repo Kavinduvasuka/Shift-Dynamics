@@ -340,12 +340,7 @@
                 specialization:
                     fields.specialization.value,
 
-                role: "Vendor",
-
-                status: "Pending Approval",
-
-                submittedAt:
-                    new Date().toISOString()
+                role: "Vendor"
 
                 /*
                     BACKEND INTEGRATION:
@@ -365,83 +360,19 @@
             submitButton.disabled = true;
 
             submitText.textContent =
-                "Submitting Registration...";
+                "Creating Account...";
 
 
             setTimeout(
                 () => {
 
                     console.log(
-                        "Vendor registration request:",
+                        "Vendor registration demo:",
                         vendorData
                     );
 
-
-                    /*
-                        FRONTEND DEMO WORKFLOW
-
-                        Only business/contact information is stored.
-
-                        Password is intentionally NOT stored in
-                        localStorage.
-
-                        Backend later replaces this with:
-
-                        POST /api/vendor-registrations
-                    */
-
-                    const existingRequests =
-                        JSON.parse(
-                            localStorage.getItem(
-                                "shiftDynamicsVendorRegistrations"
-                            ) || "[]"
-                        );
-
-
-                    const duplicateIndex =
-                        existingRequests.findIndex(
-                            request =>
-                                request.email ===
-                                vendorData.email
-                        );
-
-
-                    const registrationRequest = {
-                        id:
-                            duplicateIndex >= 0
-                                ? existingRequests[
-                                    duplicateIndex
-                                ].id
-                                : `VR-${Date.now()}`,
-
-                        ...vendorData
-                    };
-
-
-                    if (duplicateIndex >= 0) {
-
-                        existingRequests[
-                            duplicateIndex
-                        ] = registrationRequest;
-
-                    } else {
-
-                        existingRequests.unshift(
-                            registrationRequest
-                        );
-                    }
-
-
-                    localStorage.setItem(
-                        "shiftDynamicsVendorRegistrations",
-                        JSON.stringify(
-                            existingRequests
-                        )
-                    );
-
-
                     formMessage.textContent =
-                        "Registration submitted successfully. Your vendor account is now pending manager approval.";
+                        "Vendor registration completed successfully. You can now sign in.";
 
                     formMessage.className =
                         "sd-form-message success";
@@ -449,7 +380,7 @@
                     submitButton.disabled = false;
 
                     submitText.textContent =
-                        "Submit Vendor Registration";
+                        "Create Vendor Account";
 
                     form.reset();
 
@@ -461,4 +392,3 @@
     );
 
 });
-

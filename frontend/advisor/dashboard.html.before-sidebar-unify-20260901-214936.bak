@@ -170,15 +170,6 @@
 
             
 
-
-            <a
-                href="../staff-login.html"
-                class="sd-logout"
-            >
-                <i class="bi bi-box-arrow-left"></i>
-                Logout
-            </a>
-
         </div>
 
     </aside>

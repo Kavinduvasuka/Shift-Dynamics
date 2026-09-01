@@ -76,11 +76,11 @@
                     </p>
 
                     <h2>
-                        Submit Vendor Registration
+                        Create Vendor Account
                     </h2>
 
                     <p>
-                        Submit your business information for manager review and approval.
+                        Enter your business information below.
                     </p>
 
                 </div>
@@ -340,7 +340,7 @@
                         id="vendorSubmitButton">
 
                         <span id="vendorSubmitText">
-                            Submit Vendor Registration
+                            Create Vendor Account
                         </span>
 
                         <i class="bi bi-arrow-right"></i>
@@ -360,9 +360,9 @@
 
                 <p class="sd-login-link">
 
-                    Already approved?
+                    Already registered?
 
-                    <a href="staff-login.html">
+                    <a href="login.html">
                         Sign in
                     </a>
 
@@ -380,4 +380,3 @@
 </body>
 
 </html>
-

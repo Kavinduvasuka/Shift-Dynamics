@@ -2520,19 +2520,3 @@ button {
     font-weight: 700 !important;
 }
 
-
-/* =========================================================
-   SHIFT DYNAMICS - UNIFIED ACTIVE SIDEBAR
-   Vendor-style selected navigation
-========================================================= */
-
-.sd-sidebar .sd-nav-item.active {
-    background: var(--sd-orange) !important;
-    color: var(--sd-white) !important;
-    box-shadow: none !important;
-}
-
-.sd-sidebar .sd-nav-item.active i {
-    color: var(--sd-white) !important;
-}
-
