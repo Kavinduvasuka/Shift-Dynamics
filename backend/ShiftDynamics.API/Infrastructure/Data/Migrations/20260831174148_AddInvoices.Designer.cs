@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ShiftDynamics.API.Infrastructure.Data;
@@ -11,9 +12,11 @@ using ShiftDynamics.API.Infrastructure.Data;
 namespace ShiftDynamics.API.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ShiftDynamicsDbContext))]
-    partial class ShiftDynamicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260831174148_AddInvoices")]
+    partial class AddInvoices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,67 +109,6 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.HasIndex("Phone");
 
                     b.ToTable("customers", (string)null);
-                });
-
-            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.EmergencyRequest", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("AcceptedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("AssignedStaffId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal?>("Latitude")
-                        .HasPrecision(10, 7)
-                        .HasColumnType("numeric(10,7)");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<decimal?>("Longitude")
-                        .HasPrecision(10, 7)
-                        .HasColumnType("numeric(10,7)");
-
-                    b.Property<string>("ProblemDescription")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
-
-                    b.Property<DateTime>("RequestedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("VehicleId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssignedStaffId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("Status");
-
-                    b.HasIndex("VehicleId");
-
-                    b.ToTable("emergency_requests", (string)null);
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Estimate", b =>
@@ -317,48 +259,6 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.HasIndex("WorkOrderId");
 
                     b.ToTable("invoices", (string)null);
-                });
-
-            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Payment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("numeric(12,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("InvoiceId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Method")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TransactionReference")
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.HasIndex("TransactionReference");
-
-                    b.ToTable("payments", (string)null);
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Service", b =>
@@ -626,31 +526,6 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.Navigation("Vehicle");
                 });
 
-            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.EmergencyRequest", b =>
-                {
-                    b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "AssignedStaff")
-                        .WithMany()
-                        .HasForeignKey("AssignedStaffId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("ShiftDynamics.API.Domain.Entities.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ShiftDynamics.API.Domain.Entities.Vehicle", "Vehicle")
-                        .WithMany()
-                        .HasForeignKey("VehicleId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AssignedStaff");
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Vehicle");
-                });
-
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Estimate", b =>
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
@@ -678,17 +553,6 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.Navigation("Estimate");
 
                     b.Navigation("WorkOrder");
-                });
-
-            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Payment", b =>
-                {
-                    b.HasOne("ShiftDynamics.API.Domain.Entities.Invoice", "Invoice")
-                        .WithMany()
-                        .HasForeignKey("InvoiceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Staff", b =>
