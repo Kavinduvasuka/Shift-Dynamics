@@ -14,11 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ShiftDynamics.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-<<<<<<< Updated upstream
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+987e46355ec155128969871003e2ef430a0e6768")]
-=======
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+38a9d41b37885b416b1871d77ce910d6ed62ee44")]
->>>>>>> Stashed changes
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+809b141b04d9ddd698ca98bf005d0267ec819054")]
 [assembly: System.Reflection.AssemblyProductAttribute("ShiftDynamics.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ShiftDynamics.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

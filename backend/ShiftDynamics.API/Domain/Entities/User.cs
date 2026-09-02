@@ -1,10 +1,26 @@
 namespace ShiftDynamics.API.Domain.Entities;
 
-public enum UserRole
+/// <summary>
+/// System-wide roles used for authorization.
+/// Matches frontend dashboards: Customer, ServiceAdvisor, Manager, Mechanic, Storekeeper, Vendor, Admin.
+/// </summary>
+public enum SystemRole
 {
-    Customer,
-    Staff,
-    Admin
+    Customer = 0,
+    ServiceAdvisor = 1,
+    Manager = 2,
+    Mechanic = 3,
+    Storekeeper = 4,
+    Vendor = 5,
+    Admin = 6
+}
+
+public enum AccountStatus
+{
+    Active = 0,
+    Inactive = 1,
+    Pending = 2,
+    Rejected = 3
 }
 
 public class User
@@ -19,11 +35,17 @@ public class User
 
     public string PasswordHash { get; set; } = string.Empty;
 
-    public UserRole Role { get; set; } = UserRole.Customer;
+    public SystemRole Role { get; set; } = SystemRole.Customer;
 
-    public bool IsActive { get; set; } = true;
+    public AccountStatus Status { get; set; } = AccountStatus.Active;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    public Guid? CustomerId { get; set; }
+
+    public Customer? Customer { get; set; }
+
+    public Staff? StaffProfile { get; set; }
 }
