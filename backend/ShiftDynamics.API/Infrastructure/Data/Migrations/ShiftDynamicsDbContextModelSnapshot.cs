@@ -65,6 +65,59 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.ToTable("appointments", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.ContactInquiry", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ResolvedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("contact_inquiries", (string)null);
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Customer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -169,6 +222,52 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.ToTable("emergency_requests", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.EmergencyServiceProvider", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal>("Latitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("numeric(9,6)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasPrecision(9, 6)
+                        .HasColumnType("numeric(9,6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("OpeningHours")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("emergency_service_providers", (string)null);
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Estimate", b =>
                 {
                     b.Property<Guid>("Id")
@@ -237,6 +336,42 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.HasIndex("WorkOrderId");
 
                     b.ToTable("estimates", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.InventoryItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("text");
+
+                    b.Property<int>("OnHandQty")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("PartId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ReorderLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReservedQty")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartId")
+                        .IsUnique();
+
+                    b.ToTable("inventory_items", (string)null);
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Invoice", b =>
@@ -317,6 +452,262 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.HasIndex("WorkOrderId");
 
                     b.ToTable("invoices", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.JobAssignment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("AssignedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("BayId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("EndedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("MechanicStaffId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("WorkOrderId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.HasIndex("BayId", "IsActive");
+
+                    b.HasIndex("MechanicStaffId", "IsActive");
+
+                    b.ToTable("job_assignments", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.LaborSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("DurationSeconds")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("EndedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MechanicStaffId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("PauseSeconds")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("PausedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<Guid>("WorkOrderId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MechanicStaffId");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.ToTable("labor_sessions", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("EntityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("EntityType")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "IsRead");
+
+                    b.ToTable("notifications", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Part", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Compatibility")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("PartNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartNumber")
+                        .IsUnique();
+
+                    b.ToTable("parts", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.PartRequisition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("PartId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("PartSpec")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("QtyReleased")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QtyRequested")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RequestedByStaffId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ReviewNotes")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ReviewedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("Urgency")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<Guid>("WorkOrderId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartId");
+
+                    b.HasIndex("RequestedByStaffId");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.ToTable("part_requisitions", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.PasswordResetToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("password_reset_tokens", (string)null);
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Payment", b =>
@@ -414,15 +805,19 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Specialization")
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -441,6 +836,42 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.ToTable("staff", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.StockMovement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PartId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PerformedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reference")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("RequisitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartId");
+
+                    b.ToTable("stock_movements", (string)null);
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -450,18 +881,18 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -473,13 +904,22 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -538,6 +978,133 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("vehicles", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.VendorProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("ApprovalStatus")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<DateTime>("ApprovedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("BusinessName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("ContactPerson")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Mobile")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<Guid?>("RegistrationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Specialization")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email");
+
+                    b.HasIndex("RegistrationId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("vendor_profiles", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.VendorRegistration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BusinessName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("ContactPerson")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("CreatedUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("Mobile")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ReviewedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ReviewedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Specialization")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email");
+
+                    b.ToTable("vendor_registrations", (string)null);
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.WorkOrder", b =>
@@ -607,6 +1174,39 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.ToTable("work_orders", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.WorkshopBay", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("workshop_bays", (string)null);
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Appointment", b =>
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.Customer", "Customer")
@@ -662,6 +1262,17 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.Navigation("WorkOrder");
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.InventoryItem", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Part", "Part")
+                        .WithOne("Inventory")
+                        .HasForeignKey("ShiftDynamics.API.Domain.Entities.InventoryItem", "PartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Invoice", b =>
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.Estimate", "Estimate")
@@ -680,6 +1291,99 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                     b.Navigation("WorkOrder");
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.JobAssignment", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.WorkshopBay", "Bay")
+                        .WithMany()
+                        .HasForeignKey("BayId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "Mechanic")
+                        .WithMany()
+                        .HasForeignKey("MechanicStaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
+                        .WithMany()
+                        .HasForeignKey("WorkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bay");
+
+                    b.Navigation("Mechanic");
+
+                    b.Navigation("WorkOrder");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.LaborSession", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "Mechanic")
+                        .WithMany()
+                        .HasForeignKey("MechanicStaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
+                        .WithMany()
+                        .HasForeignKey("WorkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mechanic");
+
+                    b.Navigation("WorkOrder");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Notification", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.PartRequisition", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Part", "Part")
+                        .WithMany()
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "RequestedBy")
+                        .WithMany()
+                        .HasForeignKey("RequestedByStaffId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
+                        .WithMany()
+                        .HasForeignKey("WorkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+
+                    b.Navigation("RequestedBy");
+
+                    b.Navigation("WorkOrder");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.PasswordResetToken", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Payment", b =>
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.Invoice", "Invoice")
@@ -694,12 +1398,33 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Staff", b =>
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.User", "User")
-                        .WithOne()
+                        .WithOne("StaffProfile")
                         .HasForeignKey("ShiftDynamics.API.Domain.Entities.Staff", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.StockMovement", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Part", "Part")
+                        .WithMany()
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Part");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.User", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Vehicle", b =>
@@ -711,6 +1436,24 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.VendorProfile", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.VendorRegistration", "Registration")
+                        .WithMany()
+                        .HasForeignKey("RegistrationId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("ShiftDynamics.API.Domain.Entities.VendorProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Registration");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.WorkOrder", b =>
@@ -757,6 +1500,16 @@ namespace ShiftDynamics.API.Infrastructure.Data.Migrations
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Customer", b =>
                 {
                     b.Navigation("Vehicles");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Part", b =>
+                {
+                    b.Navigation("Inventory");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.User", b =>
+                {
+                    b.Navigation("StaffProfile");
                 });
 #pragma warning restore 612, 618
         }

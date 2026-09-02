@@ -1,13 +1,5 @@
 namespace ShiftDynamics.API.Domain.Entities;
 
-public enum StaffRole
-{
-    Mechanic,
-    ServiceAdvisor,
-    Manager,
-    Admin
-}
-
 public enum StaffStatus
 {
     Active,
@@ -23,7 +15,7 @@ public class Staff
 
     public string EmployeeNumber { get; set; } = string.Empty;
 
-    public StaffRole Role { get; set; } = StaffRole.Mechanic;
+    public SystemRole Role { get; set; } = SystemRole.Mechanic;
 
     public string? Specialization { get; set; }
 

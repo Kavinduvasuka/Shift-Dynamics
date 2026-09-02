@@ -9,40 +9,26 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("users");
-
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.FullName)
-            .IsRequired()
-            .HasMaxLength(200);
+        builder.Property(x => x.FullName).HasMaxLength(150).IsRequired();
+        builder.Property(x => x.Email).HasMaxLength(256).IsRequired();
+        builder.Property(x => x.Phone).HasMaxLength(30).IsRequired();
+        builder.Property(x => x.PasswordHash).HasMaxLength(500).IsRequired();
+        builder.Property(x => x.Role).HasConversion<string>().HasMaxLength(50);
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
 
-        builder.Property(x => x.Email)
-            .IsRequired()
-            .HasMaxLength(255);
-
-        builder.Property(x => x.Phone)
-            .IsRequired()
-            .HasMaxLength(30);
-
-        builder.Property(x => x.PasswordHash)
-            .IsRequired()
-            .HasMaxLength(500);
-
-        builder.Property(x => x.Role)
-            .IsRequired();
-
-        builder.Property(x => x.IsActive)
-            .IsRequired();
-
-        builder.Property(x => x.CreatedAt)
-            .IsRequired();
-
-        builder.Property(x => x.UpdatedAt)
-            .IsRequired();
-
-        builder.HasIndex(x => x.Email)
-            .IsUnique();
-
+        builder.HasIndex(x => x.Email).IsUnique();
         builder.HasIndex(x => x.Phone);
+
+        builder.HasOne(x => x.Customer)
+            .WithMany()
+            .HasForeignKey(x => x.CustomerId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasOne(x => x.StaffProfile)
+            .WithOne(s => s.User)
+            .HasForeignKey<Staff>(s => s.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

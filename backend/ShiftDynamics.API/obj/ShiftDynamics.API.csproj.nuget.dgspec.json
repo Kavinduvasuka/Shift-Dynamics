@@ -1,31 +1,29 @@
 {
   "format": 1,
   "restore": {
-    "D:\\ICBT\\Assignments\\4th\\Final Project\\Git\\Shift-Dynamics\\backend\\ShiftDynamics.API\\ShiftDynamics.API.csproj": {}
+    "C:\\Users\\linuk\\Documents\\GitHub\\Shift-Dynamics\\backend\\ShiftDynamics.API\\ShiftDynamics.API.csproj": {}
   },
   "projects": {
-    "D:\\ICBT\\Assignments\\4th\\Final Project\\Git\\Shift-Dynamics\\backend\\ShiftDynamics.API\\ShiftDynamics.API.csproj": {
+    "C:\\Users\\linuk\\Documents\\GitHub\\Shift-Dynamics\\backend\\ShiftDynamics.API\\ShiftDynamics.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\ICBT\\Assignments\\4th\\Final Project\\Git\\Shift-Dynamics\\backend\\ShiftDynamics.API\\ShiftDynamics.API.csproj",
+        "projectUniqueName": "C:\\Users\\linuk\\Documents\\GitHub\\Shift-Dynamics\\backend\\ShiftDynamics.API\\ShiftDynamics.API.csproj",
         "projectName": "ShiftDynamics.API",
-        "projectPath": "D:\\ICBT\\Assignments\\4th\\Final Project\\Git\\Shift-Dynamics\\backend\\ShiftDynamics.API\\ShiftDynamics.API.csproj",
-        "packagesPath": "C:\\Users\\Wasuka\\.nuget\\packages\\",
-        "outputPath": "D:\\ICBT\\Assignments\\4th\\Final Project\\Git\\Shift-Dynamics\\backend\\ShiftDynamics.API\\obj\\",
+        "projectPath": "C:\\Users\\linuk\\Documents\\GitHub\\Shift-Dynamics\\backend\\ShiftDynamics.API\\ShiftDynamics.API.csproj",
+        "packagesPath": "C:\\Users\\linuk\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\linuk\\Documents\\GitHub\\Shift-Dynamics\\backend\\ShiftDynamics.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Wasuka\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\linuk\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -52,9 +50,13 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
-            "Microsoft.AspNetCore.OpenApi": {
+            "BCrypt.Net-Next": {
               "target": "Package",
-              "version": "[10.0.11, )"
+              "version": "[4.0.3, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[10.0.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -66,6 +68,10 @@
               "target": "Package",
               "version": "[10.0.11, )"
             },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.3.0, )"
+            },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[10.0.3, )"
@@ -73,6 +79,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[10.2.3, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.3.0, )"
             }
           },
           "imports": [
@@ -94,7 +104,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.303/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
