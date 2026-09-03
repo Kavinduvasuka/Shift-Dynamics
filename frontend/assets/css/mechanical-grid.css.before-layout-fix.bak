@@ -1,0 +1,66 @@
+/* Mechanical Blueprint Grid */
+
+.sd-mechanical-grid {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #F8FAFC 0%,
+            #FFFFFF 55%,
+            #FFF8F3 100%
+        ) !important;
+}
+
+.sd-mechanical-grid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(11, 19, 43, 0.045) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(11, 19, 43, 0.045) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            rgba(249, 115, 22, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(249, 115, 22, 0.025) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        24px 24px,
+        24px 24px,
+        120px 120px,
+        120px 120px;
+}
+
+.sd-mechanical-grid > * {
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 575px) {
+    .sd-mechanical-grid::before {
+        opacity: 0.65;
+
+        background-size:
+            22px 22px,
+            22px 22px,
+            110px 110px,
+            110px 110px;
+    }
+}

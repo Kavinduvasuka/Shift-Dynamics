@@ -1,665 +1,500 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Contact Us | Shift Dynamics</title>
 
+    <!-- Bootstrap -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
+    <!-- Bootstrap Icons -->
     <link
         rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    >
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <link
-        rel="stylesheet"
-        href="assets/css/contact.css"
-    >
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/contact.css">
+    <link rel="stylesheet" href="assets/css/mechanical-grid.css">
 </head>
 
 <body>
 
-<!-- =====================================================
-     NAVBAR
-===================================================== -->
+    <!-- Navigation -->
+    <nav class="sd-contact-navbar">
 
-<nav class="sd-contact-navbar">
-
-    <div class="container sd-contact-nav-inner">
-
-        <a
-            href="index.html"
-            class="sd-contact-brand"
-        >
-            <img
-                src="assets/images/shift-dynamics-logo.png.png"
-                alt="Shift Dynamics"
-            >
-
-            <span>
-                SHIFT <strong>DYNAMICS</strong>
-            </span>
-        </a>
-
-
-        <div class="sd-contact-nav-links">
-
-            <a href="index.html">
-                Home
-            </a>
-
-            <a href="index.html#features">
-                Features
-            </a>
-
-            <a href="index.html#about">
-                About
-            </a>
+        <div class="container sd-contact-nav-inner">
 
             <a
-                href="contact.html"
-                class="active"
-            >
-                Contact
-            </a>
-
-            <a
-                href="emergency.html"
-                class="sd-contact-emergency-link"
-            >
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                Emergency
-            </a>
-
-        </div>
-
-
-        <button
-            type="button"
-            class="sd-contact-menu-button"
-            id="contactMenuButton"
-            aria-label="Open navigation"
-            aria-expanded="false"
-        >
-            <i class="bi bi-list"></i>
-        </button>
-
-    </div>
-
-
-    <div
-        class="sd-contact-mobile-menu"
-        id="contactMobileMenu"
-    >
-        <a href="index.html">Home</a>
-
-        <a href="index.html#features">
-            Features
-        </a>
-
-        <a href="index.html#about">
-            About
-        </a>
-
-        <a href="contact.html">
-            Contact
-        </a>
-
-        <a href="emergency.html">
-            <i class="bi bi-exclamation-triangle-fill"></i>
-            Emergency Assistance
-        </a>
-    </div>
-
-</nav>
-
-
-<!-- =====================================================
-     HERO
-===================================================== -->
-
-<section class="sd-contact-hero">
-
-    <div class="sd-contact-glow sd-glow-one"></div>
-    <div class="sd-contact-glow sd-glow-two"></div>
-
-    <div class="container">
-
-        <div class="sd-contact-hero-content">
-
-            <span class="sd-contact-eyebrow">
-                CONTACT SHIFT DYNAMICS
-            </span>
-
-            <h1>
-                How can we
-                <span>help you?</span>
-            </h1>
-
-            <p>
-                Contact our workshop team for service inquiries,
-                booking assistance, vehicle care questions or
-                general support.
-            </p>
-
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- =====================================================
-     CONTACT CONTENT
-===================================================== -->
-
-<main class="sd-contact-main">
-
-    <div class="container">
-
-        <div class="row g-4 g-lg-5">
-
-
-            <!-- CONTACT FORM -->
-
-            <div class="col-lg-7">
-
-                <section class="sd-contact-card">
-
-                    <div class="sd-contact-section-heading">
-
-                        <span class="sd-contact-eyebrow">
-                            SEND A MESSAGE
-                        </span>
-
-                        <h2>
-                            Get in touch with our team
-                        </h2>
-
-                        <p>
-                            Complete the form below and our team
-                            will respond to your inquiry.
-                        </p>
-
-                    </div>
-
-
-                    <form
-                        id="contactForm"
-                        novalidate
-                    >
-
-                        <div class="row g-3">
-
-
-                            <div class="col-md-6">
-
-                                <div class="sd-form-group">
-
-                                    <label for="contactName">
-                                        Full Name
-                                        <span>*</span>
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        id="contactName"
-                                        placeholder="Enter your full name"
-                                        autocomplete="name"
-                                    >
-
-                                    <small
-                                        class="sd-field-error"
-                                        id="contactNameError"
-                                    ></small>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <div class="sd-form-group">
-
-                                    <label for="contactEmail">
-                                        Email Address
-                                        <span>*</span>
-                                    </label>
-
-                                    <input
-                                        type="email"
-                                        id="contactEmail"
-                                        placeholder="you@example.com"
-                                        autocomplete="email"
-                                    >
-
-                                    <small
-                                        class="sd-field-error"
-                                        id="contactEmailError"
-                                    ></small>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <div class="sd-form-group">
-
-                                    <label for="contactPhone">
-                                        Phone Number
-                                    </label>
-
-                                    <input
-                                        type="tel"
-                                        id="contactPhone"
-                                        placeholder="+94 7X XXX XXXX"
-                                        autocomplete="tel"
-                                    >
-
-                                    <small
-                                        class="sd-field-error"
-                                        id="contactPhoneError"
-                                    ></small>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <div class="sd-form-group">
-
-                                    <label for="contactType">
-                                        Inquiry Type
-                                        <span>*</span>
-                                    </label>
-
-                                    <select id="contactType">
-
-                                        <option value="">
-                                            Select inquiry type
-                                        </option>
-
-                                        <option value="service">
-                                            Service Inquiry
-                                        </option>
-
-                                        <option value="booking">
-                                            Booking Assistance
-                                        </option>
-
-                                        <option value="vehicle">
-                                            Vehicle / Repair Question
-                                        </option>
-
-                                        <option value="estimate">
-                                            Estimate / Invoice Question
-                                        </option>
-
-                                        <option value="parts">
-                                            Parts Inquiry
-                                        </option>
-
-                                        <option value="general">
-                                            General Inquiry
-                                        </option>
-
-                                    </select>
-
-                                    <small
-                                        class="sd-field-error"
-                                        id="contactTypeError"
-                                    ></small>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-12">
-
-                                <div class="sd-form-group">
-
-                                    <label for="contactSubject">
-                                        Subject
-                                        <span>*</span>
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        id="contactSubject"
-                                        placeholder="How can we help?"
-                                    >
-
-                                    <small
-                                        class="sd-field-error"
-                                        id="contactSubjectError"
-                                    ></small>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-12">
-
-                                <div class="sd-form-group">
-
-                                    <label for="contactMessageInput">
-                                        Message
-                                        <span>*</span>
-                                    </label>
-
-                                    <textarea
-                                        id="contactMessageInput"
-                                        rows="6"
-                                        placeholder="Tell us how we can help you..."
-                                    ></textarea>
-
-                                    <div class="sd-message-meta">
-
-                                        <small
-                                            class="sd-field-error"
-                                            id="contactMessageError"
-                                        ></small>
-
-                                        <small id="messageCounter">
-                                            0 / 1000
-                                        </small>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-                        <div
-                            class="sd-contact-form-message"
-                            id="contactFormMessage"
-                            role="status"
-                        ></div>
-
-
-                        <button
-                            type="submit"
-                            class="sd-contact-submit"
-                            id="contactSubmit"
-                        >
-                            <span id="contactSubmitText">
-                                Send Message
-                            </span>
-
-                            <i
-                                class="bi bi-send"
-                                id="contactSubmitIcon"
-                            ></i>
-                        </button>
-
-                    </form>
-
-                </section>
-
-            </div>
-
-
-            <!-- CONTACT INFORMATION -->
-
-            <div class="col-lg-5">
-
-                <div class="sd-contact-side">
-
-
-                    <section class="sd-contact-info-card">
-
-                        <span class="sd-contact-eyebrow">
-                            WORKSHOP SUPPORT
-                        </span>
-
-                        <h2>
-                            Contact information
-                        </h2>
-
-
-                        <div class="sd-contact-info-item">
-
-                            <div class="sd-info-icon">
-                                <i class="bi bi-telephone"></i>
-                            </div>
-
-                            <div>
-                                <span>Phone</span>
-
-                                <strong>
-                                    +94 11 234 5678
-                                </strong>
-
-                                <small>
-                                    General workshop support
-                                </small>
-                            </div>
-
-                        </div>
-
-
-                        <div class="sd-contact-info-item">
-
-                            <div class="sd-info-icon">
-                                <i class="bi bi-envelope"></i>
-                            </div>
-
-                            <div>
-                                <span>Email</span>
-
-                                <strong>
-                                    support@shiftdynamics.com
-                                </strong>
-
-                                <small>
-                                    Customer inquiries
-                                </small>
-                            </div>
-
-                        </div>
-
-
-                        <div class="sd-contact-info-item">
-
-                            <div class="sd-info-icon">
-                                <i class="bi bi-geo-alt"></i>
-                            </div>
-
-                            <div>
-                                <span>Workshop</span>
-
-                                <strong>
-                                    Shift Dynamics Auto Care
-                                </strong>
-
-                                <small>
-                                    Colombo, Sri Lanka
-                                </small>
-                            </div>
-
-                        </div>
-
-                    </section>
-
-
-                    <section class="sd-hours-card">
-
-                        <div class="sd-hours-heading">
-
-                            <div class="sd-info-icon">
-                                <i class="bi bi-clock"></i>
-                            </div>
-
-                            <div>
-                                <span class="sd-contact-eyebrow">
-                                    OPENING HOURS
-                                </span>
-
-                                <h3>
-                                    Workshop Hours
-                                </h3>
-                            </div>
-
-                        </div>
-
-
-                        <div class="sd-hours-row">
-                            <span>Monday - Friday</span>
-                            <strong>8:00 AM - 6:00 PM</strong>
-                        </div>
-
-                        <div class="sd-hours-row">
-                            <span>Saturday</span>
-                            <strong>8:00 AM - 4:00 PM</strong>
-                        </div>
-
-                        <div class="sd-hours-row">
-                            <span>Sunday</span>
-                            <strong>Closed</strong>
-                        </div>
-
-                    </section>
-
-
-                    <section class="sd-emergency-contact-card">
-
-                        <div class="sd-emergency-contact-icon">
-                            <i class="bi bi-shield-exclamation"></i>
-                        </div>
-
-                        <div>
-
-                            <span>
-                                VEHICLE BREAKDOWN?
-                            </span>
-
-                            <h3>
-                                Need urgent assistance?
-                            </h3>
-
-                            <p>
-                                Use our public emergency service
-                                to find nearby garages, towing
-                                and mobile mechanics.
-                            </p>
-
-                            <a href="emergency.html">
-                                Open Emergency Assistance
-
-                                <i class="bi bi-arrow-right"></i>
-                            </a>
-
-                        </div>
-
-                    </section>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</main>
-
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
-
-<footer class="sd-contact-footer">
-
-    <div class="container">
-
-        <div class="sd-contact-footer-inner">
-
-            <div class="sd-contact-footer-brand">
+                href="index.html"
+                class="sd-contact-brand">
 
                 <img
                     src="assets/images/shift-dynamics-logo.png.png"
-                    alt="Shift Dynamics"
-                >
+                    alt="Shift Dynamics">
 
-                <div>
-                    <strong>
-                        SHIFT <span>DYNAMICS</span>
-                    </strong>
+                <span>
+                    SHIFT <strong>DYNAMICS</strong>
+                </span>
+            </a>
 
-                    <small>
-                        Smart Garage & Auto Care Management
-                    </small>
+            <div class="sd-contact-nav-links">
+                <a href="index.html">Home</a>
+                <a href="index.html#features">Features</a>
+                <a href="index.html#about">About</a>
+                <a href="contact.html" class="active">Contact</a>
+
+                <a
+                    href="emergency.html"
+                    class="sd-contact-emergency-link">
+
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    Emergency
+                </a>
+            </div>
+
+            <button
+                type="button"
+                class="sd-contact-menu-button"
+                id="contactMenuButton"
+                aria-label="Open navigation"
+                aria-expanded="false">
+
+                <i class="bi bi-list"></i>
+            </button>
+
+        </div>
+
+        <div
+            class="sd-contact-mobile-menu"
+            id="contactMobileMenu">
+
+            <a href="index.html">Home</a>
+            <a href="index.html#features">Features</a>
+            <a href="index.html#about">About</a>
+            <a href="contact.html">Contact</a>
+
+            <a href="emergency.html">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Emergency Assistance
+            </a>
+        </div>
+
+    </nav>
+
+    <!-- Hero -->
+    <section class="sd-contact-hero">
+
+        <div class="sd-contact-glow sd-glow-one"></div>
+        <div class="sd-contact-glow sd-glow-two"></div>
+
+        <div class="container">
+            <div class="sd-contact-hero-content">
+
+                <span class="sd-contact-eyebrow">
+                    CONTACT SHIFT DYNAMICS
+                </span>
+
+                <h1>
+                    How can we
+                    <span>help you?</span>
+                </h1>
+
+                <p>
+                    Contact our workshop team for service inquiries,
+                    booking assistance, vehicle care questions or
+                    general support.
+                </p>
+
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Contact Content -->
+    <main class="sd-contact-main sd-mechanical-grid">
+        <div class="container">
+
+            <div class="row g-4 g-lg-5">
+
+                <!-- Contact Form -->
+                <div class="col-lg-7">
+                    <section class="sd-contact-card">
+
+                        <div class="sd-contact-section-heading">
+                            <span class="sd-contact-eyebrow">
+                                SEND A MESSAGE
+                            </span>
+
+                            <h2>Get in touch with our team</h2>
+
+                            <p>
+                                Complete the form below and our team
+                                will respond to your inquiry.
+                            </p>
+                        </div>
+
+                        <form id="contactForm" novalidate>
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <div class="sd-form-group">
+
+                                        <label for="contactName">
+                                            Full Name
+                                            <span>*</span>
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            id="contactName"
+                                            placeholder="Enter your full name"
+                                            autocomplete="name">
+
+                                        <small
+                                            class="sd-field-error"
+                                            id="contactNameError"></small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="sd-form-group">
+
+                                        <label for="contactEmail">
+                                            Email Address
+                                            <span>*</span>
+                                        </label>
+
+                                        <input
+                                            type="email"
+                                            id="contactEmail"
+                                            placeholder="you@example.com"
+                                            autocomplete="email">
+
+                                        <small
+                                            class="sd-field-error"
+                                            id="contactEmailError"></small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="sd-form-group">
+
+                                        <label for="contactPhone">
+                                            Phone Number
+                                        </label>
+
+                                        <input
+                                            type="tel"
+                                            id="contactPhone"
+                                            placeholder="+94 7X XXX XXXX"
+                                            autocomplete="tel">
+
+                                        <small
+                                            class="sd-field-error"
+                                            id="contactPhoneError"></small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="sd-form-group">
+
+                                        <label for="contactType">
+                                            Inquiry Type
+                                            <span>*</span>
+                                        </label>
+
+                                        <select id="contactType">
+                                            <option value="">
+                                                Select inquiry type
+                                            </option>
+                                            <option value="service">
+                                                Service Inquiry
+                                            </option>
+                                            <option value="booking">
+                                                Booking Assistance
+                                            </option>
+                                            <option value="vehicle">
+                                                Vehicle / Repair Question
+                                            </option>
+                                            <option value="estimate">
+                                                Estimate / Invoice Question
+                                            </option>
+                                            <option value="parts">
+                                                Parts Inquiry
+                                            </option>
+                                            <option value="general">
+                                                General Inquiry
+                                            </option>
+                                        </select>
+
+                                        <small
+                                            class="sd-field-error"
+                                            id="contactTypeError"></small>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="sd-form-group">
+
+                                        <label for="contactSubject">
+                                            Subject
+                                            <span>*</span>
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            id="contactSubject"
+                                            placeholder="How can we help?">
+
+                                        <small
+                                            class="sd-field-error"
+                                            id="contactSubjectError"></small>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="sd-form-group">
+
+                                        <label for="contactMessageInput">
+                                            Message
+                                            <span>*</span>
+                                        </label>
+
+                                        <textarea
+                                            id="contactMessageInput"
+                                            rows="6"
+                                            placeholder="Tell us how we can help you..."></textarea>
+
+                                        <div class="sd-message-meta">
+
+                                            <small
+                                                class="sd-field-error"
+                                                id="contactMessageError"></small>
+
+                                            <small id="messageCounter">
+                                                0 / 1000
+                                            </small>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div
+                                class="sd-contact-form-message"
+                                id="contactFormMessage"
+                                role="status"></div>
+
+                            <button
+                                type="submit"
+                                class="sd-contact-submit"
+                                id="contactSubmit">
+
+                                <span id="contactSubmitText">
+                                    Send Message
+                                </span>
+
+                                <i
+                                    class="bi bi-send"
+                                    id="contactSubmitIcon"></i>
+                            </button>
+
+                        </form>
+
+                    </section>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="col-lg-5">
+                    <div class="sd-contact-side">
+
+                        <section class="sd-contact-info-card">
+
+                            <span class="sd-contact-eyebrow">
+                                WORKSHOP SUPPORT
+                            </span>
+
+                            <h2>Contact information</h2>
+
+                            <div class="sd-contact-info-item">
+                                <div class="sd-info-icon">
+                                    <i class="bi bi-telephone"></i>
+                                </div>
+
+                                <div>
+                                    <span>Phone</span>
+
+                                    <strong>
+                                        +94 11 234 5678
+                                    </strong>
+
+                                    <small>
+                                        General workshop support
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="sd-contact-info-item">
+                                <div class="sd-info-icon">
+                                    <i class="bi bi-envelope"></i>
+                                </div>
+
+                                <div>
+                                    <span>Email</span>
+
+                                    <strong>
+                                        support@shiftdynamics.com
+                                    </strong>
+
+                                    <small>
+                                        Customer inquiries
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="sd-contact-info-item">
+                                <div class="sd-info-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+
+                                <div>
+                                    <span>Workshop</span>
+
+                                    <strong>
+                                        Shift Dynamics Auto Care
+                                    </strong>
+
+                                    <small>
+                                        Colombo, Sri Lanka
+                                    </small>
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <!-- Opening Hours -->
+                        <section class="sd-hours-card">
+
+                            <div class="sd-hours-heading">
+                                <div class="sd-info-icon">
+                                    <i class="bi bi-clock"></i>
+                                </div>
+
+                                <div>
+                                    <span class="sd-contact-eyebrow">
+                                        OPENING HOURS
+                                    </span>
+
+                                    <h3>Workshop Hours</h3>
+                                </div>
+                            </div>
+
+                            <div class="sd-hours-row">
+                                <span>Monday - Friday</span>
+                                <strong>8:00 AM - 6:00 PM</strong>
+                            </div>
+
+                            <div class="sd-hours-row">
+                                <span>Saturday</span>
+                                <strong>8:00 AM - 4:00 PM</strong>
+                            </div>
+
+                            <div class="sd-hours-row">
+                                <span>Sunday</span>
+                                <strong>Closed</strong>
+                            </div>
+
+                        </section>
+
+                        <!-- Emergency -->
+                        <section class="sd-emergency-contact-card">
+
+                            <div class="sd-emergency-contact-icon">
+                                <i class="bi bi-shield-exclamation"></i>
+                            </div>
+
+                            <div>
+                                <span>VEHICLE BREAKDOWN?</span>
+
+                                <h3>Need urgent assistance?</h3>
+
+                                <p>
+                                    Use our public emergency service
+                                    to find nearby garages, towing
+                                    and mobile mechanics.
+                                </p>
+
+                                <a href="emergency.html">
+                                    Open Emergency Assistance
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+
+                        </section>
+
+                    </div>
                 </div>
 
             </div>
 
+        </div>
+    </main>
 
-            <div class="sd-contact-footer-links">
+    <!-- Footer -->
+    <footer class="sd-contact-footer">
+        <div class="container">
 
-                <a href="index.html">
-                    Home
-                </a>
+            <div class="sd-contact-footer-inner">
 
-                <a href="index.html#features">
-                    Features
-                </a>
+                <div class="sd-contact-footer-brand">
+                    <img
+                        src="assets/images/shift-dynamics-logo.png.png"
+                        alt="Shift Dynamics">
 
-                <a href="index.html#about">
-                    About
-                </a>
+                    <div>
+                        <strong>
+                            SHIFT <span>DYNAMICS</span>
+                        </strong>
 
-                <a href="contact.html">
-                    Contact
-                </a>
+                        <small>
+                            Smart Garage & Auto Care Management
+                        </small>
+                    </div>
+                </div>
 
-                <a href="emergency.html">
-                    Emergency
-                </a>
+                <div class="sd-contact-footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="index.html#about">About</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="emergency.html">Emergency</a>
+                </div>
 
             </div>
 
-        </div>
+            <div class="sd-contact-footer-bottom">
+                <span>
+                    &copy;
+                    <span id="contactYear"></span>
+                    Shift Dynamics.
+                </span>
 
-        <div class="sd-contact-footer-bottom">
-
-            <span>
-                &copy;
-                <span id="contactYear"></span>
-                Shift Dynamics.
-            </span>
-
-            <span>
-                Frontend Customer Support Portal
-            </span>
+                <span>
+                    Frontend Customer Support Portal
+                </span>
+            </div>
 
         </div>
+    </footer>
 
-    </div>
-
-</footer>
-
-
-<script src="assets/js/contact.js"></script>
+    <script src="assets/js/contact.js"></script>
 
 </body>
+
 </html>

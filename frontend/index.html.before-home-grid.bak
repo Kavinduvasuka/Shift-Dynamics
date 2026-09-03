@@ -13,8 +13,6 @@
 
     <title>Shift Dynamics | Garage Management</title>
 
-
-    <!-- Google Fonts -->
     <link rel="preconnect"
           href="https://fonts.googleapis.com">
 
@@ -26,42 +24,29 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Zen+Dots&display=swap"
         rel="stylesheet">
 
-
-    <!-- Bootstrap -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         rel="stylesheet">
 
-
-    <!-- Bootstrap Icons -->
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-
-    <!-- Shift Dynamics CSS -->
     <link
         rel="stylesheet"
         href="assets/css/style.css">
 
     <link rel="stylesheet" href="assets/css/interactive-bg.css">
-    
 
 </head>
 
-
 <body>
 
-<!-- =====================================================
-     NAVIGATION
-     ===================================================== -->
+<!-- Navigation -->
 
 <nav class="sd-navbar">
 
     <div class="container sd-nav-container">
-
-
-        <!-- BRAND -->
 
         <a href="index.html"
            class="sd-brand">
@@ -74,9 +59,6 @@
             SHIFT <span>DYNAMICS</span>
             </span>
         </a>
-
-
-        <!-- DESKTOP NAVIGATION -->
 
         <div class="sd-navigation">
 
@@ -114,7 +96,6 @@
                 <i class="bi bi-chevron-down sd-login-chevron"></i>
             </button>
 
-
             <div
                 class="sd-login-dropdown"
                 id="sdLoginDropdown"
@@ -128,7 +109,6 @@
                         <span>Vehicle owners and customers</span>
                     </div>
                 </a>
-
 
                 <a href="staff-login.html">
                     <i class="bi bi-people"></i>
@@ -145,9 +125,6 @@
 
         </div>
 
-
-        <!-- MOBILE MENU -->
-
         <button
             class="sd-mobile-menu"
             id="mobileMenuButton"
@@ -159,9 +136,6 @@
         </button>
 
     </div>
-
-
-    <!-- MOBILE NAVIGATION -->
 
     <div
         class="sd-mobile-navigation"
@@ -188,42 +162,26 @@
 
 </nav>
 
-
-
-<!-- =====================================================
-     MAIN
-     ===================================================== -->
+<!-- Main -->
 
 <main>
 
-
-<!-- =====================================================
-     HERO
-     ===================================================== -->
+<!-- Hero -->
 
 <section
     id="home"
     class="sd-hero">
-    <!-- Decorative background -->
 
     <div class="sd-hero-glow sd-glow-one"></div>
 
     <div class="sd-hero-glow sd-glow-two"></div>
 
-
     <div class="container">
-
 
         <div class="row align-items-center">
 
-
-            <!-- HERO CONTENT -->
-
             <div
                 class="col-lg-7 sd-hero-content">
-
-
-                <!-- BADGE -->
 
                 <div class="sd-hero-badge">
 
@@ -235,27 +193,17 @@
 
                 </div>
 
-
-                <!-- MAIN TITLE -->
-
                 <h1 class="sd-hero-title">
 
                     <span class="title-navy">
-                        Manage Your Garage.
+                        Keep Your Vehicle Moving.
                     </span>
 
                     <span class="title-orange">
-                        Drive Your Business
-                    </span>
-
-                    <span class="title-orange">
-                        Forward.
+                        Drive With Confidence.
                     </span>
 
                 </h1>
-
-
-                <!-- DESCRIPTION -->
 
                 <p class="sd-hero-description">
 
@@ -266,13 +214,7 @@
 
                 </p>
 
-
-                <!-- BUTTONS -->
-
                 <div class="sd-hero-buttons">
-
-
-                    <!-- GET STARTED -->
 
                     <a
                         href="login.html"
@@ -286,9 +228,6 @@
 
                     </a>
 
-
-                    <!-- EXPLORE -->
-
                     <a
                         href="#features"
                         class="sd-action-button sd-button-outline">
@@ -300,9 +239,6 @@
                         <i class="bi bi-arrow-down"></i>
 
                     </a>
-
-
-                    <!-- EMERGENCY -->
 
                     <a
                         href="emergency.html"
@@ -320,9 +256,6 @@
 
                 </div>
 
-
-                <!-- TRUST INFO -->
-
                 <div class="sd-hero-trust">
 
                     <div class="sd-trust-item">
@@ -333,7 +266,6 @@
 
                     </div>
 
-
                     <div class="sd-trust-item">
 
                         <i class="bi bi-check-circle-fill"></i>
@@ -341,7 +273,6 @@
                         Centralized management
 
                     </div>
-
 
                     <div class="sd-trust-item">
 
@@ -355,18 +286,10 @@
 
             </div>
 
-
-
-            <!-- HERO CARD -->
-
             <div
                 class="col-lg-5">
 
-
                 <div class="sd-workshop-card">
-
-
-                    <!-- Floating icon -->
 
                     <div class="sd-floating-icon icon-one">
                         <i class="bi bi-wrench-adjustable"></i>
@@ -376,15 +299,11 @@
                         <i class="bi bi-car-front-fill"></i>
                     </div>
 
-
-                    <!-- Main icon -->
-
                     <div class="sd-workshop-icon">
 
                         <i class="bi bi-car-front-fill"></i>
 
                     </div>
-
 
                     <h2 class="sd-workshop-title">
 
@@ -398,7 +317,6 @@
 
                     </h2>
 
-
                     <p class="sd-workshop-description">
 
                         Keep your garage operations
@@ -406,11 +324,7 @@
 
                     </p>
 
-
-                    <!-- MINI STATS -->
-
                     <div class="row g-3">
-
 
                         <div class="col-6">
 
@@ -433,7 +347,6 @@
                             </div>
 
                         </div>
-
 
                         <div class="col-6">
 
@@ -459,9 +372,6 @@
 
                     </div>
 
-
-                    <!-- CARD STATUS -->
-
                     <div class="sd-card-status">
 
                         <span class="sd-status-dot"></span>
@@ -480,21 +390,13 @@
 
 </section>
 
-
-
-<!-- =====================================================
-     FEATURES
-     ===================================================== -->
+<!-- Features -->
 
 <section
     id="features"
     class="sd-features">
 
-
     <div class="container">
-
-
-        <!-- SECTION HEADER -->
 
         <div class="sd-section-header">
 
@@ -504,7 +406,7 @@
 
             <h2 class="sd-section-title">
 
-                Everything Your Workshop Needs
+                Everything You Need for Better Vehicle Care
 
             </h2>
 
@@ -518,13 +420,7 @@
 
         </div>
 
-
-        <!-- FEATURE GRID -->
-
         <div class="row g-4">
-
-
-            <!-- CUSTOMER -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -552,9 +448,6 @@
 
             </div>
 
-
-            <!-- VEHICLE -->
-
             <div class="col-md-6 col-lg-4">
 
                 <div class="sd-feature-card">
@@ -580,9 +473,6 @@
                 </div>
 
             </div>
-
-
-            <!-- APPOINTMENTS -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -610,9 +500,6 @@
 
             </div>
 
-
-            <!-- JOB MANAGEMENT -->
-
             <div class="col-md-6 col-lg-4">
 
                 <div class="sd-feature-card">
@@ -637,9 +524,6 @@
                 </div>
 
             </div>
-
-
-            <!-- INVENTORY -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -666,9 +550,6 @@
                 </div>
 
             </div>
-
-
-            <!-- DASHBOARD -->
 
             <div class="col-md-6 col-lg-4">
 
@@ -702,11 +583,7 @@
 
 </section>
 
-
-
-<!-- =====================================================
-     EMERGENCY FEATURE
-     ===================================================== -->
+<!-- Emergency Assistance -->
 
 <section class="sd-emergency-home">
 
@@ -714,16 +591,13 @@
 
         <div class="sd-emergency-banner">
 
-
             <div class="sd-emergency-content">
-
 
                 <div class="sd-emergency-icon">
 
                     <i class="bi bi-shield-exclamation"></i>
 
                 </div>
-
 
                 <div>
 
@@ -744,7 +618,6 @@
 
             </div>
 
-
             <a
                 href="emergency.html"
                 class="sd-emergency-button">
@@ -763,40 +636,28 @@
 
 </section>
 
-
-
-<!-- =====================================================
-     ABOUT
-     ===================================================== -->
+<!-- About -->
 
 <section
     id="about"
     class="sd-about">
 
-
     <div class="container">
-
 
         <div class="row align-items-center g-5">
 
-
-            <!-- ABOUT TEXT -->
-
             <div class="col-lg-6">
-
 
                 <div class="sd-section-label">
                     About Shift Dynamics
                 </div>
 
-
                 <h2 class="sd-section-title">
 
-                    Built for Modern
-                    Automotive Operations
+                    Keep Your Vehicle Moving.
+                    Powered by <span style="color: #F97316;">Shift Dynamics.</span>
 
                 </h2>
-
 
                 <p class="sd-about-text">
 
@@ -806,16 +667,14 @@
 
                 </p>
 
-
                 <p class="sd-about-text">
 
-                    From customers and vehicles to
-                    appointments, jobs and inventory,
-                    the platform helps workshops organize
-                    their everyday operations.
+                    From booking your service to tracking repairs
+                    and managing your vehicle, Shift Dynamics
+                    makes every step of your automotive care
+                    simple, clear and convenient.
 
                 </p>
-
 
                 <a
                     href="#features"
@@ -829,14 +688,9 @@
 
             </div>
 
-
-            <!-- ABOUT CARD -->
-
             <div class="col-lg-6">
 
-
                 <div class="sd-about-card">
-
 
                     <div class="sd-about-item">
 
@@ -859,9 +713,7 @@
 
                     </div>
 
-
                     <div class="sd-about-divider"></div>
-
 
                     <div class="sd-about-item">
 
@@ -884,9 +736,7 @@
 
                     </div>
 
-
                     <div class="sd-about-divider"></div>
-
 
                     <div class="sd-about-item">
 
@@ -919,30 +769,20 @@
 
 </section>
 
-
 </main>
 
-
-
-<!-- =====================================================
-     FOOTER
-     ===================================================== -->
-
+<!-- Footer -->
 <footer class="sd-footer sd-shared-footer">
-
     <div class="container">
+        <div class="sd-footer-grid">
 
-        <div class="sd-footer-inner">
-
-            <div class="sd-shared-footer-brand">
-
+            <div class="sd-footer-brand">
                 <img
                     src="assets/images/shift-dynamics-logo.png.png"
                     alt="Shift Dynamics"
                 >
 
                 <div>
-
                     <strong>
                         SHIFT <span>DYNAMICS</span>
                     </strong>
@@ -950,69 +790,75 @@
                     <small>
                         Smart Garage & Auto Care Management
                     </small>
-
                 </div>
-
             </div>
 
+            <div class="sd-footer-column">
+                <h3>Quick Links</h3>
 
-            <div class="sd-footer-links">
+                <a href="index.html">Home</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="contact.html">Contact</a>
+            </div>
 
-                <a href="index.html">
-                    Home
+            <div class="sd-footer-column">
+                <h3>Contact</h3>
+
+                <a href="#" class="sd-footer-contact">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <span>Kalutara, Sri Lanka</span>
                 </a>
 
-                <a href="#features">
-                    Features
+                <a href="tel:+94770000000" class="sd-footer-contact">
+                    <i class="bi bi-telephone-fill"></i>
+                    <span>+94 77 000 0000</span>
                 </a>
 
-                <a href="#about">
-                    About
+                <a href="mailto:info@shiftdynamics.com" class="sd-footer-contact">
+                    <i class="bi bi-envelope-fill"></i>
+                    <span>info@shiftdynamics.com</span>
                 </a>
+            </div>
 
-                <a href="contact.html">
-                    Contact
-                </a>
+            <div class="sd-footer-column">
+                <h3>Follow Us</h3>
 
-                <a href="emergency.html">
-                    Emergency
-                </a>
+                <div class="sd-footer-socials">
+                    <a href="#" class="sd-social-link" aria-label="Facebook">
+                        <i class="bi bi-facebook"></i>
+                    </a>
 
+                    <a href="#" class="sd-social-link" aria-label="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+
+                    <a href="#" class="sd-social-link" aria-label="LinkedIn">
+                        <i class="bi bi-linkedin"></i>
+                    </a>
+                </div>
             </div>
 
         </div>
 
-
         <div class="sd-footer-bottom">
-
             <span>
-                &copy; 2026 Shift Dynamics.
+                &copy; 2026 Shift Dynamics. All rights reserved.
             </span>
 
             <span>
                 Smart Garage & Auto Care Management
             </span>
-
         </div>
-
     </div>
-
 </footer>
-
-
-
-<!-- Bootstrap JavaScript -->
 
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
-
-
-<!-- Shift Dynamics JavaScript -->
 
 <script src="assets/js/app.js"></script>
 <script src="assets/js/interactive-bg.js"></script>
 </body>
 
 </html>
-

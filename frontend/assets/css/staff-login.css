@@ -661,3 +661,140 @@ input {
     }
 
 }
+/* =====================================================
+   SHIFT DYNAMICS BRAND NAME
+   ===================================================== */
+
+.sd-logo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+}
+
+.sd-logo-name {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.sd-logo-name span {
+    color: var(--sd-orange, #F97316);
+}
+/* =====================================================
+   SHIFT DYNAMICS BRAND - STACKED LOGO
+   ===================================================== */
+
+.sd-logo-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.sd-logo {
+    width: 145px;
+    height: auto;
+    display: block;
+}
+
+.sd-logo-name {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.sd-logo-name span {
+    color: var(--sd-orange, #F97316);
+}
+/* =====================================================
+   SHIFT DYNAMICS LARGE BRAND
+   ===================================================== */
+
+.sd-logo-link {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.sd-logo {
+    width: 145px;
+    height: auto;
+    display: block;
+}
+
+
+/* Main brand name between logo and portal content */
+
+.sd-main-brand-name {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    margin-top: 22px;
+    margin-bottom: 110px;
+
+    font-family: "Zen Dots", sans-serif;
+    font-size: clamp(32px, 3vw, 48px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.035em;
+
+    white-space: nowrap;
+}
+
+.sd-brand-shift {
+    color: #ffffff;
+}
+
+.sd-brand-dynamics {
+    color: var(--sd-orange, #F97316);
+}
+
+
+/* Tablet / small screens */
+
+@media (max-width: 1100px) {
+
+    .sd-main-brand-name {
+        gap: 12px;
+        font-size: clamp(27px, 3.3vw, 38px);
+        margin-bottom: 75px;
+    }
+
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+    .sd-main-brand-name {
+        font-size: 27px;
+        margin-top: 18px;
+        margin-bottom: 45px;
+        gap: 10px;
+    }
+
+}
+/* =====================================================
+   BRAND CONTENT POSITION ADJUSTMENT
+   Move portal content slightly upward and center it better
+   ===================================================== */
+
+.sd-brand-content {
+    position: absolute;
+    top: 53%;
+    left: 36px;
+    right: 36px;
+
+    transform: translateY(-50%);
+
+    max-width: 480px;
+}

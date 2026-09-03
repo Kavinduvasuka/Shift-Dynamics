@@ -1,53 +1,39 @@
-/* =========================================================
-   SHIFT DYNAMICS
-   CLEAN PROFESSIONAL DESIGN SYSTEM
-   ========================================================= */
+/* Shift Dynamics Design System */
 
 :root {
     /* BRAND */
     --sd-navy: #0B132B;
     --sd-navy-light: #16213E;
     --sd-navy-soft: #1E2A48;
-
     --sd-orange: #F97316;
     --sd-orange-dark: #EA580C;
     --sd-orange-light: #FFF1E6;
-
     /* BACKGROUNDS */
     --sd-background: #F8FAFC;
     --sd-white: #FFFFFF;
-
     /* TEXT */
     --sd-text: #0F172A;
     --sd-text-secondary: #64748B;
     --sd-text-light: #94A3B8;
-
     /* BORDER */
     --sd-border: #E2E8F0;
-
     /* STATUS */
     --sd-success: #16A34A;
     --sd-danger: #DC2626;
-
     /* RADIUS */
     --sd-radius-sm: 8px;
     --sd-radius-md: 12px;
     --sd-radius-lg: 20px;
     --sd-radius-xl: 28px;
-
     /* SHADOWS */
     --sd-shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
     --sd-shadow-md: 0 12px 35px rgba(15, 23, 42, 0.10);
     --sd-shadow-lg: 0 25px 70px rgba(15, 23, 42, 0.15);
-
     /* TRANSITION */
     --sd-transition: 0.3s cubic-bezier(.4, 0, .2, 1);
 }
 
-
-/* =========================================================
-   RESET
-   ========================================================= */
+/* Reset */
 
 *,
 *::before,
@@ -88,10 +74,7 @@ button {
     font-family: inherit;
 }
 
-
-/* =========================================================
-   HEADINGS
-   ========================================================= */
+/* Headings */
 
 .sd-hero-title,
 .sd-section-title,
@@ -99,102 +82,63 @@ button {
     font-family: "Zen Dots", sans-serif;
 }
 
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
+/* Navigation */
 
 .sd-navbar {
     position: sticky;
     top: 0;
     z-index: 1000;
     width: 100%;
-
     background: rgba(11, 19, 43, 0.96);
-
     backdrop-filter: blur(14px);
-
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-
     box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
 }
 
 .sd-nav-container {
     min-height: 82px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-
-/* =========================================================
-   BRAND / LOGO
-   ========================================================= */
+/* Brand / Logo */
 
 .sd-navbar .sd-brand {
     display: inline-flex;
     align-items: center;
-
     gap: 12px;
-
     position: relative;
     z-index: 5;
-
     color: #FFFFFF !important;
     text-decoration: none !important;
-
     cursor: pointer;
 }
-
-/* Logo */
-
 .sd-navbar .sd-brand .sd-logo {
     display: block;
-
     width: auto;
     height: 58px;
-
     object-fit: contain;
-
     transition:
         transform var(--sd-transition);
 }
-
-/* Brand text */
-
 .sd-navbar .sd-brand .sd-brand-name {
     display: inline-block !important;
-
     visibility: visible !important;
     opacity: 1 !important;
-
     font-family: "Zen Dots", sans-serif !important;
-
     font-size: 18px;
     font-weight: 400;
-
     letter-spacing: 1px;
-
     line-height: 1;
-
     white-space: nowrap;
-
     color: #FFFFFF !important;
-
     text-decoration: none !important;
 }
-
-/* DYNAMICS */
-
 .sd-navbar .sd-brand .sd-brand-name span {
     color: var(--sd-orange) !important;
-
     text-decoration: none !important;
 }
-
-/* Brand hover */
-
 .sd-navbar .sd-brand:hover {
     color: #FFFFFF !important;
     text-decoration: none !important;
@@ -211,10 +155,6 @@ button {
 .sd-navbar .sd-brand:hover .sd-brand-name span {
     color: var(--sd-orange) !important;
 }
-
-
-/* Prevent Bootstrap link colors */
-
 .sd-navbar .sd-brand:link,
 .sd-navbar .sd-brand:visited,
 .sd-navbar .sd-brand:active {
@@ -234,48 +174,33 @@ button {
     color: var(--sd-orange) !important;
 }
 
-
-/* =========================================================
-   DESKTOP NAVIGATION
-   ========================================================= */
+/* Desktop Navigation */
 
 .sd-navigation {
     display: flex;
     align-items: center;
-
     gap: 8px;
 }
 
 .sd-nav-link {
     position: relative;
-
     color: rgba(255, 255, 255, 0.85);
-
     font-size: 15px;
     font-weight: 600;
-
     padding: 10px 15px;
-
     transition: color var(--sd-transition);
 }
 
 .sd-nav-link::after {
     content: "";
-
     position: absolute;
-
     left: 15px;
     right: 15px;
     bottom: 3px;
-
     height: 2px;
-
     background: var(--sd-orange);
-
     transform: scaleX(0);
-
     transform-origin: center;
-
     transition: transform var(--sd-transition);
 }
 
@@ -289,34 +214,21 @@ button {
     transform: scaleX(1);
 }
 
-
-/* =========================================================
-   LOGIN BUTTON
-   ========================================================= */
+/* Login Button */
 
 .sd-nav-login {
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 8px;
-
     margin-left: 12px;
-
     padding: 11px 20px;
-
     border-radius: var(--sd-radius-md);
-
     background: var(--sd-orange);
-
     color: var(--sd-white) !important;
-
     font-size: 14px;
     font-weight: 700;
-
     border: 1px solid var(--sd-orange);
-
     transition:
         transform var(--sd-transition),
         background var(--sd-transition),
@@ -325,39 +237,25 @@ button {
 
 .sd-nav-login:hover {
     background: var(--sd-orange-dark);
-
     color: var(--sd-white) !important;
-
     transform: translateY(-2px);
-
     box-shadow:
         0 8px 22px rgba(249, 115, 22, 0.28);
 }
 
-
-/* =========================================================
-   MOBILE MENU
-   ========================================================= */
+/* Mobile Menu */
 
 .sd-mobile-menu {
     display: none;
-
     width: 44px;
     height: 44px;
-
     align-items: center;
     justify-content: center;
-
     border: 1px solid rgba(255, 255, 255, 0.2);
-
     border-radius: var(--sd-radius-md);
-
     background: transparent;
-
     color: var(--sd-white);
-
     font-size: 24px;
-
     cursor: pointer;
 }
 
@@ -365,23 +263,15 @@ button {
     display: none;
 }
 
-
-/* =========================================================
-   HERO
-   ========================================================= */
+/* Hero */
 
 .sd-hero {
     position: relative;
-
     min-height: calc(100vh - 82px);
-
     display: flex;
     align-items: center;
-
     padding: 90px 0 110px;
-
     overflow: hidden;
-
     background:
         linear-gradient(
             135deg,
@@ -391,113 +281,74 @@ button {
         );
 }
 
-
-/* =========================================================
-   HERO GLOW
-   ========================================================= */
+/* Hero Glow */
 
 .sd-hero-glow {
     position: absolute;
-
     border-radius: 50%;
-
     pointer-events: none;
-
     filter: blur(3px);
-
     animation: sdFloat 8s ease-in-out infinite;
 }
 
 .sd-glow-one {
     width: 420px;
     height: 420px;
-
     top: -180px;
     right: -120px;
-
     background: rgba(249, 115, 22, 0.10);
 }
 
 .sd-glow-two {
     width: 350px;
     height: 350px;
-
     bottom: -180px;
     left: -120px;
-
     background: rgba(11, 19, 43, 0.06);
-
     animation-delay: -3s;
 }
 
-
-/* =========================================================
-   HERO CONTENT
-   ========================================================= */
+/* Hero Content */
 
 .sd-hero-content {
     position: relative;
     z-index: 2;
-
     animation: sdHeroReveal 0.9s ease both;
 }
 
-
-/* =========================================================
-   HERO BADGE
-   ========================================================= */
+/* Hero Badge */
 
 .sd-hero-badge {
     display: inline-flex;
-
     align-items: center;
-
     gap: 8px;
-
     padding: 8px 14px;
-
     border-radius: 999px;
-
     background: var(--sd-orange-light);
-
     color: #9A3412;
-
     border: 1px solid rgba(249, 115, 22, 0.15);
-
     font-size: 13px;
     font-weight: 700;
-
     margin-bottom: 25px;
 }
 
 .sd-pulse-dot {
     width: 8px;
     height: 8px;
-
     border-radius: 50%;
-
     background: var(--sd-orange);
-
     box-shadow:
         0 0 0 0 rgba(249, 115, 22, 0.5);
-
     animation: sdPulse 2s infinite;
 }
 
-
-/* =========================================================
-   HERO TITLE
-   ========================================================= */
+/* Hero Title */
 
 .sd-hero-title {
     margin: 0;
-
     font-size: clamp(38px, 5vw, 64px);
-
     line-height: 1.2;
-
     font-weight: 400;
-
     letter-spacing: -1.5px;
 }
 
@@ -513,63 +364,38 @@ button {
     color: var(--sd-orange);
 }
 
-
-/* =========================================================
-   HERO DESCRIPTION
-   ========================================================= */
+/* Hero Description */
 
 .sd-hero-description {
     max-width: 650px;
-
     margin: 28px 0 0;
-
     color: var(--sd-text-secondary);
-
     font-size: 17px;
-
     line-height: 1.8;
 }
 
-
-/* =========================================================
-   HERO BUTTONS
-   ========================================================= */
+/* Hero Buttons */
 
 .sd-hero-buttons {
     display: flex;
-
     flex-wrap: wrap;
-
     gap: 12px;
-
     margin-top: 30px;
 }
 
-
-/* =========================================================
-   GENERAL ACTION BUTTON
-   ========================================================= */
+/* General Action Button */
 
 .sd-action-button {
-   
     min-height: 48px;
-
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 10px;
-
     padding: 12px 20px;
-
     border-radius: var(--sd-radius-md);
-
     font-size: 14px;
     font-weight: 700;
-
     cursor: pointer;
-
     transition:
         transform var(--sd-transition),
         box-shadow var(--sd-transition),
@@ -582,77 +408,52 @@ button {
     transform: translateY(-3px);
 }
 
-
-/* =========================================================
-   PRIMARY BUTTON
-   ========================================================= */
+/* Primary Button */
 
 .sd-button-primary {
     background: var(--sd-orange);
-
     border: 1px solid var(--sd-orange);
-
     color: var(--sd-white);
-
     box-shadow:
         0 7px 20px rgba(249, 115, 22, 0.20);
 }
 
 .sd-button-primary:hover {
     background: var(--sd-orange-dark);
-
     border-color: var(--sd-orange-dark);
-
     color: var(--sd-white);
-
     box-shadow:
         0 12px 28px rgba(249, 115, 22, 0.28);
 }
 
-
-/* =========================================================
-   OUTLINE BUTTON
-   ========================================================= */
+/* Outline Button */
 
 .sd-button-outline {
     background: var(--sd-white);
-
     border: 1px solid var(--sd-border);
-
     color: var(--sd-text);
 }
 
 .sd-button-outline:hover {
     background: var(--sd-navy);
-
     border-color: var(--sd-navy);
-
     color: var(--sd-white);
-
     box-shadow: var(--sd-shadow-sm);
 }
 
-
-/* =========================================================
-   EMERGENCY BUTTON
-   ========================================================= */
+/* Emergency Button */
 
 .sd-button-emergency {
     background: var(--sd-navy);
-
     border: 1px solid var(--sd-navy);
-
     color: var(--sd-white);
-
     box-shadow:
         0 7px 20px rgba(11, 19, 43, 0.18);
 }
 
 .sd-button-emergency span {
     display: inline-flex;
-
     align-items: center;
-
     gap: 8px;
 }
 
@@ -662,11 +463,8 @@ button {
 
 .sd-button-emergency:hover {
     background: var(--sd-orange);
-
     border-color: var(--sd-orange);
-
     color: var(--sd-white);
-
     box-shadow:
         0 12px 28px rgba(249, 115, 22, 0.25);
 }
@@ -675,30 +473,20 @@ button {
     color: var(--sd-white);
 }
 
-
-/* =========================================================
-   HERO TRUST
-   ========================================================= */
+/* Hero Trust */
 
 .sd-hero-trust {
     display: flex;
-
     flex-wrap: wrap;
-
     gap: 20px;
-
     margin-top: 24px;
-
     color: var(--sd-text-secondary);
-
     font-size: 13px;
 }
 
 .sd-trust-item {
     display: flex;
-
     align-items: center;
-
     gap: 6px;
 }
 
@@ -706,81 +494,51 @@ button {
     color: var(--sd-success);
 }
 
-
-/* =========================================================
-   WORKSHOP CARD
-   ========================================================= */
+/* Workshop Card */
 
 .sd-workshop-card {
     position: relative;
-
     z-index: 2;
-
     max-width: 470px;
-
     margin: 0 auto;
-
     padding: 38px 30px;
-
     text-align: center;
-
     background: rgba(255, 255, 255, 0.92);
-
     border: 1px solid rgba(226, 232, 240, 0.9);
-
     border-radius: var(--sd-radius-xl);
-
     box-shadow: var(--sd-shadow-lg);
-
     backdrop-filter: blur(10px);
-
     animation:
         sdCardReveal 1s 0.2s ease both;
 }
 
 .sd-workshop-card::before {
     content: "";
-
     position: absolute;
-
     inset: 0;
-
     border-radius: inherit;
-
     background:
         linear-gradient(
             135deg,
             rgba(249,115,22,0.08),
             transparent 45%
         );
-
     pointer-events: none;
 }
 
-
-/* =========================================================
-   FLOATING ICONS
-   ========================================================= */
+/* Floating Icons */
 
 .sd-floating-icon {
     position: absolute;
-
     width: 48px;
     height: 48px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     border-radius: var(--sd-radius-md);
-
     background: var(--sd-navy);
-
     color: var(--sd-orange);
-
     box-shadow: var(--sd-shadow-md);
-
     animation:
         sdFloat 5s ease-in-out infinite;
 }
@@ -793,56 +551,35 @@ button {
 .icon-two {
     bottom: 70px;
     right: -24px;
-
     animation-delay: -2s;
 }
 
-
-/* =========================================================
-   WORKSHOP ICON
-   ========================================================= */
+/* Workshop Icon */
 
 .sd-workshop-icon {
     position: relative;
-
     width: 90px;
     height: 90px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     margin: 0 auto 25px;
-
     border-radius: 24px;
-
     background: var(--sd-orange-light);
-
     color: var(--sd-orange);
-
     font-size: 40px;
-
     animation:
         sdIconFloat 4s ease-in-out infinite;
 }
 
-
-/* =========================================================
-   WORKSHOP TITLE
-   ========================================================= */
+/* Workshop Title */
 
 .sd-workshop-title {
     position: relative;
-
     margin: 0;
-
     color: var(--sd-navy);
-
     font-size: 28px;
-
     line-height: 1.35;
-
     font-weight: 400;
 }
 
@@ -850,33 +587,21 @@ button {
     color: var(--sd-orange);
 }
 
-
-/* =========================================================
-   WORKSHOP DESCRIPTION
-   ========================================================= */
+/* Workshop Description */
 
 .sd-workshop-description {
     color: var(--sd-text-secondary);
-
     margin: 15px 0 28px;
 }
 
-
-/* =========================================================
-   WORKSHOP STATS
-   ========================================================= */
+/* Workshop Stats */
 
 .sd-workshop-stat {
     height: 100%;
-
     padding: 20px 12px;
-
     background: #F8FAFC;
-
     border: 1px solid var(--sd-border);
-
     border-radius: var(--sd-radius-md);
-
     transition:
         transform var(--sd-transition),
         border-color var(--sd-transition),
@@ -885,160 +610,104 @@ button {
 
 .sd-workshop-stat:hover {
     transform: translateY(-4px);
-
     border-color:
         rgba(249, 115, 22, 0.3);
-
     box-shadow: var(--sd-shadow-sm);
 }
 
 .sd-stat-icon {
     color: var(--sd-orange);
-
     font-size: 24px;
-
     margin-bottom: 8px;
 }
 
 .sd-workshop-stat strong {
     display: block;
-
     color: var(--sd-text);
-
     font-size: 14px;
 }
 
 .sd-workshop-stat small {
     display: block;
-
     color: var(--sd-text-light);
-
     font-size: 11px;
-
     margin-top: 3px;
 }
 
-
-/* =========================================================
-   CARD STATUS
-   ========================================================= */
+/* Card Status */
 
 .sd-card-status {
     display: inline-flex;
-
     align-items: center;
-
     gap: 8px;
-
     margin-top: 24px;
-
     padding: 8px 13px;
-
     border-radius: 999px;
-
     background: #F0FDF4;
-
     color: #166534;
-
     font-size: 12px;
-
     font-weight: 600;
 }
 
 .sd-status-dot {
     width: 7px;
     height: 7px;
-
     border-radius: 50%;
-
     background: var(--sd-success);
-
     animation:
         sdPulseGreen 2s infinite;
 }
 
-
-/* =========================================================
-   FEATURES
-   ========================================================= */
+/* Features */
 
 .sd-features {
     padding: 100px 0;
-
     background: var(--sd-white);
 }
 
-
-/* =========================================================
-   SECTION HEADER
-   ========================================================= */
+/* Section Header */
 
 .sd-section-header {
     max-width: 720px;
-
     margin: 0 auto 55px;
-
     text-align: center;
 }
 
 .sd-section-label {
     display: inline-block;
-
     margin-bottom: 12px;
-
     color: var(--sd-orange);
-
     font-size: 13px;
-
     font-weight: 800;
-
     text-transform: uppercase;
-
     letter-spacing: 1.5px;
 }
 
 .sd-section-title {
     margin: 0;
-
     color: var(--sd-navy);
-
     font-size: clamp(28px, 4vw, 42px);
-
     line-height: 1.3;
 }
 
 .sd-section-description {
     max-width: 620px;
-
     margin: 18px auto 0;
-
     color: var(--sd-text-secondary);
-
     font-size: 16px;
 }
 
-
-/* =========================================================
-   FEATURE CARD
-   ========================================================= */
+/* Feature Card */
 
 .sd-feature-card {
     position: relative;
-
     height: 100%;
-
     padding: 30px;
-
     background: var(--sd-white);
-
     border: 1px solid var(--sd-border);
-
     border-radius: var(--sd-radius-lg);
-
     box-shadow: var(--sd-shadow-sm);
-
     overflow: hidden;
-
     transition:
         transform var(--sd-transition),
         box-shadow var(--sd-transition),
@@ -1047,36 +716,27 @@ button {
 
 .sd-feature-card::before {
     content: "";
-
     position: absolute;
-
     left: 0;
     top: 0;
-
     width: 100%;
     height: 3px;
-
     background:
         linear-gradient(
             90deg,
             var(--sd-orange),
             var(--sd-navy)
         );
-
     transform: scaleX(0);
-
     transform-origin: left;
-
     transition:
         transform var(--sd-transition);
 }
 
 .sd-feature-card:hover {
     transform: translateY(-8px);
-
     border-color:
         rgba(249, 115, 22, 0.25);
-
     box-shadow: var(--sd-shadow-md);
 }
 
@@ -1084,30 +744,19 @@ button {
     transform: scaleX(1);
 }
 
-
-/* =========================================================
-   FEATURE ICON
-   ========================================================= */
+/* Feature Icon */
 
 .sd-feature-icon {
     width: 56px;
     height: 56px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     margin-bottom: 22px;
-
     border-radius: var(--sd-radius-md);
-
     background: var(--sd-orange-light);
-
     color: var(--sd-orange);
-
     font-size: 24px;
-
     transition:
         transform var(--sd-transition),
         background var(--sd-transition);
@@ -1116,211 +765,133 @@ button {
 .sd-feature-card:hover .sd-feature-icon {
     transform:
         rotate(-5deg) scale(1.08);
-
     background: var(--sd-orange);
-
     color: var(--sd-white);
 }
 
-
-/* =========================================================
-   FEATURE TEXT
-   ========================================================= */
+/* Feature Text */
 
 .sd-feature-card h3 {
     margin-bottom: 10px;
-
     color: var(--sd-navy);
-
     font-size: 19px;
-
     font-weight: 800;
 }
 
 .sd-feature-card p {
     margin: 0;
-
     color: var(--sd-text-secondary);
-
     font-size: 14px;
-
     line-height: 1.75;
 }
 
-
-/* =========================================================
-   FEATURE NUMBER
-   ========================================================= */
+/* Feature Number */
 
 .sd-feature-number {
     position: absolute;
-
     right: 24px;
     bottom: 18px;
-
     color: rgba(11, 19, 43, 0.06);
-
     font-family: "Zen Dots", sans-serif;
-
     font-size: 42px;
-
     pointer-events: none;
 }
 
-
-/* =========================================================
-   EMERGENCY HOME SECTION
-   ========================================================= */
+/* Emergency Home Section */
 
 .sd-emergency-home {
     padding: 70px 0;
-
     background: var(--sd-background);
 }
 
-
-/* =========================================================
-   EMERGENCY BANNER
-   ========================================================= */
+/* Emergency Banner */
 
 .sd-emergency-banner {
     position: relative;
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     gap: 30px;
-
     padding: 32px 38px;
-
     border-radius: var(--sd-radius-xl);
-
     background: var(--sd-navy);
-
     overflow: hidden;
-
     box-shadow: var(--sd-shadow-lg);
 }
 
 .sd-emergency-banner::after {
     content: "";
-
     position: absolute;
-
     width: 250px;
     height: 250px;
-
     right: -80px;
     top: -120px;
-
     border-radius: 50%;
-
     background:
         rgba(249, 115, 22, 0.18);
 }
 
-
-/* =========================================================
-   EMERGENCY CONTENT
-   ========================================================= */
+/* Emergency Content */
 
 .sd-emergency-content {
     position: relative;
-
     z-index: 2;
-
     display: flex;
-
     align-items: center;
-
     gap: 20px;
 }
 
 .sd-emergency-icon {
     width: 62px;
     height: 62px;
-
     flex-shrink: 0;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     border-radius: var(--sd-radius-md);
-
     background:
         rgba(249, 115, 22, 0.14);
-
     color: var(--sd-orange);
-
     font-size: 28px;
 }
 
 .sd-emergency-label {
     color: var(--sd-orange);
-
     font-size: 11px;
-
     font-weight: 800;
-
     letter-spacing: 1.5px;
 }
 
 .sd-emergency-content h2 {
     margin: 4px 0;
-
     color: var(--sd-white);
-
     font-size: 24px;
-
     font-weight: 800;
 }
 
 .sd-emergency-content p {
     margin: 0;
-
     color: rgba(255,255,255,0.65);
-
     font-size: 14px;
 }
 
-
-/* =========================================================
-   EMERGENCY CTA
-   ========================================================= */
+/* Emergency Cta */
 
 .sd-emergency-button {
     position: relative;
-
     z-index: 2;
-
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
-
     gap: 10px;
-
     flex-shrink: 0;
-
     padding: 13px 20px;
-
     border-radius: var(--sd-radius-md);
-
     background: var(--sd-orange);
-
     border: 1px solid var(--sd-orange);
-
     color: var(--sd-white) !important;
-
     font-size: 14px;
-
     font-weight: 800;
-
     transition:
         transform var(--sd-transition),
         background var(--sd-transition),
@@ -1329,23 +900,16 @@ button {
 
 .sd-emergency-button:hover {
     background: var(--sd-orange-dark);
-
     color: var(--sd-white) !important;
-
     transform: translateY(-3px);
-
     box-shadow:
         0 10px 28px rgba(249, 115, 22, 0.30);
 }
 
-
-/* =========================================================
-   ABOUT
-   ========================================================= */
+/* About */
 
 .sd-about {
     padding: 100px 0;
-
     background: var(--sd-background);
 }
 
@@ -1355,160 +919,94 @@ button {
 
 .sd-about-text {
     max-width: 620px;
-
     color: var(--sd-text-secondary);
-
     font-size: 16px;
-
     line-height: 1.8;
 }
 
-
-/* =========================================================
-   ABOUT LINK
-   ========================================================= */
+/* About Link */
 
 .sd-about-link {
     display: inline-flex;
-
     align-items: center;
-
     gap: 9px;
-
     margin-top: 10px;
-
     color: var(--sd-orange);
-
     font-size: 14px;
-
     font-weight: 800;
-
     transition:
         gap var(--sd-transition);
 }
 
 .sd-about-link:hover {
     color: var(--sd-orange-dark);
-
     gap: 14px;
 }
 
-
-/* =========================================================
-   ABOUT CARD
-   ========================================================= */
+/* About Card */
 
 .sd-about-card {
     padding: 32px;
-
     background: var(--sd-white);
-
     border: 1px solid var(--sd-border);
-
     border-radius: var(--sd-radius-xl);
-
     box-shadow: var(--sd-shadow-md);
 }
 
 .sd-about-item {
     display: flex;
-
     align-items: center;
-
     gap: 18px;
 }
 
 .sd-about-icon {
     width: 54px;
     height: 54px;
-
     flex-shrink: 0;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     border-radius: var(--sd-radius-md);
-
     background: var(--sd-orange-light);
-
     color: var(--sd-orange);
-
     font-size: 22px;
 }
 
 .sd-about-item h4 {
     margin: 0 0 4px;
-
     color: var(--sd-navy);
-
     font-size: 16px;
-
     font-weight: 800;
 }
 
 .sd-about-item p {
     margin: 0;
-
     color: var(--sd-text-secondary);
-
     font-size: 13px;
 }
 
 .sd-about-divider {
     height: 1px;
-
     margin: 24px 0;
-
     background: var(--sd-border);
 }
 
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
+/* Footer */
 .sd-footer {
-    padding: 35px 0;
-
     background: var(--sd-navy);
-
     color: var(--sd-white);
 }
 
-.sd-footer-brand img {
-    width: auto;
-
-    height: 48px;
-
-    margin-bottom: 10px;
-}
-
-.sd-footer p {
-    margin: 0;
-
-    color: rgba(255,255,255,0.58);
-
-    font-size: 13px;
-}
-
-
-/* =========================================================
-   ANIMATIONS
-   ========================================================= */
+/* Animations */
 
 @keyframes sdHeroReveal {
     from {
         opacity: 0;
-
         transform:
             translateY(25px);
     }
-
     to {
         opacity: 1;
-
         transform:
             translateY(0);
     }
@@ -1517,15 +1015,12 @@ button {
 @keyframes sdCardReveal {
     from {
         opacity: 0;
-
         transform:
             translateY(35px)
             scale(0.97);
     }
-
     to {
         opacity: 1;
-
         transform:
             translateY(0)
             scale(1);
@@ -1538,7 +1033,6 @@ button {
         transform:
             translateY(0);
     }
-
     50% {
         transform:
             translateY(-12px);
@@ -1551,7 +1045,6 @@ button {
         transform:
             translateY(0);
     }
-
     50% {
         transform:
             translateY(-6px);
@@ -1564,13 +1057,11 @@ button {
             0 0 0 0
             rgba(249,115,22,0.45);
     }
-
     70% {
         box-shadow:
             0 0 0 8px
             rgba(249,115,22,0);
     }
-
     100% {
         box-shadow:
             0 0 0 0
@@ -1584,13 +1075,11 @@ button {
             0 0 0 0
             rgba(22,163,74,0.4);
     }
-
     70% {
         box-shadow:
             0 0 0 7px
             rgba(22,163,74,0);
     }
-
     100% {
         box-shadow:
             0 0 0 0
@@ -1598,282 +1087,199 @@ button {
     }
 }
 
-
-/* =========================================================
-   TABLET
-   ========================================================= */
+/* Tablet */
 
 @media (max-width: 991px) {
-
     .sd-navigation {
         display: none;
     }
-
     .sd-mobile-menu {
         display: flex;
     }
-
     .sd-mobile-navigation {
         display: none;
-
         flex-direction: column;
-
         padding:
             12px 20px 20px;
-
         background: var(--sd-navy);
-
         border-top:
             1px solid rgba(255,255,255,0.08);
     }
-
     .sd-mobile-navigation.open {
         display: flex;
     }
-
     .sd-mobile-navigation a {
         padding:
             12px 10px;
-
         color:
             rgba(255,255,255,0.85);
-
         font-size: 15px;
-
         font-weight: 600;
     }
-
     .sd-mobile-navigation a:hover {
         color:
             var(--sd-orange);
     }
-
     .sd-hero {
         min-height: auto;
-
         padding:
             75px 0 90px;
     }
-
     .sd-hero-content {
         text-align: center;
     }
-
     .sd-hero-description {
         margin-left: auto;
-
         margin-right: auto;
     }
-
     .sd-hero-buttons {
         justify-content: center;
     }
-
     .sd-hero-trust {
         justify-content: center;
     }
-
     .sd-workshop-card {
         margin-top: 55px;
     }
-
     .sd-emergency-banner {
         align-items: flex-start;
-
         flex-direction: column;
     }
-
     .sd-emergency-button {
         width: 100%;
     }
 }
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
 @media (max-width: 767px) {
-
     .sd-nav-container {
         min-height: 72px;
     }
-
     .sd-navbar .sd-brand .sd-logo {
         height: 50px;
     }
-
     .sd-navbar .sd-brand .sd-brand-name {
         font-size: 14px;
         letter-spacing: 0.7px;
     }
-
     .sd-hero {
         padding:
             60px 0 70px;
     }
-
     .sd-hero-title {
         font-size:
             clamp(30px, 8vw, 42px);
-
         letter-spacing:
             -0.5px;
     }
-
     .sd-hero-description {
         font-size: 15px;
-
         line-height: 1.7;
     }
-
     .sd-hero-buttons {
         flex-direction: column;
-
         align-items: stretch;
     }
-
     .sd-action-button {
         width: 100%;
     }
-
     .sd-hero-trust {
         flex-direction: column;
-
         align-items: center;
-
         gap: 8px;
     }
-
     .sd-workshop-card {
         padding:
             30px 20px;
     }
-
     .sd-floating-icon {
         display: none;
     }
-
     .sd-features,
     .sd-about {
         padding:
             70px 0;
     }
-
     .sd-section-title {
         font-size: 28px;
     }
-
     .sd-feature-card {
         padding:
             24px;
     }
-
     .sd-emergency-home {
         padding:
             50px 0;
     }
-
     .sd-emergency-banner {
         padding:
             25px 22px;
     }
-
     .sd-emergency-content {
         align-items: flex-start;
     }
-
     .sd-emergency-content h2 {
         font-size: 20px;
     }
-
     .sd-emergency-content p {
         font-size: 13px;
     }
-
     .sd-about-card {
         padding:
             24px 20px;
     }
-
     .sd-footer {
         text-align: center;
     }
-
     .sd-footer .text-md-end {
         text-align: center !important;
-
         margin-top: 15px;
     }
 }
 
-
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
+/* Small Mobile */
 
 @media (max-width: 400px) {
-
     .sd-navbar .sd-brand .sd-logo {
         height: 44px;
     }
-
     .sd-navbar .sd-brand .sd-brand-name {
         font-size: 12px;
     }
-
     .sd-hero-title {
         font-size: 28px;
     }
-
     .sd-workshop-title {
         font-size: 23px;
     }
-
     .sd-emergency-content {
         flex-direction: column;
     }
 }
 
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
+/* Reduced Motion */
 
 @media (prefers-reduced-motion: reduce) {
-
     html {
         scroll-behavior: auto;
     }
-
     *,
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
-
         animation-iteration-count: 1 !important;
-
         transition-duration: 0.01ms !important;
     }
 }
 
-/* =========================================================
-   SERVICE FILTERS
-   ========================================================= */
+/* Service Filters */
 
 .sd-service-filters {
     display: flex;
     align-items: center;
     gap: 8px;
-
     padding: 12px 13px;
-
     border-bottom: 1px solid var(--sd-border, #E2E8F0);
-
     background: #FFFFFF;
-
     overflow-x: auto;
-
     scrollbar-width: none;
 }
 
@@ -1883,30 +1289,20 @@ button {
 
 .sd-service-filter {
     flex-shrink: 0;
-
     min-height: 34px;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     gap: 6px;
-
     padding: 7px 12px;
-
     border: 1px solid var(--sd-border, #E2E8F0);
     border-radius: 999px;
-
     background: #FFFFFF;
-
     color: var(--sd-text-secondary, #64748B);
-
     font-family: "Inter", sans-serif;
     font-size: 11px;
     font-weight: 800;
-
     cursor: pointer;
-
     transition:
         background 0.2s ease,
         border-color 0.2s ease,
@@ -1921,21 +1317,15 @@ button {
 
 .sd-service-filter:hover {
     transform: translateY(-1px);
-
     border-color: rgba(249, 115, 22, 0.35);
-
     background: var(--sd-orange-light, #FFF7ED);
-
     color: var(--sd-orange-dark, #EA580C);
 }
 
 .sd-service-filter.active {
     border-color: var(--sd-orange, #F97316);
-
     background: var(--sd-orange, #F97316);
-
     color: #FFFFFF;
-
     box-shadow: 0 5px 14px rgba(249, 115, 22, 0.20);
 }
 
@@ -1945,33 +1335,21 @@ button {
 
 .sd-service-filter:focus {
     outline: none;
-
     box-shadow:
         0 0 0 3px rgba(249, 115, 22, 0.15);
 }
-
-
-/* MOBILE */
-
 @media (max-width: 575px) {
-
     .sd-service-filters {
         padding: 10px;
         gap: 7px;
     }
-
     .sd-service-filter {
         min-height: 32px;
-
         padding: 6px 10px;
-
         font-size: 10px;
     }
-
 }
-/* =====================================================
-   LOGIN DROPDOWN
-   ===================================================== */
+/* Login Dropdown */
 
 .sd-login-menu {
     position: relative;
@@ -1997,21 +1375,16 @@ button {
     top: calc(100% + 12px);
     right: 0;
     z-index: 1000;
-
     width: 290px;
     padding: 8px;
-
     background: var(--sd-white);
     border: 1px solid rgba(15, 23, 42, 0.08);
     border-radius: 14px;
-
     box-shadow:
         0 18px 45px rgba(11, 19, 43, 0.16);
-
     opacity: 0;
     visibility: hidden;
     transform: translateY(-6px);
-
     transition:
         opacity 0.2s ease,
         transform 0.2s ease,
@@ -2028,14 +1401,10 @@ button {
     display: flex;
     align-items: center;
     gap: 12px;
-
     padding: 13px 14px;
-
     color: var(--sd-text);
     text-decoration: none;
-
     border-radius: 10px;
-
     transition: background 0.2s ease;
 }
 
@@ -2045,15 +1414,11 @@ button {
 
 .sd-login-dropdown > a > i {
     flex: 0 0 auto;
-
     width: 36px;
     height: 36px;
-
     display: grid;
     place-items: center;
-
     color: var(--sd-orange);
-
     background: var(--sd-orange-light);
     border-radius: 9px;
 }
@@ -2073,109 +1438,133 @@ button {
     font-size: 0.75rem;
     line-height: 1.35;
 }
-/* =========================================================
-   SHIFT DYNAMICS - SHARED PUBLIC FOOTER
-   Home / Emergency / Contact visual consistency
-========================================================= */
-
-.sd-shared-footer {
-    padding: 30px 0 18px !important;
-    background: #0B132B !important;
-    color: #FFFFFF !important;
+/* Footer */
+.sd-footer-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 0.8fr 1.2fr 0.7fr;
+    gap: 28px;
+    align-items: start;
+    padding: 28px 0 22px;
 }
 
-.sd-shared-footer .sd-footer-inner {
-    padding-bottom: 22px;
+.sd-footer-brand {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 25px;
+    gap: 12px;
 }
 
-.sd-shared-footer .sd-shared-footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.sd-footer-brand img {
+    width: 54px;
+    height: auto;
 }
 
-.sd-shared-footer .sd-shared-footer-brand img {
-    width: 65px;
-    height: 44px;
-    object-fit: contain;
-}
-
-.sd-shared-footer .sd-shared-footer-brand strong,
-.sd-shared-footer .sd-shared-footer-brand small {
+.sd-footer-brand strong {
     display: block;
-}
-
-.sd-shared-footer .sd-shared-footer-brand strong {
-    color: #FFFFFF;
+    color: var(--sd-white);
     font-size: 15px;
-    font-weight: 800;
-    letter-spacing: .5px;
+    letter-spacing: 0.04em;
 }
 
-.sd-shared-footer .sd-shared-footer-brand strong span {
-    color: #F97316;
+.sd-footer-brand strong span {
+    color: var(--sd-orange);
 }
 
-.sd-shared-footer .sd-shared-footer-brand small {
+.sd-footer-brand small {
+    display: block;
     margin-top: 3px;
-    color: #94A3B8;
-    font-size: 11px;
+    color: var(--sd-text-light);
+    font-size: 12px;
 }
 
-.sd-shared-footer .sd-footer-links {
+.sd-footer-column {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 20px;
+    flex-direction: column;
+    gap: 7px;
 }
 
-.sd-shared-footer .sd-footer-links a {
-    color: #CBD5E1;
+.sd-footer-column h3 {
+    margin: 0 0 4px;
+    color: var(--sd-white);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.sd-footer-column a {
+    color: var(--sd-text-light);
     text-decoration: none;
     font-size: 13px;
-    font-weight: 700;
-    transition: color .2s ease;
+    transition: color 0.2s ease;
 }
 
-.sd-shared-footer .sd-footer-links a:hover {
-    color: #F97316;
+.sd-footer-column a:hover {
+    color: var(--sd-orange);
 }
 
-.sd-shared-footer .sd-footer-bottom {
-    padding-top: 16px;
-    border-top: 1px solid rgba(255, 255, 255, .08);
+.sd-footer-contact {
     display: flex;
+    align-items: flex-start;
+    gap: 7px;
+}
+
+.sd-footer-contact i {
+    margin-top: 1px;
+    color: var(--sd-orange);
+    font-size: 13px;
+}
+
+.sd-footer-socials {
+    display: flex;
+    gap: 7px;
+}
+
+.sd-social-link {
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    color: var(--sd-white);
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sd-social-link:hover {
+    background: var(--sd-orange);
+    border-color: var(--sd-orange);
+    color: var(--sd-white);
+    transform: translateY(-2px);
+}
+
+.sd-footer-bottom {
+    display: flex;
     justify-content: space-between;
     gap: 20px;
-    color: #94A3B8;
-    font-size: 11px;
+    padding: 14px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--sd-text-light);
+    font-size: 12px;
 }
 
-.sd-shared-footer p {
-    margin: 0;
+@media (max-width: 992px) {
+    .sd-footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+    }
 }
 
-@media (max-width: 700px) {
-
-    .sd-shared-footer .sd-footer-inner {
-        align-items: flex-start;
+@media (max-width: 576px) {
+    .sd-footer-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 24px 0 18px;
+    }
+    .sd-footer-bottom {
         flex-direction: column;
-    }
-
-    .sd-shared-footer .sd-footer-links {
-        justify-content: flex-start;
-        gap: 14px;
-    }
-
-    .sd-shared-footer .sd-footer-bottom {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 8px;
+        gap: 5px;
+        text-align: center;
     }
 }
-

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -10,25 +10,31 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <link rel="stylesheet" href="assets/css/vendor-register.css">
+    <link rel="stylesheet"
+          href="assets/css/vendor-register.css">
     <link rel="stylesheet" href="assets/css/mechanical-grid.css">
 </head>
 
 <body>
 
-    <main class="sd-auth-page sd-mechanical-grid">
+    <main class="sd-auth-page">
 
         <section class="sd-auth-card">
 
             <div class="sd-brand-panel">
-                <a href="index.html" class="sd-brand-link">
+
+                <a href="index.html"
+                   class="sd-brand-link">
+
                     <img
                         src="assets/images/shift-dynamics-logo.png.png"
                         alt="Shift Dynamics"
                         class="sd-brand-logo">
                 </a>
 
-                <p class="sd-eyebrow">Spare Parts Vendor Portal</p>
+                <p class="sd-eyebrow">
+                    Spare Parts Vendor Portal
+                </p>
 
                 <h1>
                     Join the Shift Dynamics
@@ -41,6 +47,7 @@
                 </p>
 
                 <div class="sd-feature-list">
+
                     <div>
                         <i class="bi bi-broadcast-pin"></i>
                         Receive part requests
@@ -55,27 +62,43 @@
                         <i class="bi bi-clock-history"></i>
                         Provide delivery lead times
                     </div>
+
                 </div>
+
             </div>
+
 
             <div class="sd-form-panel">
 
                 <div class="sd-form-heading">
-                    <p class="sd-eyebrow">Vendor Registration</p>
 
-                    <h2>Submit Vendor Registration</h2>
+                    <p class="sd-eyebrow">
+                        Vendor Registration
+                    </p>
+
+                    <h2>
+                        Submit Vendor Registration
+                    </h2>
 
                     <p>
                         Submit your business information for manager review and approval.
                     </p>
+
                 </div>
 
-                <form id="vendorRegisterForm" novalidate>
+
+                <form
+                    id="vendorRegisterForm"
+                    novalidate>
 
                     <div class="sd-form-grid">
 
+
                         <div class="sd-field sd-field-full">
-                            <label for="businessName">Business Name</label>
+
+                            <label for="businessName">
+                                Business Name
+                            </label>
 
                             <input
                                 id="businessName"
@@ -85,13 +108,17 @@
                                 placeholder="Example Auto Parts"
                                 required>
 
-                            <small
-                                class="sd-error"
-                                data-error-for="businessName"></small>
+                            <small class="sd-error"
+                                   data-error-for="businessName"></small>
+
                         </div>
 
+
                         <div class="sd-field">
-                            <label for="contactPerson">Contact Person</label>
+
+                            <label for="contactPerson">
+                                Contact Person
+                            </label>
 
                             <input
                                 id="contactPerson"
@@ -101,13 +128,17 @@
                                 placeholder="Full name"
                                 required>
 
-                            <small
-                                class="sd-error"
-                                data-error-for="contactPerson"></small>
+                            <small class="sd-error"
+                                   data-error-for="contactPerson"></small>
+
                         </div>
 
+
                         <div class="sd-field">
-                            <label for="vendorMobile">Mobile Number</label>
+
+                            <label for="vendorMobile">
+                                Mobile Number
+                            </label>
 
                             <input
                                 id="vendorMobile"
@@ -117,13 +148,17 @@
                                 placeholder="07XXXXXXXX"
                                 required>
 
-                            <small
-                                class="sd-error"
-                                data-error-for="vendorMobile"></small>
+                            <small class="sd-error"
+                                   data-error-for="vendorMobile"></small>
+
                         </div>
 
+
                         <div class="sd-field sd-field-full">
-                            <label for="vendorEmail">Business Email</label>
+
+                            <label for="vendorEmail">
+                                Business Email
+                            </label>
 
                             <input
                                 id="vendorEmail"
@@ -133,13 +168,17 @@
                                 placeholder="vendor@example.com"
                                 required>
 
-                            <small
-                                class="sd-error"
-                                data-error-for="vendorEmail"></small>
+                            <small class="sd-error"
+                                   data-error-for="vendorEmail"></small>
+
                         </div>
 
+
                         <div class="sd-field sd-field-full">
-                            <label for="businessAddress">Business Address</label>
+
+                            <label for="businessAddress">
+                                Business Address
+                            </label>
 
                             <textarea
                                 id="businessAddress"
@@ -148,39 +187,75 @@
                                 placeholder="Enter business address"
                                 required></textarea>
 
-                            <small
-                                class="sd-error"
-                                data-error-for="businessAddress"></small>
+                            <small class="sd-error"
+                                   data-error-for="businessAddress"></small>
+
                         </div>
 
+
                         <div class="sd-field sd-field-full">
-                            <label for="specialization">Parts / Specialization</label>
+
+                            <label for="specialization">
+                                Parts / Specialization
+                            </label>
 
                             <select
                                 id="specialization"
                                 name="specialization"
                                 required>
 
-                                <option value="">Select specialization</option>
-                                <option value="General Spare Parts">General Spare Parts</option>
-                                <option value="Engine Parts">Engine Parts</option>
-                                <option value="Brake Parts">Brake Parts</option>
-                                <option value="Suspension Parts">Suspension Parts</option>
-                                <option value="Electrical Parts">Electrical Parts</option>
-                                <option value="Body Parts">Body Parts</option>
-                                <option value="Performance Parts">Performance Parts</option>
-                                <option value="Wheels and Tyres">Wheels & Tyres</option>
+                                <option value="">
+                                    Select specialization
+                                </option>
+
+                                <option value="General Spare Parts">
+                                    General Spare Parts
+                                </option>
+
+                                <option value="Engine Parts">
+                                    Engine Parts
+                                </option>
+
+                                <option value="Brake Parts">
+                                    Brake Parts
+                                </option>
+
+                                <option value="Suspension Parts">
+                                    Suspension Parts
+                                </option>
+
+                                <option value="Electrical Parts">
+                                    Electrical Parts
+                                </option>
+
+                                <option value="Body Parts">
+                                    Body Parts
+                                </option>
+
+                                <option value="Performance Parts">
+                                    Performance Parts
+                                </option>
+
+                                <option value="Wheels and Tyres">
+                                    Wheels & Tyres
+                                </option>
+
                             </select>
 
-                            <small
-                                class="sd-error"
-                                data-error-for="specialization"></small>
+                            <small class="sd-error"
+                                   data-error-for="specialization"></small>
+
                         </div>
 
+
                         <div class="sd-field">
-                            <label for="vendorPassword">Password</label>
+
+                            <label for="vendorPassword">
+                                Password
+                            </label>
 
                             <div class="sd-password-wrap">
+
                                 <input
                                     id="vendorPassword"
                                     name="password"
@@ -196,18 +271,25 @@
                                     aria-label="Show password">
 
                                     <i class="bi bi-eye"></i>
+
                                 </button>
+
                             </div>
 
-                            <small
-                                class="sd-error"
-                                data-error-for="vendorPassword"></small>
+                            <small class="sd-error"
+                                   data-error-for="vendorPassword"></small>
+
                         </div>
 
+
                         <div class="sd-field">
-                            <label for="confirmVendorPassword">Confirm Password</label>
+
+                            <label for="confirmVendorPassword">
+                                Confirm Password
+                            </label>
 
                             <div class="sd-password-wrap">
+
                                 <input
                                     id="confirmVendorPassword"
                                     name="confirmPassword"
@@ -223,17 +305,21 @@
                                     aria-label="Show password">
 
                                     <i class="bi bi-eye"></i>
+
                                 </button>
+
                             </div>
 
-                            <small
-                                class="sd-error"
-                                data-error-for="confirmVendorPassword"></small>
+                            <small class="sd-error"
+                                   data-error-for="confirmVendorPassword"></small>
+
                         </div>
 
                     </div>
 
+
                     <label class="sd-terms">
+
                         <input
                             id="vendorTerms"
                             type="checkbox">
@@ -241,11 +327,13 @@
                         <span>
                             I confirm that the information provided is correct.
                         </span>
+
                     </label>
 
                     <small
                         class="sd-error sd-terms-error"
                         data-error-for="vendorTerms"></small>
+
 
                     <button
                         type="submit"
@@ -257,19 +345,28 @@
                         </span>
 
                         <i class="bi bi-arrow-right"></i>
+
                     </button>
+
 
                     <div
                         class="sd-form-message"
                         id="vendorFormMessage"
                         role="status"
-                        aria-live="polite"></div>
+                        aria-live="polite">
+                    </div>
 
                 </form>
 
+
                 <p class="sd-login-link">
+
                     Already approved?
-                    <a href="staff-login.html">Sign in</a>
+
+                    <a href="staff-login.html">
+                        Sign in
+                    </a>
+
                 </p>
 
             </div>
@@ -278,8 +375,10 @@
 
     </main>
 
+
     <script src="assets/js/vendor-register.js"></script>
 
 </body>
 
 </html>
+
