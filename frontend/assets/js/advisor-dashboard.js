@@ -1790,3 +1790,36 @@ Recommended Work:
 
 
 
+
+document.addEventListener("DOMContentLoaded", () => {
+    const greeting = document.getElementById("advisorGreeting");
+    if (!greeting) return;
+
+    const hour = new Date().getHours();
+    let message = "Good evening";
+
+    if (hour < 12) {
+        message = "Good morning";
+    } else if (hour < 17) {
+        message = "Good afternoon";
+    }
+
+    greeting.textContent = `${message}, Service Advisor.`;
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // advisorGreetingFixed
+    const greeting = document.getElementById("advisorGreeting");
+    if (!greeting) return;
+
+    const hour = new Date().getHours();
+    let message = "Good evening";
+
+    if (hour < 12) {
+        message = "Good morning";
+    } else if (hour < 17) {
+        message = "Good afternoon";
+    }
+
+    greeting.textContent = `${message}, Service Advisor.`;
+});

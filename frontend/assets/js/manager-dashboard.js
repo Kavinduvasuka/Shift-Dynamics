@@ -1,4 +1,4 @@
-﻿document.addEventListener(
+    document.addEventListener(
     "DOMContentLoaded",
     () => {
 
@@ -42,7 +42,6 @@
                 "[data-go]"
             );
 
-
         const sectionTitles = {
             overview:
                 "Operations Overview",
@@ -50,7 +49,7 @@
             "job-cards":
                 "Job Card Review",
 
-            workshop:
+            "workshop-load":
                 "Workshop Load",
 
             vendors:
@@ -72,7 +71,6 @@
                 "User Management"
         };
 
-
         function closeSidebar() {
 
             sidebar?.classList.remove(
@@ -84,24 +82,20 @@
             );
         }
 
-
         function openSection(sectionId) {
 
             if (!sectionId) {
                 return;
             }
 
-
             const target =
                 document.getElementById(
                     sectionId
                 );
 
-
             if (!target) {
                 return;
             }
-
 
             sections.forEach(section => {
 
@@ -110,11 +104,9 @@
                 );
             });
 
-
             target.classList.add(
                 "active"
             );
-
 
             navItems.forEach(item => {
 
@@ -125,7 +117,6 @@
                 );
             });
 
-
             if (pageTitle) {
 
                 pageTitle.textContent =
@@ -133,16 +124,13 @@
                     "Manager Dashboard";
             }
 
-
             closeSidebar();
-
 
             window.scrollTo({
                 top: 0,
                 behavior: "smooth"
             });
         }
-
 
         navItems.forEach(item => {
 
@@ -157,7 +145,6 @@
             );
         });
 
-
         quickLinks.forEach(button => {
 
             button.addEventListener(
@@ -170,7 +157,6 @@
                 }
             );
         });
-
 
         sidebarOpen?.addEventListener(
             "click",
@@ -186,18 +172,15 @@
             }
         );
 
-
         sidebarClose?.addEventListener(
             "click",
             closeSidebar
         );
 
-
         sidebarOverlay?.addEventListener(
             "click",
             closeSidebar
         );
-
 
         document.addEventListener(
             "keydown",
@@ -208,7 +191,6 @@
                 }
             }
         );
-
 
         /* =================================================
            JOB CARD REVIEW + WORKSHOP ASSIGNMENT
@@ -264,12 +246,10 @@
                 "assignmentTable"
             );
 
-
         let selectedJob = null;
 
         const occupiedBays =
             new Set(["Bay 03"]);
-
 
         function escapeHTML(value = "") {
 
@@ -281,13 +261,11 @@
                 .replaceAll("'", "&#039;");
         }
 
-
         function selectJob(row, button) {
 
             if (!row) {
                 return;
             }
-
 
             selectedJob = {
                 jobCard:
@@ -308,7 +286,6 @@
                 row
             };
 
-
             document
                 .querySelectorAll(
                     ".sd-review-btn"
@@ -323,7 +300,6 @@
                         "Review";
                 });
 
-
             button.classList.add(
                 "selected"
             );
@@ -331,20 +307,16 @@
             button.textContent =
                 "Selected";
 
-
             selectedJobNumber.textContent =
                 selectedJob.jobCard;
 
-
             selectedJobVehicle.textContent =
-                `${selectedJob.vehicle} · ${selectedJob.plate}`;
-
+                `${selectedJob.vehicle} Â· ${selectedJob.plate}`;
 
             mechanicSelect.disabled = false;
             baySelect.disabled = false;
             managerNote.disabled = false;
             assignJobButton.disabled = false;
-
 
             assignmentMessage.textContent =
                 "Job card selected. Choose a mechanic and available workshop bay.";
@@ -352,7 +324,6 @@
             assignmentMessage.className =
                 "sd-form-message";
         }
-
 
         managerJobTable?.addEventListener(
             "click",
@@ -363,15 +334,12 @@
                         ".sd-review-btn"
                     );
 
-
                 if (!button) {
                     return;
                 }
 
-
                 const row =
                     button.closest("tr");
-
 
                 selectJob(
                     row,
@@ -380,13 +348,11 @@
             }
         );
 
-
         assignmentForm?.addEventListener(
             "submit",
             event => {
 
                 event.preventDefault();
-
 
                 if (!selectedJob) {
 
@@ -399,13 +365,11 @@
                     return;
                 }
 
-
                 const mechanic =
                     mechanicSelect.value;
 
                 const bay =
                     baySelect.value;
-
 
                 if (!mechanic || !bay) {
 
@@ -418,7 +382,6 @@
                     return;
                 }
 
-
                 if (occupiedBays.has(bay)) {
 
                     assignmentMessage.textContent =
@@ -430,12 +393,10 @@
                     return;
                 }
 
-
                 const existingStatus =
                     selectedJob.row.querySelector(
                         ".job-status"
                     );
-
 
                 if (
                     existingStatus &&
@@ -452,9 +413,7 @@
                     return;
                 }
 
-
                 occupiedBays.add(bay);
-
 
                 if (existingStatus) {
 
@@ -465,12 +424,10 @@
                         "sd-status sd-status-progress job-status";
                 }
 
-
                 const assignmentRow =
                     document.createElement(
                         "tr"
                     );
-
 
                 assignmentRow.innerHTML = `
                     <td>
@@ -502,11 +459,9 @@
                     </td>
                 `;
 
-
                 assignmentTable?.prepend(
                     assignmentRow
                 );
-
 
                 assignmentMessage.textContent =
                     `${selectedJob.jobCard} assigned to ${mechanic} in ${bay}.`;
@@ -514,12 +469,10 @@
                 assignmentMessage.className =
                     "sd-form-message success";
 
-
                 const selectedButton =
                     selectedJob.row.querySelector(
                         ".sd-review-btn"
                     );
-
 
                 if (selectedButton) {
 
@@ -533,7 +486,6 @@
                     selectedButton.disabled = true;
                 }
 
-
                 mechanicSelect.value = "";
                 baySelect.value = "";
                 managerNote.value = "";
@@ -543,18 +495,15 @@
                 managerNote.disabled = true;
                 assignJobButton.disabled = true;
 
-
                 selectedJobNumber.textContent =
                     "Select a job card";
 
                 selectedJobVehicle.textContent =
                     "Review a job card to begin.";
 
-
                 selectedJob = null;
             }
         );
-
 
         /* =================================================
            VENDOR BID COMPARISON
@@ -587,10 +536,8 @@
                 "vendorApprovalMessage"
             );
 
-
         let selectedVendorQuote = null;
         let vendorApproved = false;
-
 
         function formatLKR(value) {
 
@@ -598,13 +545,11 @@
                 .toLocaleString("en-LK");
         }
 
-
         function selectVendorQuote(card) {
 
             if (!card || vendorApproved) {
                 return;
             }
-
 
             document
                 .querySelectorAll(
@@ -627,24 +572,20 @@
                     }
                 });
 
-
             card.classList.add(
                 "selected"
             );
-
 
             const button =
                 card.querySelector(
                     ".sd-select-quote"
                 );
 
-
             if (button) {
 
                 button.innerHTML =
                     '<i class="bi bi-check2"></i> Selected';
             }
-
 
             selectedVendorQuote = {
 
@@ -662,10 +603,8 @@
                 card
             };
 
-
             vendorSelection.className =
                 "sd-vendor-selection-active";
-
 
             vendorSelection.innerHTML = `
                 <i class="bi bi-shop-window"></i>
@@ -681,7 +620,7 @@
                         LKR ${formatLKR(
                             selectedVendorQuote.price
                         )}
-                        · Delivery:
+                        Â· Delivery:
                         ${escapeHTML(
                             selectedVendorQuote.delivery
                         )}
@@ -689,13 +628,11 @@
                 </div>
             `;
 
-
             vendorApprovalNote.disabled =
                 false;
 
             approveVendorButton.disabled =
                 false;
-
 
             vendorApprovalMessage.textContent =
                 "Quote selected. Review the price and delivery time before approval.";
@@ -703,7 +640,6 @@
             vendorApprovalMessage.className =
                 "sd-form-message";
         }
-
 
         vendorQuoteGrid?.addEventListener(
             "click",
@@ -714,22 +650,18 @@
                         ".sd-select-quote"
                     );
 
-
                 if (!button) {
                     return;
                 }
-
 
                 const card =
                     button.closest(
                         ".sd-vendor-quote"
                     );
 
-
                 selectVendorQuote(card);
             }
         );
-
 
         approveVendorButton?.addEventListener(
             "click",
@@ -746,7 +678,6 @@
                     return;
                 }
 
-
                 if (vendorApproved) {
 
                     vendorApprovalMessage.textContent =
@@ -758,9 +689,7 @@
                     return;
                 }
 
-
                 vendorApproved = true;
-
 
                 selectedVendorQuote.card.classList.remove(
                     "selected"
@@ -769,7 +698,6 @@
                 selectedVendorQuote.card.classList.add(
                     "approved"
                 );
-
 
                 document
                     .querySelectorAll(
@@ -780,13 +708,11 @@
                         button.disabled = true;
                     });
 
-
                 const approvedButton =
                     selectedVendorQuote.card
                         .querySelector(
                             ".sd-select-quote"
                         );
-
 
                 if (approvedButton) {
 
@@ -794,10 +720,8 @@
                         '<i class="bi bi-check2-circle"></i> Approved';
                 }
 
-
                 vendorSelection.className =
                     "sd-vendor-selection-active";
-
 
                 vendorSelection.innerHTML = `
                     <i class="bi bi-check2-circle"></i>
@@ -813,7 +737,7 @@
                             LKR ${formatLKR(
                                 selectedVendorQuote.price
                             )}
-                            · ${escapeHTML(
+                            Â· ${escapeHTML(
                                 selectedVendorQuote.delivery
                             )}
                             delivery
@@ -821,13 +745,11 @@
                     </div>
                 `;
 
-
                 vendorApprovalNote.disabled =
                     true;
 
                 approveVendorButton.disabled =
                     true;
-
 
                 vendorApprovalMessage.textContent =
                     `${selectedVendorQuote.vendor} approved for Parts Request #PR-3021.`;
@@ -836,7 +758,6 @@
                     "sd-form-message success";
             }
         );
-
 
         /* =================================================
            PURCHASE ORDER APPROVAL
@@ -869,9 +790,7 @@
                 "orderApprovalNote"
             );
 
-
         let purchaseOrderApproved = false;
-
 
         confirmPurchaseOrder?.addEventListener(
             "change",
@@ -881,12 +800,10 @@
                     return;
                 }
 
-
                 approveOrderButton.disabled =
                     !confirmPurchaseOrder.checked;
             }
         );
-
 
         approveOrderButton?.addEventListener(
             "click",
@@ -903,7 +820,6 @@
                     return;
                 }
 
-
                 if (!confirmPurchaseOrder.checked) {
 
                     orderApprovalMessage.textContent =
@@ -915,9 +831,7 @@
                     return;
                 }
 
-
                 purchaseOrderApproved = true;
-
 
                 if (purchaseOrderStatus) {
 
@@ -928,19 +842,15 @@
                         "sd-status sd-status-ready";
                 }
 
-
                 approveOrderButton.disabled =
                     true;
-
 
                 confirmPurchaseOrder.disabled =
                     true;
 
-
                 if (orderApprovalNote) {
                     orderApprovalNote.disabled = true;
                 }
-
 
                 orderApprovalMessage.textContent =
                     "Purchase Order #PO-2048 approved successfully. Procurement can continue.";
@@ -949,7 +859,6 @@
                     "sd-form-message success";
             }
         );
-
 
         /* =================================================
            FINAL BILLING APPROVAL
@@ -982,9 +891,7 @@
                 "billingApprovalNote"
             );
 
-
         let billingApproved = false;
-
 
         confirmBilling?.addEventListener(
             "change",
@@ -998,7 +905,6 @@
                     !confirmBilling.checked;
             }
         );
-
 
         approveBillingButton?.addEventListener(
             "click",
@@ -1015,7 +921,6 @@
                     return;
                 }
 
-
                 if (!confirmBilling.checked) {
 
                     billingMessage.textContent =
@@ -1027,9 +932,7 @@
                     return;
                 }
 
-
                 billingApproved = true;
-
 
                 billingStatus.textContent =
                     "Billing Approved";
@@ -1037,11 +940,9 @@
                 billingStatus.className =
                     "sd-status sd-status-ready";
 
-
                 confirmBilling.disabled = true;
                 approveBillingButton.disabled = true;
                 billingApprovalNote.disabled = true;
-
 
                 billingMessage.textContent =
                     "Invoice #INV-1062 approved. It is ready for the customer payment process.";
@@ -1050,7 +951,6 @@
                     "sd-form-message success";
             }
         );
-
 
         /* =================================================
            MANAGER BUSINESS ANALYTICS
@@ -1085,12 +985,10 @@
                 "analyticsVendor"
             );
 
-
         let revenueChart = null;
         let serviceChart = null;
         let mechanicChart = null;
         let vendorChart = null;
-
 
         const analyticsData = {
 
@@ -1151,7 +1049,6 @@
                 ]
             },
 
-
             30: {
 
                 revenue:
@@ -1203,7 +1100,6 @@
                 ]
             },
 
-
             90: {
 
                 revenue:
@@ -1254,7 +1150,6 @@
             }
         };
 
-
         function formatAnalyticsMoney(
             amount
         ) {
@@ -1271,7 +1166,6 @@
                 );
             }
 
-
             if (amount >= 1000) {
 
                 return (
@@ -1284,7 +1178,6 @@
                 );
             }
 
-
             return (
                 "LKR " +
                 amount.toLocaleString(
@@ -1293,7 +1186,6 @@
             );
         }
 
-
         function destroyAnalyticsCharts() {
 
             revenueChart?.destroy();
@@ -1301,7 +1193,6 @@
             mechanicChart?.destroy();
             vendorChart?.destroy();
         }
-
 
         function createAnalyticsCharts(
             period = "30"
@@ -1319,22 +1210,17 @@
                 return;
             }
 
-
             const data =
                 analyticsData[period] ||
                 analyticsData[30];
 
-
             destroyAnalyticsCharts();
-
 
             Chart.defaults.font.family =
                 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 
-
             Chart.defaults.color =
                 "#64748B";
-
 
             /* -----------------------------------------
                REVENUE LINE CHART
@@ -1344,7 +1230,6 @@
                 document.getElementById(
                     "revenueChart"
                 );
-
 
             if (revenueCanvas) {
 
@@ -1397,7 +1282,6 @@
                                     }
                                 ]
                             },
-
 
                             options: {
 
@@ -1486,7 +1370,6 @@
                     );
             }
 
-
             /* -----------------------------------------
                SERVICE BAR CHART
                ----------------------------------------- */
@@ -1495,7 +1378,6 @@
                 document.getElementById(
                     "serviceChart"
                 );
-
 
             if (serviceCanvas) {
 
@@ -1591,7 +1473,6 @@
                     );
             }
 
-
             /* -----------------------------------------
                MECHANIC HORIZONTAL BAR
                ----------------------------------------- */
@@ -1600,7 +1481,6 @@
                 document.getElementById(
                     "mechanicChart"
                 );
-
 
             if (mechanicCanvas) {
 
@@ -1693,7 +1573,6 @@
                     );
             }
 
-
             /* -----------------------------------------
                VENDOR DOUGHNUT
                ----------------------------------------- */
@@ -1702,7 +1581,6 @@
                 document.getElementById(
                     "vendorChart"
                 );
-
 
             if (vendorCanvas) {
 
@@ -1808,7 +1686,6 @@
             }
         }
 
-
         function updateAnalyticsDashboard(
             period
         ) {
@@ -1816,7 +1693,6 @@
             const data =
                 analyticsData[period] ||
                 analyticsData[30];
-
 
             if (analyticsRevenue) {
 
@@ -1826,20 +1702,17 @@
                     );
             }
 
-
             if (analyticsJobs) {
 
                 analyticsJobs.textContent =
                     data.jobs;
             }
 
-
             if (analyticsUtilization) {
 
                 analyticsUtilization.textContent =
                     `${data.utilization}%`;
             }
-
 
             if (analyticsVendor) {
 
@@ -1849,12 +1722,10 @@
                     );
             }
 
-
             createAnalyticsCharts(
                 period
             );
         }
-
 
         analyticsPeriod?.addEventListener(
             "change",
@@ -1866,14 +1737,12 @@
             }
         );
 
-
         /* Initial analytics render */
 
         updateAnalyticsDashboard(
             analyticsPeriod?.value ||
             "30"
         );
-
 
         /* =================================================
            MANAGER USER MANAGEMENT
@@ -2008,7 +1877,6 @@
                 "userFormMessage"
             );
 
-
         let managedUsers = [
 
             {
@@ -2089,7 +1957,6 @@
             }
         ];
 
-
         function getUserInitials(
             name
         ) {
@@ -2103,7 +1970,6 @@
                 )
                 .join("");
         }
-
 
         function updateUserStatistics() {
 
@@ -2131,7 +1997,6 @@
                         "Vendor"
                 ).length;
 
-
             if (totalUserCount) {
                 totalUserCount.textContent =
                     total;
@@ -2153,7 +2018,6 @@
             }
         }
 
-
         function getFilteredUsers() {
 
             const search =
@@ -2168,7 +2032,6 @@
             const status =
                 userStatusFilter?.value ||
                 "all";
-
 
             return managedUsers.filter(
                 user => {
@@ -2189,7 +2052,6 @@
                         status === "all" ||
                         user.status === status;
 
-
                     return (
                         matchesSearch &&
                         matchesRole &&
@@ -2199,17 +2061,14 @@
             );
         }
 
-
         function renderManagedUsers() {
 
             if (!userTableBody) {
                 return;
             }
 
-
             const users =
                 getFilteredUsers();
-
 
             userTableBody.innerHTML =
                 users.map(
@@ -2232,7 +2091,6 @@
                             "Active"
                                 ? "Deactivate account"
                                 : "Activate account";
-
 
                         return `
                             <tr>
@@ -2268,7 +2126,6 @@
 
                                 </td>
 
-
                                 <td>
 
                                     <span class="sd-user-role">
@@ -2278,7 +2135,6 @@
                                     </span>
 
                                 </td>
-
 
                                 <td>
 
@@ -2300,7 +2156,6 @@
 
                                 </td>
 
-
                                 <td>
 
                                     <span
@@ -2313,13 +2168,11 @@
 
                                 </td>
 
-
                                 <td>
                                     ${escapeHTML(
                                         user.lastLogin
                                     )}
                                 </td>
-
 
                                 <td>
 
@@ -2336,7 +2189,6 @@
                                         >
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
-
 
                                         <button
                                             type="button"
@@ -2363,7 +2215,6 @@
                 )
                 .join("");
 
-
             if (visibleUserCount) {
 
                 visibleUserCount.textContent =
@@ -2374,17 +2225,14 @@
                     }`;
             }
 
-
             if (userEmptyState) {
 
                 userEmptyState.hidden =
                     users.length !== 0;
             }
 
-
             updateUserStatistics();
         }
-
 
         function openUserModal(
             user = null
@@ -2394,13 +2242,11 @@
                 return;
             }
 
-
             userForm?.reset();
 
             userFormMessage.textContent = "";
             userFormMessage.className =
                 "sd-form-message";
-
 
             if (user) {
 
@@ -2445,7 +2291,6 @@
                     "Create User";
             }
 
-
             userModal.classList.add(
                 "open"
             );
@@ -2459,14 +2304,12 @@
                 "sd-modal-open"
             );
 
-
             setTimeout(
                 () =>
                     managedUserName?.focus(),
                 50
             );
         }
-
 
         function closeUserModal() {
 
@@ -2483,7 +2326,6 @@
                 "sd-modal-open"
             );
         }
-
 
         function validateManagedUser() {
 
@@ -2502,7 +2344,6 @@
             const role =
                 managedUserRole.value;
 
-
             if (
                 !name ||
                 !email ||
@@ -2516,7 +2357,6 @@
                         "Complete all required account fields."
                 };
             }
-
 
             const emailPattern =
                 /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -2534,7 +2374,6 @@
                 };
             }
 
-
             const phonePattern =
                 /^0[0-9]{9}$/;
 
@@ -2551,12 +2390,10 @@
                 };
             }
 
-
             const currentId =
                 Number(
                     editingUserId.value
                 );
-
 
             const duplicateEmail =
                 managedUsers.some(
@@ -2567,7 +2404,6 @@
                         user.id !== currentId
                 );
 
-
             if (duplicateEmail) {
 
                 return {
@@ -2577,12 +2413,10 @@
                 };
             }
 
-
             return {
                 valid: true
             };
         }
-
 
         userForm?.addEventListener(
             "submit",
@@ -2590,10 +2424,8 @@
 
                 event.preventDefault();
 
-
                 const validation =
                     validateManagedUser();
-
 
                 if (!validation.valid) {
 
@@ -2606,12 +2438,10 @@
                     return;
                 }
 
-
                 const id =
                     Number(
                         editingUserId.value
                     );
-
 
                 const userData = {
 
@@ -2644,7 +2474,6 @@
                         "Not specified"
                 };
 
-
                 if (id) {
 
                     const user =
@@ -2652,7 +2481,6 @@
                             item =>
                                 item.id === id
                         );
-
 
                     if (user) {
 
@@ -2677,7 +2505,6 @@
                             ) + 1
                             : 1;
 
-
                     managedUsers.unshift({
 
                         id:
@@ -2690,18 +2517,14 @@
 
                     });
 
-
                     userFormMessage.textContent =
                         "User account created successfully.";
                 }
 
-
                 userFormMessage.className =
                     "sd-form-message success";
 
-
                 renderManagedUsers();
-
 
                 setTimeout(
                     closeUserModal,
@@ -2709,7 +2532,6 @@
                 );
             }
         );
-
 
         userTableBody?.addEventListener(
             "click",
@@ -2725,7 +2547,6 @@
                         "[data-toggle-user]"
                     );
 
-
                 if (editButton) {
 
                     const id =
@@ -2740,7 +2561,6 @@
                                 item.id === id
                         );
 
-
                     if (user) {
                         openUserModal(
                             user
@@ -2749,7 +2569,6 @@
 
                     return;
                 }
-
 
                 if (toggleButton) {
 
@@ -2765,11 +2584,9 @@
                                 item.id === id
                         );
 
-
                     if (!user) {
                         return;
                     }
-
 
                     user.status =
                         user.status ===
@@ -2777,12 +2594,10 @@
                             ? "Inactive"
                             : "Active";
 
-
                     renderManagedUsers();
                 }
             }
         );
-
 
         userSearch?.addEventListener(
             "input",
@@ -2799,24 +2614,20 @@
             renderManagedUsers
         );
 
-
         openAddUserButton?.addEventListener(
             "click",
             () => openUserModal()
         );
-
 
         closeUserModalButton?.addEventListener(
             "click",
             closeUserModal
         );
 
-
         cancelUserButton?.addEventListener(
             "click",
             closeUserModal
         );
-
 
         userModal?.addEventListener(
             "click",
@@ -2832,7 +2643,6 @@
                 }
             }
         );
-
 
         document.addEventListener(
             "keydown",
@@ -2851,17 +2661,10 @@
             }
         );
 
-
         renderManagedUsers();
 
     }
 );
-
-
-
-
-
-
 
 /* =========================================================
    MANAGER CUSTOMER MESSAGES MODULE
@@ -2877,7 +2680,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!messageSection) {
         return;
     }
-
 
     const messageList =
         document.getElementById("managerMessageList");
@@ -2912,9 +2714,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const resolveButton =
         document.getElementById("managerResolveMessage");
 
-
     let activeMessageId = null;
-
 
     /*
      * DEMO DATA ONLY
@@ -2967,7 +2767,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ];
 
-
     function escapeManagerMessageHTML(value) {
 
         return String(value ?? "")
@@ -2978,7 +2777,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .replaceAll("'", "&#039;");
 
     }
-
 
     function initials(name) {
 
@@ -2991,7 +2789,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .toUpperCase();
 
     }
-
 
     function statusLabel(status) {
 
@@ -3007,7 +2804,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
     function updateMessageCounts() {
 
         const total =
@@ -3015,11 +2811,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 item => item.status === "new"
             ).length;
 
-
         if (unreadCount) {
             unreadCount.textContent = total;
         }
-
 
         if (navCount) {
 
@@ -3032,7 +2826,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
     function renderManagerMessages() {
 
         const query =
@@ -3043,14 +2836,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const filter =
             statusFilter?.value || "all";
 
-
         const filtered =
             customerMessages.filter(item => {
 
                 const matchesStatus =
                     filter === "all" ||
                     item.status === filter;
-
 
                 const searchText = [
                     item.name,
@@ -3063,11 +2854,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     .join(" ")
                     .toLowerCase();
 
-
                 const matchesSearch =
                     !query ||
                     searchText.includes(query);
-
 
                 return (
                     matchesStatus &&
@@ -3076,12 +2865,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             });
 
-
         if (emptyState) {
             emptyState.hidden =
                 filtered.length !== 0;
         }
-
 
         messageList.innerHTML =
             filtered.map(item => `
@@ -3118,7 +2905,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         </div>
 
-
                         <div class="sd-manager-message-meta">
 
                             <span
@@ -3138,7 +2924,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         </div>
 
                     </div>
-
 
                     <div class="sd-manager-message-content">
 
@@ -3160,7 +2945,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     </div>
 
-
                     <div class="sd-manager-message-actions">
 
                         <button
@@ -3171,7 +2955,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             <i class="bi bi-eye"></i>
                             View Message
                         </button>
-
 
                         ${
                             item.status === "new"
@@ -3187,7 +2970,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 `
                                 : ""
                         }
-
 
                         ${
                             item.status !== "resolved"
@@ -3210,12 +2992,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             `).join("");
 
-
         attachManagerMessageEvents();
         updateMessageCounts();
 
     }
-
 
     function markMessageRead(id) {
 
@@ -3224,7 +3004,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 message => message.id === id
             );
 
-
         if (
             item &&
             item.status === "new"
@@ -3232,11 +3011,9 @@ document.addEventListener("DOMContentLoaded", () => {
             item.status = "read";
         }
 
-
         renderManagerMessages();
 
     }
-
 
     function resolveMessage(id) {
 
@@ -3245,16 +3022,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 message => message.id === id
             );
 
-
         if (item) {
             item.status = "resolved";
         }
 
-
         renderManagerMessages();
 
     }
-
 
     function openManagerMessage(id) {
 
@@ -3263,23 +3037,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 message => message.id === id
             );
 
-
         if (!item) {
             return;
         }
 
-
         activeMessageId = item.id;
-
 
         if (item.status === "new") {
             item.status = "read";
         }
 
-
         modalSubject.textContent =
             item.subject;
-
 
         modalDetails.innerHTML = `
 
@@ -3329,10 +3098,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         `;
 
-
         modalBody.textContent =
             item.message;
-
 
         if (resolveButton) {
 
@@ -3341,13 +3108,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         }
 
-
         modal.hidden = false;
 
         renderManagerMessages();
 
     }
-
 
     function closeManagerMessage() {
 
@@ -3355,7 +3120,6 @@ document.addEventListener("DOMContentLoaded", () => {
         activeMessageId = null;
 
     }
-
 
     function attachManagerMessageEvents() {
 
@@ -3376,7 +3140,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             });
 
-
         document
             .querySelectorAll("[data-read-message]")
             .forEach(button => {
@@ -3393,7 +3156,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
             });
-
 
         document
             .querySelectorAll("[data-resolve-message]")
@@ -3414,7 +3176,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
     document
         .querySelectorAll("[data-close-manager-message]")
         .forEach(button => {
@@ -3426,7 +3187,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
 
-
     if (resolveButton) {
 
         resolveButton.addEventListener(
@@ -3436,7 +3196,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!activeMessageId) {
                     return;
                 }
-
 
                 resolveMessage(
                     activeMessageId
@@ -3449,7 +3208,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
     if (searchInput) {
 
         searchInput.addEventListener(
@@ -3459,7 +3217,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
     if (statusFilter) {
 
         statusFilter.addEventListener(
@@ -3468,7 +3225,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
     }
-
 
     document.addEventListener(
         "keydown",
@@ -3485,12 +3241,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     );
 
-
     renderManagerMessages();
 
 });
-
-
 
 /* =========================================================
    MANAGER VENDOR REGISTRATION APPROVAL MODULE
@@ -3510,7 +3263,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const MODULE_KEY =
         "shiftDynamicsVendorRegistrations";
-
 
     const list =
         document.getElementById(
@@ -3542,11 +3294,9 @@ document.addEventListener("DOMContentLoaded", () => {
             "vendorRegistrationNavCount"
         );
 
-
     if (!list) {
         return;
     }
-
 
     function escapeVendorHTML(value) {
 
@@ -3557,7 +3307,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
     }
-
 
     function readRequests() {
 
@@ -3580,7 +3329,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
     function saveRequests(requests) {
 
         localStorage.setItem(
@@ -3589,17 +3337,14 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-
     function formatSubmittedDate(value) {
 
         if (!value) {
             return "Not available";
         }
 
-
         const date =
             new Date(value);
-
 
         if (
             Number.isNaN(
@@ -3609,10 +3354,8 @@ document.addEventListener("DOMContentLoaded", () => {
             return "Not available";
         }
 
-
         return date.toLocaleString();
     }
-
 
     function getStatusClass(status) {
 
@@ -3627,22 +3370,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return "pending";
     }
 
-
     function getFilteredRequests() {
 
         const requests =
             readRequests();
-
 
         const search =
             searchInput?.value
                 .trim()
                 .toLowerCase() || "";
 
-
         const selectedStatus =
             filter?.value || "all";
-
 
         return requests.filter(
             request => {
@@ -3658,18 +3397,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     .join(" ")
                     .toLowerCase();
 
-
                 const matchesSearch =
                     searchable.includes(
                         search
                     );
 
-
                 const matchesStatus =
                     selectedStatus === "all" ||
                     request.status ===
                         selectedStatus;
-
 
                 return (
                     matchesSearch &&
@@ -3679,12 +3415,10 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-
     function updateCounts() {
 
         const requests =
             readRequests();
-
 
         const pending =
             requests.filter(
@@ -3693,12 +3427,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Pending Approval"
             ).length;
 
-
         if (pendingCount) {
             pendingCount.textContent =
                 pending;
         }
-
 
         if (navCount) {
 
@@ -3710,12 +3442,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
     function renderVendorRegistrations() {
 
         const requests =
             getFilteredRequests();
-
 
         list.innerHTML =
             requests.map(
@@ -3725,17 +3455,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         request.status ||
                         "Pending Approval";
 
-
                     const statusClass =
                         getStatusClass(
                             status
                         );
 
-
                     const canReview =
                         status ===
                         "Pending Approval";
-
 
                     return `
 
@@ -3779,7 +3506,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 </div>
 
-
                                 <span
                                     class="sd-vendor-registration-status ${statusClass}"
                                 >
@@ -3789,7 +3515,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </span>
 
                             </div>
-
 
                             <div
                                 class="sd-vendor-registration-details"
@@ -3809,7 +3534,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 </div>
 
-
                                 <div>
 
                                     <span>
@@ -3823,7 +3547,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                     </strong>
 
                                 </div>
-
 
                                 <div>
 
@@ -3839,7 +3562,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                 </div>
 
-
                                 <div>
 
                                     <span>
@@ -3853,7 +3575,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                     </strong>
 
                                 </div>
-
 
                                 <div
                                     class="sd-vendor-registration-address"
@@ -3870,7 +3591,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                     </strong>
 
                                 </div>
-
 
                                 <div>
 
@@ -3889,7 +3609,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
 
                             </div>
-
 
                             ${
                                 request.reviewedAt
@@ -3910,7 +3629,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                     : ""
                             }
 
-
                             <div
                                 class="sd-vendor-registration-actions"
                             >
@@ -3929,7 +3647,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                                 <i class="bi bi-x-circle"></i>
                                                 Reject
                                             </button>
-
 
                                             <button
                                                 type="button"
@@ -3964,16 +3681,13 @@ document.addEventListener("DOMContentLoaded", () => {
             )
             .join("");
 
-
         if (emptyState) {
             emptyState.hidden =
                 requests.length !== 0;
         }
 
-
         updateCounts();
     }
-
 
     function changeVendorStatus(
         id,
@@ -3983,25 +3697,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const requests =
             readRequests();
 
-
         const request =
             requests.find(
                 item =>
                     item.id === id
             );
 
-
         if (!request) {
             return;
         }
-
 
         request.status =
             newStatus;
 
         request.reviewedAt =
             new Date().toISOString();
-
 
         /*
             BACKEND LATER:
@@ -4020,14 +3730,11 @@ document.addEventListener("DOMContentLoaded", () => {
             4. Allow Staff & Vendor Login
         */
 
-
         saveRequests(
             requests
         );
 
-
         renderVendorRegistrations();
-
 
         if (
             newStatus ===
@@ -4048,7 +3755,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
     list.addEventListener(
         "click",
         event => {
@@ -4058,12 +3764,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     "[data-approve-vendor]"
                 );
 
-
             const rejectButton =
                 event.target.closest(
                     "[data-reject-vendor]"
                 );
-
 
             if (approveButton) {
 
@@ -4076,7 +3780,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-
             if (rejectButton) {
 
                 const confirmed =
@@ -4084,11 +3787,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         "Reject this vendor registration?"
                     );
 
-
                 if (!confirmed) {
                     return;
                 }
-
 
                 changeVendorStatus(
                     rejectButton.dataset
@@ -4099,18 +3800,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     );
 
-
     searchInput?.addEventListener(
         "input",
         renderVendorRegistrations
     );
 
-
     filter?.addEventListener(
         "change",
         renderVendorRegistrations
     );
-
 
     window.addEventListener(
         "storage",
@@ -4126,8 +3824,32 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     );
 
-
     renderVendorRegistrations();
 
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+    // dynamicGreeting-managerGreeting
+    const greeting = document.getElementById("managerGreeting");
+    if (!greeting) return;
+
+    const currentName = greeting.textContent
+        .replace(/Good morning,?/i, "")
+        .replace(/Good afternoon,?/i, "")
+        .replace(/Good evening,?/i, "")
+        .replace(/\./g, "")
+        .trim();
+
+    const hour = new Date().getHours();
+    let message = "Good evening";
+
+    if (hour < 12) {
+        message = "Good morning";
+    } else if (hour < 17) {
+        message = "Good afternoon";
+    }
+
+    greeting.textContent = currentName
+        ? message + ", " + currentName + "."
+        : message + ".";
+});

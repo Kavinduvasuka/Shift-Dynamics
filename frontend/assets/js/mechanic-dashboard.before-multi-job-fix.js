@@ -1,4 +1,4 @@
-document.addEventListener(
+﻿document.addEventListener(
     "DOMContentLoaded",
     () => {
 
@@ -312,8 +312,110 @@ timerInterval = setInterval(
                     () => {
 
                         elapsedSeconds += 1;
-                        updateTimerDisplay();
-},
+                        function loadMechanicJob(jobId) {
+            const job = mechanicJobs[jobId];
+            if (!job) return;
+
+            currentMechanicJob = job;
+
+            window.dispatchEvent(new CustomEvent("mechanicJobLoaded", {
+                detail: job
+            }));
+
+            clearInterval(timerInterval);
+            timerInterval = null;
+            jobStartedAt = null;
+            elapsedSeconds = 0;
+            jobRunning = false;
+            jobPaused = false;
+            jobCompleted = false;
+
+            const activeSection = document.getElementById("active-job");
+
+            if (activeSection) {
+                const panels = activeSection.querySelectorAll(".sd-panel");
+                const infoPanel = panels[0];
+
+                if (infoPanel) {
+                    const title = infoPanel.querySelector(".sd-panel-header h3");
+                    const priority = infoPanel.querySelector(".sd-priority");
+                    const vehicle = infoPanel.querySelector(".sd-active-vehicle strong");
+                    const plate = infoPanel.querySelector(".sd-active-vehicle span");
+                    const infoValues = infoPanel.querySelectorAll(".sd-job-info-grid strong");
+                    const concern = infoPanel.querySelector(".sd-concern-box p");
+
+                    if (title) title.textContent = `#${job.id}`;
+
+                    if (priority) {
+                        priority.textContent = `${job.priority} Priority`;
+                        priority.className = `sd-priority ${job.priority.toLowerCase()}`;
+                    }
+
+                    if (vehicle) vehicle.textContent = job.vehicle;
+                    if (plate) plate.textContent = job.plate;
+
+                    if (infoValues[0]) infoValues[0].textContent = job.service;
+                    if (infoValues[1]) infoValues[1].textContent = job.bay;
+                    if (infoValues[2]) infoValues[2].textContent = "Workshop Manager";
+                    if (infoValues[3]) infoValues[3].textContent = job.estimatedFinish;
+
+                    if (concern) concern.textContent = job.concern;
+                }
+            }
+
+            jobStartTime.textContent = "--:--";
+            jobEndTime.textContent = "--:--";
+
+            activeJobStatus.textContent = "Ready to Start";
+
+            startJobButton.disabled = false;
+            pauseJobButton.disabled = true;
+            endJobButton.disabled = true;
+
+            startJobButton.innerHTML = '<i class="bi bi-play-fill"></i> Start Job';
+            pauseJobButton.innerHTML = '<i class="bi bi-pause-fill"></i> Pause Job';
+
+            mechanicWorkNotes.value = "";
+            workNotesMessage.textContent = "";
+            jobTimerMessage.textContent = "";
+
+            completionRecord.hidden = true;
+
+            workChecks.forEach(item => {
+                item.checked = false;
+            });
+
+            updateTimerDisplay();
+            updateWorkProgress();
+
+            const completionJob = completionRecord.querySelector(".sd-completion-grid strong");
+            if (completionJob) {
+                completionJob.textContent = `#${job.id}`;
+            }
+
+            openSection("active-job");
+        }
+
+        document.querySelectorAll(".sd-job-number").forEach(jobNumber => {
+            const jobId = jobNumber.textContent.replace("#", "").trim();
+
+            if (!mechanicJobs[jobId] || jobId === "JC-1052") return;
+
+            const card = jobNumber.closest(".sd-job-card");
+            if (!card) return;
+
+            const button = card.querySelector("button");
+            if (!button) return;
+
+            button.textContent = "Start Job";
+
+            button.addEventListener("click", () => {
+                loadMechanicJob(jobId);
+            });
+        });
+        updateTimerDisplay();
+
+                    },
                     1000
                 );
 
@@ -368,8 +470,110 @@ timerInterval = setInterval(
                         () => {
 
                             elapsedSeconds += 1;
-                        updateTimerDisplay();
-},
+                            function loadMechanicJob(jobId) {
+            const job = mechanicJobs[jobId];
+            if (!job) return;
+
+            currentMechanicJob = job;
+
+            window.dispatchEvent(new CustomEvent("mechanicJobLoaded", {
+                detail: job
+            }));
+
+            clearInterval(timerInterval);
+            timerInterval = null;
+            jobStartedAt = null;
+            elapsedSeconds = 0;
+            jobRunning = false;
+            jobPaused = false;
+            jobCompleted = false;
+
+            const activeSection = document.getElementById("active-job");
+
+            if (activeSection) {
+                const panels = activeSection.querySelectorAll(".sd-panel");
+                const infoPanel = panels[0];
+
+                if (infoPanel) {
+                    const title = infoPanel.querySelector(".sd-panel-header h3");
+                    const priority = infoPanel.querySelector(".sd-priority");
+                    const vehicle = infoPanel.querySelector(".sd-active-vehicle strong");
+                    const plate = infoPanel.querySelector(".sd-active-vehicle span");
+                    const infoValues = infoPanel.querySelectorAll(".sd-job-info-grid strong");
+                    const concern = infoPanel.querySelector(".sd-concern-box p");
+
+                    if (title) title.textContent = `#${job.id}`;
+
+                    if (priority) {
+                        priority.textContent = `${job.priority} Priority`;
+                        priority.className = `sd-priority ${job.priority.toLowerCase()}`;
+                    }
+
+                    if (vehicle) vehicle.textContent = job.vehicle;
+                    if (plate) plate.textContent = job.plate;
+
+                    if (infoValues[0]) infoValues[0].textContent = job.service;
+                    if (infoValues[1]) infoValues[1].textContent = job.bay;
+                    if (infoValues[2]) infoValues[2].textContent = "Workshop Manager";
+                    if (infoValues[3]) infoValues[3].textContent = job.estimatedFinish;
+
+                    if (concern) concern.textContent = job.concern;
+                }
+            }
+
+            jobStartTime.textContent = "--:--";
+            jobEndTime.textContent = "--:--";
+
+            activeJobStatus.textContent = "Ready to Start";
+
+            startJobButton.disabled = false;
+            pauseJobButton.disabled = true;
+            endJobButton.disabled = true;
+
+            startJobButton.innerHTML = '<i class="bi bi-play-fill"></i> Start Job';
+            pauseJobButton.innerHTML = '<i class="bi bi-pause-fill"></i> Pause Job';
+
+            mechanicWorkNotes.value = "";
+            workNotesMessage.textContent = "";
+            jobTimerMessage.textContent = "";
+
+            completionRecord.hidden = true;
+
+            workChecks.forEach(item => {
+                item.checked = false;
+            });
+
+            updateTimerDisplay();
+            updateWorkProgress();
+
+            const completionJob = completionRecord.querySelector(".sd-completion-grid strong");
+            if (completionJob) {
+                completionJob.textContent = `#${job.id}`;
+            }
+
+            openSection("active-job");
+        }
+
+        document.querySelectorAll(".sd-job-number").forEach(jobNumber => {
+            const jobId = jobNumber.textContent.replace("#", "").trim();
+
+            if (!mechanicJobs[jobId] || jobId === "JC-1052") return;
+
+            const card = jobNumber.closest(".sd-job-card");
+            if (!card) return;
+
+            const button = card.querySelector("button");
+            if (!button) return;
+
+            button.textContent = "Start Job";
+
+            button.addEventListener("click", () => {
+                loadMechanicJob(jobId);
+            });
+        });
+        updateTimerDisplay();
+
+                        },
                         1000
                     );
 
@@ -447,7 +651,7 @@ recordStartTime.textContent =
                         vehicle: currentMechanicJob.vehicle,
                         plate: currentMechanicJob.plate,
                         service: currentMechanicJob.service,
-                        completed: `Today Â· ${formatClockTime(endedAt)}`,
+                        completed: `Today · ${formatClockTime(endedAt)}`,
                         duration: formatDuration(elapsedSeconds),
                         bay: currentMechanicJob.bay,
                         mechanic: "Nimal Perera",
@@ -502,371 +706,6 @@ workNotesMessage.textContent =
 
 updateTimerDisplay();
         updateWorkProgress();
-
-        // Central Mechanic Workflow State
-        mechanicJobs["JC-1052"].status = "ready";
-        mechanicJobs["JC-1057"].status = "waiting";
-        mechanicJobs["JC-1058"].status = "waiting";
-
-        let completedTodayCount = 2;
-
-        const overviewSection = document.getElementById("overview");
-        const overviewStats = overviewSection?.querySelectorAll(".sd-stat-card") || [];
-        const overviewAssigned = overviewStats[0]?.querySelector("strong");
-        const overviewActive = overviewStats[1]?.querySelector("strong");
-        const overviewCompleted = overviewStats[2]?.querySelector("strong");
-        const overviewBay = overviewStats[3]?.querySelector("strong");
-
-        const overviewJobPanel = overviewSection?.querySelector(".sd-dashboard-grid .sd-panel");
-        const diagnosticJobCard = document.querySelector(".sd-diagnostic-job");
-        const partsJobCard = document.querySelector(".sd-parts-job");
-
-        function getJobCard(jobId) {
-            return [...document.querySelectorAll("#assigned-jobs .sd-job-card")].find(card => {
-                const number = card.querySelector(".sd-job-number");
-                return number && number.textContent.replace("#", "").trim() === jobId;
-            });
-        }
-
-        function setLinkedJobCard(card, job) {
-            if (!card || !job) return;
-
-            const title = card.querySelector("h3");
-            const description = card.querySelector("p");
-            const status = card.querySelector(".sd-status");
-
-            if (title) title.textContent = `#${job.id} Â· ${job.vehicle}`;
-            if (description) description.textContent = `${job.plate} Â· ${job.service} Â· ${job.bay}`;
-
-            if (status) {
-                if (job.status === "completed") {
-                    status.textContent = "Completed";
-                    status.className = "sd-status sd-status-complete";
-                } else if (job.status === "in-progress") {
-                    status.textContent = "In Progress";
-                    status.className = "sd-status sd-status-progress";
-                } else if (job.status === "paused") {
-                    status.textContent = "Paused";
-                    status.className = "sd-status sd-status-pending";
-                } else {
-                    status.textContent = "Ready";
-                    status.className = "sd-status sd-status-pending";
-                }
-            }
-        }
-
-        function renderActiveJobDetails() {
-            const job = currentMechanicJob;
-            const activeSection = document.getElementById("active-job");
-            if (!job || !activeSection) return;
-
-            const infoPanel = activeSection.querySelector(".sd-active-station-grid .sd-panel");
-            if (!infoPanel) return;
-
-            const title = infoPanel.querySelector(".sd-panel-header h3");
-            const priority = infoPanel.querySelector(".sd-priority");
-            const vehicle = infoPanel.querySelector(".sd-active-vehicle strong");
-            const plate = infoPanel.querySelector(".sd-active-vehicle span");
-            const values = infoPanel.querySelectorAll(".sd-job-info-grid strong");
-            const concern = infoPanel.querySelector(".sd-concern-box p");
-
-            if (title) title.textContent = `#${job.id}`;
-
-            if (priority) {
-                priority.textContent = `${job.priority} Priority`;
-                priority.className = `sd-priority ${job.priority.toLowerCase()}`;
-            }
-
-            if (vehicle) vehicle.textContent = job.vehicle;
-            if (plate) plate.textContent = job.plate;
-            if (values[0]) values[0].textContent = job.service;
-            if (values[1]) values[1].textContent = job.bay;
-            if (values[2]) values[2].textContent = "Workshop Manager";
-            if (values[3]) values[3].textContent = job.estimatedFinish;
-            if (concern) concern.textContent = job.concern;
-
-            const completionJob = completionRecord.querySelector(".sd-completion-grid strong");
-            if (completionJob) completionJob.textContent = `#${job.id}`;
-        }
-
-        function renderAssignedJobs() {
-            Object.values(mechanicJobs).forEach(job => {
-                const card = getJobCard(job.id);
-                if (!card) return;
-
-                const status = card.querySelector(".sd-status");
-                const button = card.querySelector("button");
-
-                if (status) {
-                    if (job.status === "completed") {
-                        status.textContent = "Completed";
-                        status.className = "sd-status sd-status-complete";
-                    } else if (job.status === "in-progress") {
-                        status.textContent = "In Progress";
-                        status.className = "sd-status sd-status-progress";
-                    } else if (job.status === "paused") {
-                        status.textContent = "Paused";
-                        status.className = "sd-status sd-status-pending";
-                    } else if (job.status === "ready") {
-                        status.textContent = "Ready";
-                        status.className = "sd-status sd-status-pending";
-                    } else {
-                        status.textContent = "Waiting";
-                        status.className = "sd-status sd-status-pending";
-                    }
-                }
-
-                if (!button) return;
-
-                button.dataset.mechanicJob = job.id;
-
-                if (job.status === "completed") {
-                    button.disabled = true;
-                    button.className = "sd-secondary-btn";
-                    button.innerHTML = '<i class="bi bi-check-circle"></i> Completed';
-                    return;
-                }
-
-                if (job.status === "in-progress" || job.status === "paused") {
-                    button.disabled = false;
-                    button.className = "sd-primary-btn";
-                    button.innerHTML = '<i class="bi bi-stopwatch"></i> Continue Job';
-                    return;
-                }
-
-                if (jobRunning && currentMechanicJob.id !== job.id) {
-                    button.disabled = true;
-                    button.className = "sd-secondary-btn";
-                    button.innerHTML = '<i class="bi bi-lock"></i> Finish Current Job';
-                    return;
-                }
-
-                button.disabled = false;
-                button.className = job.status === "ready" ? "sd-primary-btn" : "sd-secondary-btn";
-                button.innerHTML = '<i class="bi bi-play-circle"></i> Start Job';
-            });
-        }
-
-        function renderOverview() {
-            const job = currentMechanicJob;
-            if (!job || !overviewSection) return;
-
-            if (overviewAssigned) overviewAssigned.textContent = "04";
-            if (overviewActive) overviewActive.textContent = jobRunning && !jobCompleted ? "01" : "00";
-            if (overviewCompleted) overviewCompleted.textContent = String(completedTodayCount).padStart(2, "0");
-
-            if (overviewBay) {
-                if (jobRunning && !jobCompleted) {
-                    const bay = String(job.bay || "").replace(/Bay/i, "").trim();
-                    overviewBay.textContent = bay || "--";
-                } else {
-                    overviewBay.textContent = "--";
-                }
-            }
-
-            if (!overviewJobPanel) return;
-
-            const number = overviewJobPanel.querySelector(".sd-job-number");
-            const vehicle = overviewJobPanel.querySelector(".sd-vehicle-summary strong");
-            const plate = overviewJobPanel.querySelector(".sd-vehicle-summary span");
-            const values = overviewJobPanel.querySelectorAll(".sd-job-info-grid strong");
-            const status = overviewJobPanel.querySelector(".sd-status");
-            const button = overviewJobPanel.querySelector("button");
-
-            if (number) number.textContent = `#${job.id}`;
-            if (vehicle) vehicle.textContent = job.vehicle;
-            if (plate) plate.textContent = job.plate;
-            if (values[0]) values[0].textContent = job.service;
-            if (values[1]) values[1].textContent = job.bay;
-            if (values[2]) values[2].textContent = job.priority;
-            if (values[3]) values[3].textContent = job.estimatedFinish;
-
-            if (status) {
-                if (job.status === "completed") {
-                    status.textContent = "Completed";
-                    status.className = "sd-status sd-status-complete";
-                } else if (job.status === "in-progress") {
-                    status.textContent = "In Progress";
-                    status.className = "sd-status sd-status-progress";
-                } else if (job.status === "paused") {
-                    status.textContent = "Paused";
-                    status.className = "sd-status sd-status-pending";
-                } else {
-                    status.textContent = "Ready to Start";
-                    status.className = "sd-status sd-status-pending";
-                }
-            }
-
-            if (button) {
-                button.disabled = job.status === "completed";
-                button.innerHTML = job.status === "completed"
-                    ? '<i class="bi bi-check-circle"></i> Job Completed'
-                    : '<i class="bi bi-stopwatch"></i> Open Active Job';
-            }
-
-            const checked = [...workChecks].filter(check => check.checked).length;
-            const total = workChecks.length;
-            const percentage = total ? Math.round((checked / total) * 100) : 0;
-            const progressText = overviewJobPanel.querySelector(".sd-job-progress-head strong");
-            const progressBar = overviewJobPanel.querySelector(".sd-progress span");
-
-            if (progressText) progressText.textContent = `${percentage}%`;
-            if (progressBar) progressBar.style.width = `${percentage}%`;
-
-            const queueItems = overviewSection.querySelectorAll(".sd-queue-item");
-            let visibleQueueCount = 0;
-
-            queueItems.forEach(item => {
-                const queueNumber = item.querySelector("strong")?.textContent.replace("#", "").trim();
-                const queueJob = mechanicJobs[queueNumber];
-
-                if (queueJob && queueJob.status !== "waiting") {
-                    item.hidden = true;
-                } else {
-                    item.hidden = false;
-                    visibleQueueCount += 1;
-                }
-            });
-
-            const queueBadge = overviewSection.querySelector(".sd-dashboard-grid .sd-panel:nth-child(2) .sd-count-badge");
-            if (queueBadge) queueBadge.textContent = `${visibleQueueCount} Pending`;
-        }
-
-        function renderMechanicWorkflow() {
-            renderActiveJobDetails();
-            renderAssignedJobs();
-            renderOverview();
-            setLinkedJobCard(diagnosticJobCard, currentMechanicJob);
-            setLinkedJobCard(partsJobCard, currentMechanicJob);
-        }
-
-        function loadMechanicJob(jobId) {
-            const nextJob = mechanicJobs[jobId];
-            if (!nextJob || nextJob.status === "completed") return;
-
-            if (jobRunning && currentMechanicJob.id !== jobId) {
-                jobTimerMessage.textContent = "Complete the current active job before starting another job.";
-                jobTimerMessage.className = "sd-job-message error";
-                openSection("active-job");
-                return;
-            }
-
-            if (currentMechanicJob && currentMechanicJob.id !== jobId && currentMechanicJob.status === "ready") {
-                currentMechanicJob.status = "waiting";
-            }
-
-            currentMechanicJob = nextJob;
-
-            if (currentMechanicJob.status === "waiting") {
-                currentMechanicJob.status = "ready";
-            }
-
-            clearInterval(timerInterval);
-            timerInterval = null;
-            jobStartedAt = null;
-            elapsedSeconds = 0;
-            jobRunning = false;
-            jobPaused = false;
-            jobCompleted = false;
-
-            jobStartTime.textContent = "--:--";
-            jobEndTime.textContent = "--:--";
-            activeJobStatus.textContent = "Ready to Start";
-            activeJobStatus.className = "sd-status sd-status-pending";
-
-            startJobButton.disabled = false;
-            pauseJobButton.disabled = true;
-            endJobButton.disabled = true;
-
-            startJobButton.innerHTML = '<i class="bi bi-play-fill"></i> Start Job';
-            pauseJobButton.innerHTML = '<i class="bi bi-pause-fill"></i> Pause Job';
-
-            mechanicWorkNotes.value = "";
-            workNotesMessage.textContent = "";
-            jobTimerMessage.textContent = "";
-            completionRecord.hidden = true;
-
-            workChecks.forEach(check => {
-                check.checked = false;
-                check.disabled = true;
-            });
-
-            updateTimerDisplay();
-            updateWorkProgress();
-            renderMechanicWorkflow();
-            openSection("active-job");
-        }
-
-        document.querySelectorAll("#assigned-jobs .sd-job-card").forEach(card => {
-            const jobNumber = card.querySelector(".sd-job-number");
-            const button = card.querySelector("button");
-
-            if (!jobNumber || !button) return;
-
-            const jobId = jobNumber.textContent.replace("#", "").trim();
-            if (!mechanicJobs[jobId]) return;
-
-            button.addEventListener("click", event => {
-                event.preventDefault();
-
-                if (mechanicJobs[jobId].status === "in-progress" ||
-                    mechanicJobs[jobId].status === "paused") {
-                    currentMechanicJob = mechanicJobs[jobId];
-                    renderMechanicWorkflow();
-                    openSection("active-job");
-                    return;
-                }
-
-                loadMechanicJob(jobId);
-            });
-        });
-
-        startJobButton.addEventListener("click", () => {
-            if (!jobRunning || jobCompleted) return;
-
-            currentMechanicJob.status = "in-progress";
-
-            workChecks.forEach(check => {
-                check.disabled = false;
-            });
-
-            renderMechanicWorkflow();
-        });
-
-        pauseJobButton.addEventListener("click", () => {
-            if (!jobRunning || jobCompleted) return;
-
-            currentMechanicJob.status = jobPaused ? "paused" : "in-progress";
-
-            setTimeout(() => {
-                currentMechanicJob.status = jobPaused ? "paused" : "in-progress";
-                renderMechanicWorkflow();
-            }, 0);
-        });
-
-        workChecks.forEach(check => {
-            check.disabled = true;
-
-            check.addEventListener("change", () => {
-                renderOverview();
-            });
-        });
-
-        window.addEventListener("mechanicJobCompleted", event => {
-            const completedJob = event.detail;
-            if (!completedJob || !mechanicJobs[completedJob.id]) return;
-
-            mechanicJobs[completedJob.id].status = "completed";
-            completedTodayCount += 1;
-
-            workChecks.forEach(check => {
-                check.disabled = true;
-            });
-
-            renderMechanicWorkflow();
-        });
-
-        renderMechanicWorkflow();
 
         // Diagnostics & Repair Notes
 
@@ -1008,11 +847,11 @@ entry.innerHTML = `
 
                         <div>
                             <strong>
-                                ${safeArea} Â· Diagnostic Entry
+                                ${safeArea} · Diagnostic Entry
                             </strong>
 
                             <span>
-                                Nimal Perera Â· Today
+                                Nimal Perera · Today
                                 ${getDiagnosticTime()}
                             </span>
                         </div>
@@ -1065,7 +904,7 @@ diagnosticList.prepend(entry);
                 updateDiagnosticCount();
 
 diagnosticMessage.textContent =
-                    "Diagnostic entry saved to Job Card #" + currentMechanicJob.id + ".";
+                    "Diagnostic entry saved to Job Card #JC-1052.";
 
                 diagnosticMessage.className =
                     "sd-job-message success";
@@ -1099,7 +938,7 @@ document.addEventListener("DOMContentLoaded", () => {
             name: "Engine Mount",
             category: "Engine",
             partNumber: "EM-XTR-2018",
-            compatibility: "Nissan X-Trail 2017â€“2021",
+            compatibility: "Nissan X-Trail 2017–2021",
             image: "../assets/images/parts/engine-mount.jpg"
         },
 
@@ -1162,7 +1001,7 @@ document.addEventListener("DOMContentLoaded", () => {
             name: "17-inch Alloy Wheel",
             category: "Wheels",
             partNumber: "AW-17-5H114",
-            compatibility: "17 inch Â· 5x114.3 fitment",
+            compatibility: "17 inch · 5x114.3 fitment",
             image: "../assets/images/parts/alloy-wheel.jpg"
         }
 
@@ -1524,7 +1363,7 @@ row.innerHTML = `
 
                         <span>
                             ${escapePartHTML(requestNumber)}
-                            Â·
+                            ·
                             ${escapePartHTML(currentSelectedPart.partNumber)}
                         </span>
 
@@ -1603,7 +1442,7 @@ document.addEventListener("DOMContentLoaded", () => {
             vehicle: "Toyota Corolla",
             plate: "WP CAB-1234",
             service: "Brake Repair",
-            completed: "Today Â· 08:45 AM",
+            completed: "Today · 08:45 AM",
             duration: "02h 15m",
             bay: "Bay 01",
             mechanic: "Nimal Perera",
@@ -1619,7 +1458,7 @@ document.addEventListener("DOMContentLoaded", () => {
             vehicle: "Honda Vezel",
             plate: "WP CBF-5678",
             service: "Diagnostics",
-            completed: "Today Â· 11:20 AM",
+            completed: "Today · 11:20 AM",
             duration: "01h 30m",
             bay: "Bay 02",
             mechanic: "Nimal Perera",
@@ -1635,7 +1474,7 @@ document.addEventListener("DOMContentLoaded", () => {
             vehicle: "Suzuki Swift",
             plate: "WP CAG-9021",
             service: "General Service",
-            completed: "31 Aug Â· 04:10 PM",
+            completed: "31 Aug · 04:10 PM",
             duration: "01h 45m",
             bay: "Bay 04",
             mechanic: "Nimal Perera",
@@ -1651,7 +1490,7 @@ document.addEventListener("DOMContentLoaded", () => {
             vehicle: "Nissan X-Trail",
             plate: "WP CAQ-7741",
             service: "Engine Repair",
-            completed: "30 Aug Â· 03:35 PM",
+            completed: "30 Aug · 03:35 PM",
             duration: "03h 20m",
             bay: "Bay 03",
             mechanic: "Nimal Perera",
@@ -1735,7 +1574,7 @@ completedJobModalContent.innerHTML = `
 
                     <span>
                         ${escapeCompletedHTML(job.plate)}
-                        Â·
+                        ·
                         ${escapeCompletedHTML(job.service)}
                     </span>
                 </div>
@@ -1868,7 +1707,7 @@ row.innerHTML = `
 
                         <span>
                             ${escapeCompletedHTML(job.id)}
-                            Â·
+                            ·
                             ${escapeCompletedHTML(job.plate)}
                         </span>
 
@@ -1986,6 +1825,8 @@ renderCompletedJobs();
 
 });
 
+
+
 document.addEventListener("DOMContentLoaded", () => {
     const greeting = document.getElementById("mechanicGreeting");
 
@@ -2001,4 +1842,201 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     greeting.textContent = `${message}, Nimal.`;
+});
+document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("mechanicJobCompleted", event => {
+        const completedJob = event.detail;
+        if (!completedJob || completedJob.id !== "JC-1052") return;
+
+        const jobNumbers = document.querySelectorAll(".sd-job-number");
+
+        jobNumbers.forEach(jobNumber => {
+            if (!jobNumber.textContent.includes("JC-1052")) return;
+
+            const card = jobNumber.closest(".sd-job-card");
+            if (!card) return;
+
+            const status = card.querySelector(".sd-status");
+
+            if (status) {
+                status.textContent = "Completed";
+                status.className = "sd-status sd-status-complete";
+            }
+
+            const continueButton = card.querySelector("[data-go='active-job']");
+
+            if (continueButton) {
+                continueButton.disabled = true;
+                continueButton.innerHTML = '<i class="bi bi-check-circle"></i> Completed';
+            }
+        });
+    });
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    // genericAssignedJobCompletion
+    window.addEventListener("mechanicJobCompleted", event => {
+        const completedJob = event.detail;
+        if (!completedJob) return;
+
+        document.querySelectorAll(".sd-job-number").forEach(jobNumber => {
+            if (!jobNumber.textContent.includes(completedJob.id)) return;
+
+            const card = jobNumber.closest(".sd-job-card");
+            if (!card) return;
+
+            const status = card.querySelector(".sd-status");
+
+            if (status) {
+                status.textContent = "Completed";
+                status.className = "sd-status sd-status-complete";
+            }
+
+            const button = card.querySelector("button");
+
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = '<i class="bi bi-check-circle"></i> Completed';
+            }
+        });
+    });
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const workChecks = document.querySelectorAll(".sd-work-check");
+    const startJobButton = document.getElementById("startJobButton");
+    const endJobButton = document.getElementById("endJobButton");
+
+    let mechanicJobStarted = false;
+
+    workChecks.forEach(check => {
+        check.disabled = true;
+    });
+
+    startJobButton.addEventListener("click", () => {
+        mechanicJobStarted = true;
+
+        workChecks.forEach(check => {
+            check.disabled = false;
+        });
+    });
+
+    endJobButton.addEventListener("click", () => {
+        if (!mechanicJobStarted) return;
+
+        const allCompleted = [...workChecks].every(check => check.checked);
+
+        if (allCompleted) {
+            workChecks.forEach(check => {
+                check.disabled = true;
+            });
+
+            mechanicJobStarted = false;
+        }
+    });
+
+    window.addEventListener("mechanicJobCompleted", () => {
+        workChecks.forEach(check => {
+            check.disabled = true;
+        });
+
+        mechanicJobStarted = false;
+    });
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const workChecks = document.querySelectorAll(".sd-work-check");
+
+    const overviewSection = document.getElementById("overview");
+    if (!overviewSection || !workChecks.length) return;
+
+    const overviewProgressText = overviewSection.querySelector(".sd-job-progress-head strong");
+    const overviewProgressBar = overviewSection.querySelector(".sd-progress span");
+
+    function syncOverviewProgress() {
+        const completed = [...workChecks].filter(check => check.checked).length;
+        const total = workChecks.length;
+        const percentage = total ? Math.round((completed / total) * 100) : 0;
+
+        if (overviewProgressText) {
+            overviewProgressText.textContent = `${percentage}%`;
+        }
+
+        if (overviewProgressBar) {
+            overviewProgressBar.style.width = `${percentage}%`;
+        }
+    }
+
+    workChecks.forEach(check => {
+        check.addEventListener("change", syncOverviewProgress);
+    });
+
+    syncOverviewProgress();
+});
+document.addEventListener("DOMContentLoaded", () => {
+    const overviewSection = document.getElementById("overview");
+    if (!overviewSection) return;
+
+    const statCards = overviewSection.querySelectorAll(".sd-stat-card");
+    if (statCards.length < 4) return;
+
+    const assignedValue = statCards[0].querySelector("strong");
+    const activeValue = statCards[1].querySelector("strong");
+    const completedValue = statCards[2].querySelector("strong");
+    const bayValue = statCards[3].querySelector("strong");
+
+    let completedToday = Number(completedValue?.textContent.trim()) || 0;
+
+    function setCurrentBay(job) {
+        if (!bayValue || !job) return;
+
+        const bayNumber = String(job.bay || "")
+            .replace(/Bay/i, "")
+            .trim();
+
+        bayValue.textContent = bayNumber || "--";
+    }
+
+    function syncOverviewForJob(job) {
+        if (assignedValue) assignedValue.textContent = "04";
+        if (activeValue) activeValue.textContent = "01";
+
+        setCurrentBay(job);
+    }
+
+    window.addEventListener("mechanicJobCompleted", event => {
+        const completedJob = event.detail;
+        if (!completedJob) return;
+
+        completedToday += 1;
+
+        if (completedValue) {
+            completedValue.textContent = String(completedToday).padStart(2, "0");
+        }
+
+        if (activeValue) {
+            activeValue.textContent = "00";
+        }
+
+        if (bayValue) {
+            bayValue.textContent = "--";
+        }
+    });
+
+    document.addEventListener("click", event => {
+        const button = event.target.closest(".sd-job-card button");
+        if (!button) return;
+
+        const card = button.closest(".sd-job-card");
+        const jobNumber = card?.querySelector(".sd-job-number");
+
+        if (!jobNumber) return;
+
+        const jobId = jobNumber.textContent.replace("#", "").trim();
+
+        if (typeof mechanicJobs !== "undefined" && mechanicJobs[jobId]) {
+            setTimeout(() => {
+                syncOverviewForJob(mechanicJobs[jobId]);
+            }, 0);
+        }
+    });
 });

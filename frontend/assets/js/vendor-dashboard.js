@@ -1,30 +1,13 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
 
-    /* =========================================================
-       NAVIGATION
-    ========================================================= */
-
-    const navLinks =
-        document.querySelectorAll(".sd-nav-link");
-
-    const sections =
-        document.querySelectorAll(".sd-content-section");
-
-    const pageTitle =
-        document.getElementById("pageTitle");
-
-    const sidebar =
-        document.getElementById("sidebar");
-
-    const sidebarOverlay =
-        document.getElementById("sidebarOverlay");
-
-    const menuButton =
-        document.getElementById("menuButton");
-
-    const sidebarClose =
-        document.getElementById("sidebarClose");
-
+    // Navigation
+    const navLinks = document.querySelectorAll(".sd-nav-link");
+    const sections = document.querySelectorAll(".sd-content-section");
+    const pageTitle = document.getElementById("pageTitle");
+    const sidebar = document.getElementById("sidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    const menuButton = document.getElementById("menuButton");
+    const sidebarClose = document.getElementById("sidebarClose");
 
     const titles = {
         overview: "Vendor Overview",
@@ -33,9 +16,7 @@
         history: "Quote History"
     };
 
-
     function openSection(sectionId) {
-
         sections.forEach(section => {
             section.classList.toggle(
                 "active",
@@ -62,52 +43,37 @@
         });
     }
 
-
     navLinks.forEach(link => {
-
         link.addEventListener("click", () => {
             openSection(link.dataset.section);
         });
-
     });
-
 
     document
         .querySelectorAll("[data-go-section]")
         .forEach(button => {
-
             button.addEventListener("click", () => {
                 openSection(button.dataset.goSection);
             });
-
         });
-
 
     menuButton.addEventListener("click", () => {
         sidebar.classList.add("open");
         sidebarOverlay.classList.add("show");
     });
 
-
     sidebarClose.addEventListener("click", () => {
         sidebar.classList.remove("open");
         sidebarOverlay.classList.remove("show");
     });
-
 
     sidebarOverlay.addEventListener("click", () => {
         sidebar.classList.remove("open");
         sidebarOverlay.classList.remove("show");
     });
 
-
-
-    /* =========================================================
-       DEMO REQUEST DATA
-    ========================================================= */
-
+    // Demo Data
     const vendorRequests = [
-
         {
             id: "VR-4021",
             job: "JC-1052",
@@ -121,7 +87,6 @@
             urgency: "Urgent",
             status: "pending"
         },
-
         {
             id: "VR-4022",
             job: "JC-1048",
@@ -135,7 +100,6 @@
             urgency: "Normal",
             status: "pending"
         },
-
         {
             id: "VR-4023",
             job: "JC-1050",
@@ -149,12 +113,9 @@
             urgency: "Normal",
             status: "pending"
         }
-
     ];
 
-
     const submittedQuotes = [
-
         {
             quoteId: "QT-5108",
             requestId: "VR-4018",
@@ -165,12 +126,9 @@
             stock: "In Stock",
             status: "Pending Review"
         }
-
     ];
 
-
     const quoteHistory = [
-
         {
             quoteId: "QT-5105",
             requestId: "VR-4012",
@@ -179,7 +137,6 @@
             delivery: "Same Day",
             status: "Accepted"
         },
-
         {
             quoteId: "QT-5104",
             requestId: "VR-4010",
@@ -188,7 +145,6 @@
             delivery: "2 Days",
             status: "Not Selected"
         },
-
         {
             quoteId: "QT-5101",
             requestId: "VR-4005",
@@ -197,29 +153,19 @@
             delivery: "1 Day",
             status: "Accepted"
         }
-
     ];
 
-
-
-    /* =========================================================
-       ESCAPE HELPER
-    ========================================================= */
-
+    // Helpers
     function escapeHTML(value) {
-
         return String(value)
             .replaceAll("&", "&amp;")
             .replaceAll("<", "&lt;")
             .replaceAll(">", "&gt;")
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
-
     }
 
-
     function formatCurrency(value) {
-
         return new Intl.NumberFormat(
             "en-LK",
             {
@@ -228,50 +174,35 @@
                 maximumFractionDigits: 0
             }
         ).format(value);
-
     }
 
-
-
-    /* =========================================================
-       REQUEST RENDERING
-    ========================================================= */
-
+    // Vendor Requests
     const vendorRequestList =
         document.getElementById("vendorRequestList");
 
-
     function renderVendorRequests() {
-
         const pending =
             vendorRequests.filter(
                 request => request.status === "pending"
             );
 
-
         if (!pending.length) {
-
             vendorRequestList.innerHTML = `
-
                 <article class="sd-panel">
                     No pending vendor requests at the moment.
                 </article>
-
             `;
 
             return;
         }
 
-
         vendorRequestList.innerHTML =
             pending.map(request => `
-
                 <article class="sd-request-card">
 
                     <div class="sd-card-top">
 
                         <div>
-
                             <span class="sd-eyebrow">
                                 ${escapeHTML(request.id)}
                             </span>
@@ -283,7 +214,6 @@
                             <p>
                                 Job Card #${escapeHTML(request.job)}
                             </p>
-
                         </div>
 
                         <span class="sd-badge ${
@@ -295,7 +225,6 @@
                         </span>
 
                     </div>
-
 
                     <div class="sd-card-data">
 
@@ -336,15 +265,16 @@
 
                     </div>
 
-
-                    <div class="sd-data-box" style="margin-top:12px;">
+                    <div
+                        class="sd-data-box"
+                        style="margin-top: 12px;"
+                    >
                         <span>Part Specification</span>
 
                         <strong>
                             ${escapeHTML(request.specification)}
                         </strong>
                     </div>
-
 
                     <div class="sd-card-actions">
 
@@ -356,7 +286,6 @@
                             <i class="bi bi-check-circle"></i>
                             Have Part
                         </button>
-
 
                         <button
                             type="button"
@@ -370,82 +299,54 @@
                     </div>
 
                 </article>
-
             `).join("");
 
-
         attachRequestEvents();
-
     }
 
-
-
     function attachRequestEvents() {
-
         document
             .querySelectorAll("[data-have-part]")
             .forEach(button => {
-
                 button.addEventListener("click", () => {
-
                     openQuoteModal(
                         button.dataset.havePart
                     );
-
                 });
-
             });
-
 
         document
             .querySelectorAll("[data-no-part]")
             .forEach(button => {
-
                 button.addEventListener("click", () => {
-
                     const request =
                         vendorRequests.find(
                             item =>
                                 item.id === button.dataset.noPart
                         );
 
-
                     if (!request) {
                         return;
                     }
 
-
-                    request.status =
-                        "not-available";
-
+                    request.status = "not-available";
 
                     quoteHistory.unshift({
-
                         quoteId: "-",
                         requestId: request.id,
                         part: request.part,
                         price: 0,
                         delivery: "-",
                         status: "Part Not Available"
-
                     });
-
 
                     renderVendorRequests();
                     renderQuoteHistory();
-
                 });
-
             });
-
     }
 
-
-
-    /* =========================================================
-       QUOTE MODAL
-    ========================================================= */
-
+    // Quote Modal
     const quoteModal =
         document.getElementById("quoteModal");
 
@@ -479,26 +380,19 @@
     const quoteFormMessage =
         document.getElementById("quoteFormMessage");
 
-
     function openQuoteModal(requestId) {
-
         const request =
             vendorRequests.find(
                 item => item.id === requestId
             );
 
-
         if (!request) {
             return;
         }
 
-
         quoteForm.reset();
-
         quoteEditId.value = "";
-
-        quoteRequestId.value =
-            request.id;
+        quoteRequestId.value = request.id;
 
         quoteModalTitle.textContent =
             `${request.part} · ${request.id}`;
@@ -508,17 +402,13 @@
             "sd-form-message";
 
         quoteModal.hidden = false;
-
     }
 
-
     function openEditQuoteModal(quoteId) {
-
         const quote =
             submittedQuotes.find(
                 item => item.quoteId === quoteId
             );
-
 
         if (
             !quote ||
@@ -526,7 +416,6 @@
         ) {
             return;
         }
-
 
         quoteForm.reset();
 
@@ -555,60 +444,42 @@
             quote.note || "";
 
         quoteFormMessage.textContent = "";
-
         quoteFormMessage.className =
             "sd-form-message";
 
         quoteModal.hidden = false;
-
     }
-
 
     function closeQuoteModal() {
-
         quoteModal.hidden = true;
-
     }
-
 
     document
         .querySelectorAll("[data-close-modal]")
         .forEach(button => {
-
             button.addEventListener(
                 "click",
                 closeQuoteModal
             );
-
         });
-
 
     document.addEventListener(
         "keydown",
         event => {
-
             if (
                 event.key === "Escape" &&
                 !quoteModal.hidden
             ) {
                 closeQuoteModal();
             }
-
         }
     );
 
-
-
-    /* =========================================================
-       SUBMIT QUOTE
-    ========================================================= */
-
+    // Submit Quote
     quoteForm.addEventListener(
         "submit",
         event => {
-
             event.preventDefault();
-
 
             const request =
                 vendorRequests.find(
@@ -616,10 +487,8 @@
                         item.id === quoteRequestId.value
                 );
 
-
             const price =
                 Number(quotePrice.value);
-
 
             if (
                 !request ||
@@ -628,7 +497,6 @@
                 !quoteWarranty.value ||
                 !quoteStock.value
             ) {
-
                 quoteFormMessage.textContent =
                     "Please complete all required quotation fields.";
 
@@ -638,25 +506,20 @@
                 return;
             }
 
-
             const editingQuoteId =
                 quoteEditId.value.trim();
 
-
             if (editingQuoteId) {
-
                 const existingQuote =
                     submittedQuotes.find(
                         item =>
                             item.quoteId === editingQuoteId
                     );
 
-
                 if (
                     !existingQuote ||
                     existingQuote.status !== "Pending Review"
                 ) {
-
                     quoteFormMessage.textContent =
                         "Only pending quotations can be edited.";
 
@@ -664,12 +527,9 @@
                         "sd-form-message error";
 
                     return;
-
                 }
 
-
-                existingQuote.price =
-                    price;
+                existingQuote.price = price;
 
                 existingQuote.delivery =
                     quoteDelivery.value;
@@ -683,119 +543,85 @@
                 existingQuote.note =
                     quoteNote.value.trim();
 
-
                 const historyItem =
                     quoteHistory.find(
                         item =>
                             item.quoteId === editingQuoteId
                     );
 
-
                 if (historyItem) {
-
-                    historyItem.price =
-                        price;
+                    historyItem.price = price;
 
                     historyItem.delivery =
                         quoteDelivery.value;
-
                 }
-
 
                 renderSubmittedQuotes();
                 renderQuoteHistory();
 
                 closeQuoteModal();
-
                 openSection("quotes");
 
                 return;
-
             }
-
 
             const quoteId =
                 `QT-${5110 + submittedQuotes.length}`;
 
-
             submittedQuotes.unshift({
-
-                quoteId: quoteId,
+                quoteId,
                 requestId: request.id,
                 part: request.part,
-                price: price,
+                price,
                 delivery: quoteDelivery.value,
                 warranty: quoteWarranty.value,
                 stock: quoteStock.value,
                 note: quoteNote.value.trim(),
                 status: "Pending Review"
-
             });
-
 
             quoteHistory.unshift({
-
-                quoteId: quoteId,
+                quoteId,
                 requestId: request.id,
                 part: request.part,
-                price: price,
+                price,
                 delivery: quoteDelivery.value,
                 status: "Pending Review"
-
             });
 
-
-            request.status =
-                "quoted";
-
+            request.status = "quoted";
 
             renderVendorRequests();
             renderSubmittedQuotes();
             renderQuoteHistory();
 
-
             closeQuoteModal();
-
             openSection("quotes");
-
         }
     );
 
-
-
-    /* =========================================================
-       SUBMITTED QUOTES
-    ========================================================= */
-
+    // Submitted Quotes
     const submittedQuoteList =
         document.getElementById("submittedQuoteList");
 
-
     function renderSubmittedQuotes() {
-
         if (!submittedQuotes.length) {
-
             submittedQuoteList.innerHTML = `
-
                 <article class="sd-panel">
                     No submitted quotations yet.
                 </article>
-
             `;
 
             return;
         }
 
-
         submittedQuoteList.innerHTML =
             submittedQuotes.map(quote => `
-
                 <article class="sd-quote-card">
 
                     <div class="sd-card-top">
 
                         <div>
-
                             <span class="sd-eyebrow">
                                 ${escapeHTML(quote.quoteId)}
                             </span>
@@ -807,7 +633,6 @@
                             <p>
                                 Request ${escapeHTML(quote.requestId)}
                             </p>
-
                         </div>
 
                         <span class="sd-badge submitted">
@@ -816,13 +641,14 @@
 
                     </div>
 
-
                     <div class="sd-card-data">
 
                         <div class="sd-data-box">
                             <span>Unit Price</span>
                             <strong>
-                                ${escapeHTML(formatCurrency(quote.price))}
+                                ${escapeHTML(
+                                    formatCurrency(quote.price)
+                                )}
                             </strong>
                         </div>
 
@@ -856,7 +682,6 @@
 
                     </div>
 
-
                     ${
                         quote.status === "Pending Review"
                             ? `
@@ -865,7 +690,9 @@
                                     <button
                                         type="button"
                                         class="sd-secondary-btn"
-                                        data-edit-quote="${escapeHTML(quote.quoteId)}"
+                                        data-edit-quote="${escapeHTML(
+                                            quote.quoteId
+                                        )}"
                                     >
                                         <i class="bi bi-pencil-square"></i>
                                         Edit Quote
@@ -877,41 +704,27 @@
                     }
 
                 </article>
-
             `).join("");
-
 
         document
             .querySelectorAll("[data-edit-quote]")
             .forEach(button => {
-
                 button.addEventListener(
                     "click",
                     () => {
-
                         openEditQuoteModal(
                             button.dataset.editQuote
                         );
-
                     }
                 );
-
             });
-
     }
 
-
-
-    /* =========================================================
-       QUOTE HISTORY
-    ========================================================= */
-
+    // Quote History
     const quoteHistoryBody =
         document.getElementById("quoteHistoryBody");
 
-
     function getHistoryBadge(status) {
-
         if (status === "Accepted") {
             return "accepted";
         }
@@ -924,15 +737,11 @@
         }
 
         return "submitted";
-
     }
 
-
     function renderQuoteHistory() {
-
         quoteHistoryBody.innerHTML =
             quoteHistory.map(item => `
-
                 <tr>
 
                     <td>
@@ -970,20 +779,12 @@
                     </td>
 
                 </tr>
-
             `).join("");
-
     }
 
-
-
-    /* =========================================================
-       INITIAL RENDER
-    ========================================================= */
-
+    // Initial Render
     renderVendorRequests();
     renderSubmittedQuotes();
     renderQuoteHistory();
 
 });
-

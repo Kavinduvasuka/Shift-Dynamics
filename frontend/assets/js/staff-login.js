@@ -28,10 +28,7 @@
         document.getElementById("staffLoginMessage");
 
 
-    /* =====================================================
-       PASSWORD VISIBILITY
-       ===================================================== */
-
+    // Password Visibility
     passwordToggle.addEventListener(
         "click",
         () => {
@@ -44,7 +41,6 @@
                     ? "password"
                     : "text";
 
-
             const icon =
                 passwordToggle.querySelector("i");
 
@@ -53,22 +49,17 @@
                     ? "bi bi-eye"
                     : "bi bi-eye-slash";
 
-
             passwordToggle.setAttribute(
                 "aria-label",
                 showing
                     ? "Show password"
                     : "Hide password"
             );
-
         }
     );
 
 
-    /* =====================================================
-       VALIDATION
-       ===================================================== */
-
+    // Validation
     function clearErrors() {
 
         emailError.textContent = "";
@@ -84,7 +75,6 @@
 
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             .test(email);
-
     }
 
 
@@ -99,7 +89,6 @@
 
         const password =
             passwordInput.value;
-
 
         if (!email) {
 
@@ -116,7 +105,6 @@
             valid = false;
         }
 
-
         if (!password) {
 
             passwordError.textContent =
@@ -125,22 +113,16 @@
             valid = false;
         }
 
-
         return valid;
     }
 
 
-
-    /* =====================================================
-       LOGIN
-       ===================================================== */
-
+    // Login
     form.addEventListener(
         "submit",
         event => {
 
             event.preventDefault();
-
 
             if (!validate()) {
 
@@ -153,34 +135,23 @@
                 return;
             }
 
-
             const loginData = {
-
                 email:
                     emailInput.value
                         .trim()
                         .toLowerCase()
-
-                /*
-                    IMPORTANT:
-
-                    We do NOT ask the user to select
-                    Advisor / Manager / Mechanic /
-                    Storekeeper / Vendor here.
-
-                    Future C# .NET backend:
-
-                    1. Validate email + password
-                    2. Read account role
-                    3. Return authenticated role
-                    4. Frontend redirects to the
-                       correct dashboard.
-
-                    Never trust a frontend-selected
-                    role for authorization.
-                */
             };
 
+            /*
+             * Backend integration:
+             * The C# .NET backend should validate the credentials,
+             * determine the authenticated account role and return it.
+             * Authorization must never depend on a frontend-selected role.
+             */
+            console.log(
+                "Staff login request:",
+                loginData
+            );
 
             loginButton.disabled = true;
 
@@ -188,75 +159,79 @@
                 "Signing In...";
 
 
-            /*
-                FRONTEND DEMO ONLY.
+            // Frontend Demo Role Redirect
+            const email =
+                emailInput.value
+                    .trim()
+                    .toLowerCase();
 
-                Real authentication will replace
-                this timeout with a .NET API call.
-            */
+            let redirectPage = "";
 
-            /* =====================================================
-   FRONTEND DEMO ROLE REDIRECT
-   ===================================================== */
+            if (
+                email === "advisor@shiftdynamics.com"
+            ) {
 
-const email =
-    emailInput.value.trim().toLowerCase();
+                redirectPage =
+                    "advisor/dashboard.html";
 
-let redirectPage = "";
+            } else if (
+                email === "manager@shiftdynamics.com"
+            ) {
 
+                redirectPage =
+                    "manager/dashboard.html";
 
-if (email === "advisor@shiftdynamics.com") {
+            } else if (
+                email === "mechanic@shiftdynamics.com"
+            ) {
 
-    redirectPage = "advisor/dashboard.html";
+                redirectPage =
+                    "mechanic/dashboard.html";
 
-} else if (email === "manager@shiftdynamics.com") {
+            } else if (
+                email === "storekeeper@shiftdynamics.com"
+            ) {
 
-    redirectPage = "manager/dashboard.html";
+                redirectPage =
+                    "storekeeper/dashboard.html";
 
-} else if (email === "mechanic@shiftdynamics.com") {
+            } else if (
+                email === "vendor@example.com"
+            ) {
 
-    redirectPage = "mechanic/dashboard.html";
+                redirectPage =
+                    "vendor/dashboard.html";
+            }
 
-} else if (email === "storekeeper@shiftdynamics.com") {
+            if (redirectPage) {
 
-    redirectPage = "storekeeper/dashboard.html";
+                loginMessage.textContent =
+                    "Login successful. Redirecting...";
 
-} else if (email === "vendor@example.com") {
+                loginMessage.className =
+                    "sd-login-message success";
 
-    redirectPage = "vendor/dashboard.html";
+                setTimeout(
+                    () => {
+                        window.location.href =
+                            redirectPage;
+                    },
+                    800
+                );
 
-}
+            } else {
 
+                loginMessage.textContent =
+                    "Account not found for this portal.";
 
-if (redirectPage) {
+                loginMessage.className =
+                    "sd-login-message error";
 
-    loginMessage.textContent =
-        "Login successful. Redirecting...";
+                loginButton.disabled = false;
 
-    loginMessage.className =
-        "sd-login-message success";
-
-
-    setTimeout(() => {
-
-        window.location.href = redirectPage;
-
-    }, 800);
-
-} else {
-
-    loginMessage.textContent =
-        "Account not found for this portal.";
-
-    loginMessage.className =
-        "sd-login-message error";
-
-
-    loginButton.disabled = false;
-
-    loginButtonText.textContent =
-        "Sign In";
-}
+                loginButtonText.textContent =
+                    "Sign In";
+            }
         }
     );
 

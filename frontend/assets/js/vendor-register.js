@@ -12,7 +12,6 @@
     const formMessage =
         document.getElementById("vendorFormMessage");
 
-
     const fields = {
         businessName:
             document.getElementById("businessName"),
@@ -42,7 +41,6 @@
             document.getElementById("vendorTerms")
     };
 
-
     function setError(fieldName, message) {
 
         const errorElement =
@@ -54,7 +52,6 @@
             errorElement.textContent = message;
         }
     }
-
 
     function clearErrors() {
 
@@ -69,13 +66,11 @@
             "sd-form-message";
     }
 
-
     function isValidEmail(email) {
 
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             .test(email);
     }
-
 
     function isValidSriLankanMobile(number) {
 
@@ -85,7 +80,6 @@
         return /^07\d{8}$/
             .test(cleanNumber);
     }
-
 
     function validateForm() {
 
@@ -117,7 +111,6 @@
         const confirmPassword =
             fields.confirmVendorPassword.value;
 
-
         if (!businessName) {
 
             setError(
@@ -128,7 +121,6 @@
             isValid = false;
         }
 
-
         if (!contactPerson) {
 
             setError(
@@ -138,7 +130,6 @@
 
             isValid = false;
         }
-
 
         if (!mobile) {
 
@@ -161,7 +152,6 @@
             isValid = false;
         }
 
-
         if (!email) {
 
             setError(
@@ -181,7 +171,6 @@
             isValid = false;
         }
 
-
         if (!address) {
 
             setError(
@@ -191,7 +180,6 @@
 
             isValid = false;
         }
-
 
         if (!specialization) {
 
@@ -203,7 +191,6 @@
             isValid = false;
         }
 
-
         if (password.length < 8) {
 
             setError(
@@ -213,7 +200,6 @@
 
             isValid = false;
         }
-
 
         if (
             password !== confirmPassword
@@ -227,7 +213,6 @@
             isValid = false;
         }
 
-
         if (!fields.vendorTerms.checked) {
 
             setError(
@@ -238,10 +223,8 @@
             isValid = false;
         }
 
-
         return isValid;
     }
-
 
     document
         .querySelectorAll(
@@ -263,7 +246,6 @@
 
                     const icon =
                         button.querySelector("i");
-
 
                     if (
                         input.type === "password"
@@ -291,19 +273,15 @@
                             "Show password"
                         );
                     }
-
                 }
             );
-
         });
-
 
     form.addEventListener(
         "submit",
         event => {
 
             event.preventDefault();
-
 
             if (!validateForm()) {
 
@@ -315,7 +293,6 @@
 
                 return;
             }
-
 
             const vendorData = {
 
@@ -348,25 +325,17 @@
                     new Date().toISOString()
 
                 /*
-                    BACKEND INTEGRATION:
-
-                    Later send vendorData to the
-                    C# .NET registration API.
-
-                    Password handling should be performed
-                    securely by the backend.
-
-                    Do not store plaintext passwords
-                    in localStorage or frontend files.
-                */
+                 * Backend integration:
+                 * Send vendorData to the C# .NET registration API.
+                 * Passwords must be handled securely by the backend
+                 * and never stored in frontend storage.
+                 */
             };
-
 
             submitButton.disabled = true;
 
             submitText.textContent =
                 "Submitting Registration...";
-
 
             setTimeout(
                 () => {
@@ -376,19 +345,13 @@
                         vendorData
                     );
 
-
                     /*
-                        FRONTEND DEMO WORKFLOW
-
-                        Only business/contact information is stored.
-
-                        Password is intentionally NOT stored in
-                        localStorage.
-
-                        Backend later replaces this with:
-
-                        POST /api/vendor-registrations
-                    */
+                     * Frontend demo only:
+                     * Stores vendor business/contact data in localStorage
+                     * without passwords.
+                     * Replace with POST /api/vendor-registrations
+                     * when the backend is connected.
+                     */
 
                     const existingRequests =
                         JSON.parse(
@@ -397,14 +360,12 @@
                             ) || "[]"
                         );
 
-
                     const duplicateIndex =
                         existingRequests.findIndex(
                             request =>
                                 request.email ===
                                 vendorData.email
                         );
-
 
                     const registrationRequest = {
                         id:
@@ -416,7 +377,6 @@
 
                         ...vendorData
                     };
-
 
                     if (duplicateIndex >= 0) {
 
@@ -431,14 +391,12 @@
                         );
                     }
 
-
                     localStorage.setItem(
                         "shiftDynamicsVendorRegistrations",
                         JSON.stringify(
                             existingRequests
                         )
                     );
-
 
                     formMessage.textContent =
                         "Registration submitted successfully. Your vendor account is now pending manager approval.";
@@ -456,9 +414,7 @@
                 },
                 700
             );
-
         }
     );
 
 });
-

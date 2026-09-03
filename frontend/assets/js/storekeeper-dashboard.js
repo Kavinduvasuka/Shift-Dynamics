@@ -1,9 +1,6 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
 
-    /* =========================================================
-       NAVIGATION
-    ========================================================= */
-
+    // Navigation
     const navLinks =
         document.querySelectorAll(".sd-nav-link");
 
@@ -25,7 +22,6 @@
     const sidebarClose =
         document.getElementById("sidebarClose");
 
-
     const titles = {
         overview: "Storekeeper Overview",
         requisitions: "Pending Requisitions",
@@ -33,7 +29,6 @@
         "vendor-requests": "Vendor Requests",
         movements: "Stock Movements"
     };
-
 
     function openSection(sectionId) {
 
@@ -44,7 +39,6 @@
             );
         });
 
-
         navLinks.forEach(link => {
             link.classList.toggle(
                 "active",
@@ -52,10 +46,8 @@
             );
         });
 
-
         pageTitle.textContent =
             titles[sectionId] || "Storekeeper Dashboard";
-
 
         sidebar.classList.remove("open");
         sidebarOverlay.classList.remove("show");
@@ -66,66 +58,41 @@
         });
     }
 
-
     navLinks.forEach(link => {
-
         link.addEventListener("click", () => {
-
             openSection(
                 link.dataset.section
             );
-
         });
-
     });
-
 
     document
         .querySelectorAll("[data-go-section]")
         .forEach(button => {
-
             button.addEventListener("click", () => {
-
                 openSection(
                     button.dataset.goSection
                 );
-
             });
-
         });
 
-
     menuButton.addEventListener("click", () => {
-
         sidebar.classList.add("open");
         sidebarOverlay.classList.add("show");
-
     });
-
 
     sidebarClose.addEventListener("click", () => {
-
         sidebar.classList.remove("open");
         sidebarOverlay.classList.remove("show");
-
     });
-
 
     sidebarOverlay.addEventListener("click", () => {
-
         sidebar.classList.remove("open");
         sidebarOverlay.classList.remove("show");
-
     });
 
-
-
-    /* =========================================================
-       DEMO INVENTORY DATA
-    ========================================================= */
-
+    // Demo Inventory Data
     const inventory = [
-
         {
             number: "PT-ENG-001",
             part: "Engine Mount",
@@ -134,7 +101,6 @@
             quantity: 3,
             status: "available"
         },
-
         {
             number: "PT-BRK-002",
             part: "Front Brake Pad Set",
@@ -143,7 +109,6 @@
             quantity: 8,
             status: "available"
         },
-
         {
             number: "PT-SUS-003",
             part: "Shock Absorber",
@@ -152,7 +117,6 @@
             quantity: 2,
             status: "low"
         },
-
         {
             number: "PT-ELC-004",
             part: "12V Car Battery",
@@ -161,7 +125,6 @@
             quantity: 4,
             status: "available"
         },
-
         {
             number: "PT-FLT-005",
             part: "Engine Oil Filter",
@@ -170,7 +133,6 @@
             quantity: 14,
             status: "available"
         },
-
         {
             number: "PT-CLG-006",
             part: "Radiator Hose",
@@ -179,7 +141,6 @@
             quantity: 1,
             status: "low"
         },
-
         {
             number: "PT-BDY-007",
             part: "Headlamp Assembly",
@@ -188,7 +149,6 @@
             quantity: 0,
             status: "out"
         },
-
         {
             number: "PT-WHL-008",
             part: "17-inch Alloy Wheel",
@@ -197,17 +157,10 @@
             quantity: 0,
             status: "out"
         }
-
     ];
 
-
-
-    /* =========================================================
-       MECHANIC REQUISITIONS
-    ========================================================= */
-
+    // Mechanic Requisitions
     const requisitions = [
-
         {
             id: "PR-3024",
             job: "JC-1052",
@@ -219,7 +172,6 @@
             urgency: "Urgent",
             status: "pending"
         },
-
         {
             id: "PR-3025",
             job: "JC-1058",
@@ -231,7 +183,6 @@
             urgency: "Normal",
             status: "pending"
         },
-
         {
             id: "PR-3026",
             job: "JC-1057",
@@ -243,17 +194,10 @@
             urgency: "Normal",
             status: "pending"
         }
-
     ];
 
-
-
-    /* =========================================================
-       VENDOR REQUESTS
-    ========================================================= */
-
+    // Vendor Requests
     const vendorRequests = [
-
         {
             id: "VR-4018",
             job: "JC-1048",
@@ -263,7 +207,6 @@
             vehicle: "Toyota Corolla",
             status: "Awaiting Quotes"
         },
-
         {
             id: "VR-4019",
             job: "JC-1050",
@@ -273,17 +216,10 @@
             vehicle: "Honda Vezel",
             status: "Awaiting Quotes"
         }
-
     ];
 
-
-
-    /* =========================================================
-       STOCK MOVEMENTS
-    ========================================================= */
-
+    // Stock Movements
     const stockMovements = [
-
         {
             time: "Today · 09:12 AM",
             part: "Front Brake Pad Set",
@@ -292,7 +228,6 @@
             quantity: "-1",
             user: "Store Keeper"
         },
-
         {
             time: "Today · 08:45 AM",
             part: "Engine Oil Filter",
@@ -301,7 +236,6 @@
             quantity: "+10",
             user: "Store Keeper"
         },
-
         {
             time: "31 Aug · 04:20 PM",
             part: "Radiator Hose",
@@ -310,17 +244,9 @@
             quantity: "-1",
             user: "Store Keeper"
         }
-
     ];
 
-
-
-    /* =========================================================
-       SECURITY HELPER
-
-       Dynamic values inserted with innerHTML are escaped first.
-    ========================================================= */
-
+    // Security Helper
     function escapeHTML(value) {
 
         return String(value)
@@ -329,15 +255,9 @@
             .replaceAll(">", "&gt;")
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
-
     }
 
-
-
-    /* =========================================================
-       INVENTORY RENDERING
-    ========================================================= */
-
+    // Inventory
     const inventoryTableBody =
         document.getElementById("inventoryTableBody");
 
@@ -346,7 +266,6 @@
 
     const inventoryFilter =
         document.getElementById("inventoryFilter");
-
 
     function getStatusLabel(status) {
 
@@ -361,7 +280,6 @@
         return "Out of Stock";
     }
 
-
     function renderInventory() {
 
         const search =
@@ -371,7 +289,6 @@
 
         const filter =
             inventoryFilter.value;
-
 
         const filtered =
             inventory.filter(item => {
@@ -388,13 +305,10 @@
                     item.status === filter;
 
                 return searchMatch && filterMatch;
-
             });
-
 
         inventoryTableBody.innerHTML =
             filtered.map(item => `
-
                 <tr>
 
                     <td>
@@ -428,47 +342,32 @@
                     </td>
 
                 </tr>
-
             `).join("");
 
-
         if (!filtered.length) {
-
             inventoryTableBody.innerHTML = `
-
                 <tr>
                     <td colspan="6">
                         No matching inventory items found.
                     </td>
                 </tr>
-
             `;
-
         }
-
     }
-
 
     inventorySearch.addEventListener(
         "input",
         renderInventory
     );
 
-
     inventoryFilter.addEventListener(
         "change",
         renderInventory
     );
 
-
-
-    /* =========================================================
-       REQUISITION RENDERING
-    ========================================================= */
-
+    // Requisitions
     const requisitionList =
         document.getElementById("requisitionList");
-
 
     function renderRequisitions() {
 
@@ -481,20 +380,16 @@
                             item.number === request.partNumber
                     );
 
-
                 const available =
                     inventoryItem &&
                     inventoryItem.quantity >= request.quantity;
 
-
                 return `
-
                     <article class="sd-requisition-card">
 
                         <div class="sd-card-top">
 
                             <div>
-
                                 <span class="sd-eyebrow">
                                     ${escapeHTML(request.id)}
                                 </span>
@@ -507,7 +402,6 @@
                                     Requested by
                                     ${escapeHTML(request.mechanic)}
                                 </p>
-
                             </div>
 
                             <span class="sd-badge ${
@@ -519,7 +413,6 @@
                             </span>
 
                         </div>
-
 
                         <div class="sd-card-data">
 
@@ -564,36 +457,38 @@
 
                         </div>
 
-
                         <div class="sd-card-actions">
 
                             <button
                                 type="button"
                                 class="sd-primary-btn"
                                 data-release="${escapeHTML(request.id)}"
-                                ${!available || request.status !== "pending"
-                                    ? "disabled"
-                                    : ""}
+                                ${
+                                    !available ||
+                                    request.status !== "pending"
+                                        ? "disabled"
+                                        : ""
+                                }
                             >
                                 <i class="bi bi-box-arrow-up-right"></i>
                                 Release Part
                             </button>
 
-
                             <button
                                 type="button"
                                 class="sd-danger-btn"
                                 data-out-stock="${escapeHTML(request.id)}"
-                                ${request.status !== "pending"
-                                    ? "disabled"
-                                    : ""}
+                                ${
+                                    request.status !== "pending"
+                                        ? "disabled"
+                                        : ""
+                                }
                             >
                                 <i class="bi bi-exclamation-circle"></i>
                                 Out of Stock
                             </button>
 
                         </div>
-
 
                         <p
                             class="sd-card-message ${
@@ -604,7 +499,6 @@
                                         : ""
                             }"
                         >
-
                             ${
                                 request.status === "released"
                                     ? "Part released to mechanic."
@@ -614,59 +508,41 @@
                                             ? "Requested quantity is available in inventory."
                                             : "Requested quantity is not currently available."
                             }
-
                         </p>
 
                     </article>
-
                 `;
-
             }).join("");
 
-
         attachRequisitionEvents();
-
     }
-
-
 
     function attachRequisitionEvents() {
 
         document
             .querySelectorAll("[data-release]")
             .forEach(button => {
-
                 button.addEventListener(
                     "click",
                     () => releasePart(
                         button.dataset.release
                     )
                 );
-
             });
-
 
         document
             .querySelectorAll("[data-out-stock]")
             .forEach(button => {
-
                 button.addEventListener(
                     "click",
                     () => markOutOfStock(
                         button.dataset.outStock
                     )
                 );
-
             });
-
     }
 
-
-
-    /* =========================================================
-       RELEASE PART
-    ========================================================= */
-
+    // Release Part
     function releasePart(requestId) {
 
         const request =
@@ -674,18 +550,18 @@
                 item => item.id === requestId
             );
 
-
-        if (!request || request.status !== "pending") {
+        if (
+            !request ||
+            request.status !== "pending"
+        ) {
             return;
         }
-
 
         const inventoryItem =
             inventory.find(
                 item =>
                     item.number === request.partNumber
             );
-
 
         if (
             !inventoryItem ||
@@ -694,48 +570,36 @@
             return;
         }
 
-
-        inventoryItem.quantity -= request.quantity;
-
+        inventoryItem.quantity -=
+            request.quantity;
 
         if (inventoryItem.quantity === 0) {
             inventoryItem.status = "out";
-        }
-        else if (inventoryItem.quantity <= 2) {
+
+        } else if (inventoryItem.quantity <= 2) {
             inventoryItem.status = "low";
-        }
-        else {
+
+        } else {
             inventoryItem.status = "available";
         }
 
-
         request.status = "released";
 
-
         stockMovements.unshift({
-
             time: "Just now",
             part: request.part,
             reference: request.job,
             movement: "Released",
             quantity: `-${request.quantity}`,
             user: "Store Keeper"
-
         });
-
 
         renderRequisitions();
         renderInventory();
         renderMovements();
-
     }
 
-
-
-    /* =========================================================
-       OUT OF STOCK -> VENDOR REQUEST
-    ========================================================= */
-
+    // Out of Stock / Vendor Request
     function markOutOfStock(requestId) {
 
         const request =
@@ -743,14 +607,14 @@
                 item => item.id === requestId
             );
 
-
-        if (!request || request.status !== "pending") {
+        if (
+            !request ||
+            request.status !== "pending"
+        ) {
             return;
         }
 
-
         request.status = "vendor";
-
 
         const exists =
             vendorRequests.some(
@@ -758,11 +622,9 @@
                     item.sourceRequest === request.id
             );
 
-
         if (!exists) {
 
             vendorRequests.unshift({
-
                 id:
                     `VR-${4020 + vendorRequests.length}`,
 
@@ -786,38 +648,26 @@
 
                 status:
                     "Awaiting Quotes"
-
             });
-
         }
-
 
         renderRequisitions();
         renderVendorRequests();
-
     }
 
-
-
-    /* =========================================================
-       VENDOR REQUEST RENDERING
-    ========================================================= */
-
+    // Vendor Requests Rendering
     const vendorRequestList =
         document.getElementById("vendorRequestList");
-
 
     function renderVendorRequests() {
 
         vendorRequestList.innerHTML =
             vendorRequests.map(request => `
-
                 <article class="sd-vendor-card">
 
                     <div class="sd-card-top">
 
                         <div>
-
                             <span class="sd-eyebrow">
                                 ${escapeHTML(request.id)}
                             </span>
@@ -829,7 +679,6 @@
                             <p>
                                 External vendor sourcing request
                             </p>
-
                         </div>
 
                         <span class="sd-badge normal">
@@ -837,7 +686,6 @@
                         </span>
 
                     </div>
-
 
                     <div class="sd-card-data">
 
@@ -879,26 +727,17 @@
                     </div>
 
                 </article>
-
             `).join("");
-
     }
 
-
-
-    /* =========================================================
-       STOCK MOVEMENT RENDERING
-    ========================================================= */
-
+    // Stock Movements
     const movementTableBody =
         document.getElementById("movementTableBody");
-
 
     function renderMovements() {
 
         movementTableBody.innerHTML =
             stockMovements.map(item => `
-
                 <tr>
 
                     <td>
@@ -930,17 +769,10 @@
                     </td>
 
                 </tr>
-
             `).join("");
-
     }
 
-
-
-    /* =========================================================
-       INITIAL RENDER
-    ========================================================= */
-
+    // Initial Render
     renderInventory();
     renderRequisitions();
     renderVendorRequests();

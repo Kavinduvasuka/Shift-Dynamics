@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -276,7 +276,7 @@
                             Workshop Control Center
                         </span>
 
-                        <h2>
+                        <h2 id="managerGreeting">
                             Good morning, Manager
                         </h2>
 
@@ -386,7 +386,7 @@
                             <button
                                 type="button"
                                 class="sd-text-btn"
-                                data-go="workshop"
+                                data-go="workshop-load"
                             >
                                 View Workshop
                                 <i class="bi bi-arrow-right"></i>
@@ -514,7 +514,7 @@
                                     </strong>
 
                                     <span>
-                                        #PO-2048 · Brake Kit
+                                        #PO-2048 Ãƒâ€šÃ‚Â· Brake Kit
                                     </span>
                                 </div>
 
@@ -713,7 +713,7 @@
                             <button
                                 type="button"
                                 class="sd-quick-action"
-                                data-go="workshop"
+                                data-go="workshop-load"
                             >
                                 <i class="bi bi-person-workspace"></i>
 
@@ -1032,19 +1032,19 @@
                                     </option>
 
                                     <option value="Nimal Perera">
-                                        Nimal Perera — Engine & Mechanical
+                                        Nimal Perera ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Engine & Mechanical
                                     </option>
 
                                     <option value="Kasun Silva">
-                                        Kasun Silva — Diagnostics
+                                        Kasun Silva ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Diagnostics
                                     </option>
 
                                     <option value="Ruwan Fernando">
-                                        Ruwan Fernando — Brakes & Suspension
+                                        Ruwan Fernando ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Brakes & Suspension
                                     </option>
 
                                     <option value="Dilan Jayasinghe">
-                                        Dilan Jayasinghe — General Service
+                                        Dilan Jayasinghe ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â General Service
                                     </option>
                                 </select>
 
@@ -3583,6 +3583,37 @@
 
             </section>
 
+                        <div class="sd-manager-message-modal" id="managerMessageModal" hidden>
+                <div class="sd-manager-message-modal-backdrop" data-close-manager-message></div>
+
+                <div class="sd-manager-message-modal-dialog">
+                    <div class="sd-manager-message-modal-header">
+                        <div>
+                            <span class="sd-panel-label">Customer Inquiry</span>
+                            <h2 id="managerMessageModalSubject">Message</h2>
+                        </div>
+
+                        <button type="button" class="sd-manager-message-modal-close" data-close-manager-message aria-label="Close">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <div class="sd-manager-message-details" id="managerMessageDetails"></div>
+
+                    <div class="sd-manager-message-body" id="managerMessageBody"></div>
+
+                    <div class="sd-manager-message-modal-actions">
+                        <button type="button" class="sd-primary-btn" id="managerResolveMessage">
+                            <i class="bi bi-check-circle"></i>
+                            Mark as Resolved
+                        </button>
+
+                        <button type="button" class="sd-secondary-btn" data-close-manager-message>
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
             <!-- Vendor Registration Approvals -->
 
             <section
