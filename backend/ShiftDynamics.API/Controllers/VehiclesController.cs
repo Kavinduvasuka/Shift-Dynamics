@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.DTOs.Vehicles;
 using ShiftDynamics.API.Infrastructure.Data;
@@ -8,153 +10,58 @@ namespace ShiftDynamics.API.Controllers;
 
 [ApiController]
 [Route("api/vehicles")]
+[Authorize]
 public class VehiclesController : ControllerBase
 {
-    private readonly ShiftDynamicsDbContext _dbContext;
-
-    public VehiclesController(ShiftDynamicsDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
+    private readonly ShiftDynamicsDbContext _db;
+    public VehiclesController(ShiftDynamicsDbContext db) => _db = db;
+    private bool IsCustomer => User.IsInRole(SystemRole.Customer.ToString());
+    private Guid CustomerId => User.RequireCustomerId();
+    private static VehicleResponse Map(Vehicle v) => new() { Id=v.Id, CustomerId=v.CustomerId, RegistrationNumber=v.RegistrationNumber, Make=v.Make, Model=v.Model, Year=v.Year, VIN=v.VIN, Color=v.Color, CreatedAt=v.CreatedAt };
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<VehicleResponse>>> GetVehicles()
     {
-        var vehicles = await _dbContext.Vehicles
-            .AsNoTracking()
-            .Select(v => new VehicleResponse
-            {
-                Id = v.Id,
-                CustomerId = v.CustomerId,
-                RegistrationNumber = v.RegistrationNumber,
-                Make = v.Make,
-                Model = v.Model,
-                Year = v.Year,
-                VIN = v.VIN,
-                Color = v.Color,
-                CreatedAt = v.CreatedAt
-            })
-            .ToListAsync();
-
-        return Ok(vehicles);
+        var query = _db.Vehicles.AsNoTracking();
+        if (IsCustomer) query = query.Where(v => v.CustomerId == CustomerId);
+        return Ok((await query.OrderByDescending(v => v.CreatedAt).ToListAsync()).Select(Map));
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<VehicleResponse>> GetVehicle(Guid id)
     {
-        var vehicle = await _dbContext.Vehicles
-            .AsNoTracking()
-            .Where(v => v.Id == id)
-            .Select(v => new VehicleResponse
-            {
-                Id = v.Id,
-                CustomerId = v.CustomerId,
-                RegistrationNumber = v.RegistrationNumber,
-                Make = v.Make,
-                Model = v.Model,
-                Year = v.Year,
-                VIN = v.VIN,
-                Color = v.Color,
-                CreatedAt = v.CreatedAt
-            })
-            .FirstOrDefaultAsync();
-
-        if (vehicle is null)
-            return NotFound();
-
-        return Ok(vehicle);
+        var query = _db.Vehicles.AsNoTracking().Where(v => v.Id == id);
+        if (IsCustomer) query = query.Where(v => v.CustomerId == CustomerId);
+        var vehicle = await query.FirstOrDefaultAsync();
+        return vehicle is null ? NotFound() : Ok(Map(vehicle));
     }
 
     [HttpPost]
-    public async Task<ActionResult<VehicleResponse>> CreateVehicle(
-        CreateVehicleRequest request)
+    [Authorize(Policy = "Customer")]
+    public async Task<ActionResult<VehicleResponse>> CreateVehicle(CreateVehicleRequest request)
     {
-        var customerExists = await _dbContext.Customers
-            .AnyAsync(c => c.Id == request.CustomerId);
-
-        if (!customerExists)
-            return BadRequest(new
-            {
-                message = "The specified customer does not exist."
-            });
-
-        var vehicle = new Vehicle
-        {
-            Id = Guid.NewGuid(),
-            CustomerId = request.CustomerId,
-            RegistrationNumber = request.RegistrationNumber.Trim(),
-            Make = request.Make.Trim(),
-            Model = request.Model.Trim(),
-            Year = request.Year,
-            VIN = request.VIN?.Trim(),
-            Color = request.Color?.Trim()
-        };
-
-        _dbContext.Vehicles.Add(vehicle);
-        await _dbContext.SaveChangesAsync();
-
-        var response = new VehicleResponse
-        {
-            Id = vehicle.Id,
-            CustomerId = vehicle.CustomerId,
-            RegistrationNumber = vehicle.RegistrationNumber,
-            Make = vehicle.Make,
-            Model = vehicle.Model,
-            Year = vehicle.Year,
-            VIN = vehicle.VIN,
-            Color = vehicle.Color,
-            CreatedAt = vehicle.CreatedAt
-        };
-
-        return CreatedAtAction(
-            nameof(GetVehicle),
-            new { id = vehicle.Id },
-            response);
+        var vehicle = new Vehicle { Id=Guid.NewGuid(), CustomerId=CustomerId, RegistrationNumber=request.RegistrationNumber.Trim(), Make=request.Make.Trim(), Model=request.Model.Trim(), Year=request.Year, VIN=string.IsNullOrWhiteSpace(request.VIN) ? null : request.VIN.Trim(), Color=string.IsNullOrWhiteSpace(request.Color) ? null : request.Color.Trim(), CreatedAt=DateTime.UtcNow };
+        _db.Vehicles.Add(vehicle); await _db.SaveChangesAsync();
+        return CreatedAtAction(nameof(GetVehicle), new { id=vehicle.Id }, Map(vehicle));
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateVehicle(
-        Guid id,
-        UpdateVehicleRequest request)
+    [Authorize(Policy = "Customer")]
+    public async Task<ActionResult<VehicleResponse>> UpdateVehicle(Guid id, UpdateVehicleRequest request)
     {
-        var vehicle = await _dbContext.Vehicles.FindAsync(id);
-
-        if (vehicle is null)
-            return NotFound();
-
-        var customerExists = await _dbContext.Customers
-            .AnyAsync(c => c.Id == request.CustomerId);
-
-        if (!customerExists)
-            return BadRequest(new
-            {
-                message = "The specified customer does not exist."
-            });
-
-        vehicle.CustomerId = request.CustomerId;
-        vehicle.RegistrationNumber = request.RegistrationNumber.Trim();
-        vehicle.Make = request.Make.Trim();
-        vehicle.Model = request.Model.Trim();
-        vehicle.Year = request.Year;
-        vehicle.VIN = request.VIN?.Trim();
-        vehicle.Color = request.Color?.Trim();
-
-        await _dbContext.SaveChangesAsync();
-
-        return NoContent();
+        var vehicle = await _db.Vehicles.FirstOrDefaultAsync(v => v.Id == id && v.CustomerId == CustomerId);
+        if (vehicle is null) return NotFound();
+        vehicle.RegistrationNumber=request.RegistrationNumber.Trim(); vehicle.Make=request.Make.Trim(); vehicle.Model=request.Model.Trim(); vehicle.Year=request.Year; vehicle.VIN=string.IsNullOrWhiteSpace(request.VIN) ? null : request.VIN.Trim(); vehicle.Color=string.IsNullOrWhiteSpace(request.Color) ? null : request.Color.Trim();
+        await _db.SaveChangesAsync(); return Ok(Map(vehicle));
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "Customer")]
     public async Task<IActionResult> DeleteVehicle(Guid id)
     {
-        var vehicle = await _dbContext.Vehicles.FindAsync(id);
-
-        if (vehicle is null)
-            return NotFound();
-
-        _dbContext.Vehicles.Remove(vehicle);
-        await _dbContext.SaveChangesAsync();
-
-        return NoContent();
+        var vehicle = await _db.Vehicles.FirstOrDefaultAsync(v => v.Id == id && v.CustomerId == CustomerId);
+        if (vehicle is null) return NotFound();
+        if (await _db.Appointments.AnyAsync(a => a.VehicleId == id) || await _db.WorkOrders.AnyAsync(w => w.VehicleId == id)) throw new ConflictException("Vehicles with service history cannot be deleted.");
+        _db.Vehicles.Remove(vehicle); await _db.SaveChangesAsync(); return NoContent();
     }
 }

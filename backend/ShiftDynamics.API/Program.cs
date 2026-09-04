@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -47,7 +47,9 @@ builder.Services.AddDbContext<ShiftDynamicsDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
-var jwtKey = jwtSection["Key"] ?? "ShiftDynamics_Dev_Secret_Key_Change_In_Production_Min32Chars!";
+var jwtKey = jwtSection["Key"];
+if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
+    throw new InvalidOperationException("Jwt:Key must be configured securely and contain at least 32 characters.");
 var jwtIssuer = jwtSection["Issuer"] ?? "ShiftDynamics";
 var jwtAudience = jwtSection["Audience"] ?? "ShiftDynamicsClients";
 
@@ -93,8 +95,7 @@ builder.Services.AddCors(options =>
                 "http://localhost:5174",
                 "http://localhost:5500",
                 "http://127.0.0.1:5500",
-                "http://localhost:8080",
-                "null")
+                "http://localhost:8080")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

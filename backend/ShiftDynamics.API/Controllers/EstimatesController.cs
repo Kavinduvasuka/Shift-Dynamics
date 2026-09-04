@@ -19,7 +19,8 @@ public class EstimatesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<ApiResponse<object>>> List([FromQuery] Guid? workOrderId, [FromQuery] EstimateStatus? status)
     {
-        var query = _db.Estimates.AsNoTracking().AsQueryable();
+        var query = _db.Estimates.AsNoTracking().Include(e => e.WorkOrder).AsQueryable();
+        if (User.IsInRole(SystemRole.Customer.ToString())) { var customerId = User.RequireCustomerId(); query = query.Where(e => e.WorkOrder.CustomerId == customerId); }
         if (workOrderId.HasValue) query = query.Where(e => e.WorkOrderId == workOrderId);
         if (status.HasValue) query = query.Where(e => e.Status == status);
 
@@ -68,7 +69,8 @@ public class EstimatesController : ControllerBase
     [Authorize(Policy = "ServiceAdvisor")]
     public async Task<ActionResult<ApiResponse<object>>> Send(Guid id)
     {
-        var estimate = await _db.Estimates.FirstOrDefaultAsync(e => e.Id == id)
+        var customerId = User.RequireCustomerId();
+        var estimate = await _db.Estimates.Include(e => e.WorkOrder).FirstOrDefaultAsync(e => e.Id == id && e.WorkOrder.CustomerId == customerId)
             ?? throw new NotFoundException("Estimate not found.");
 
         estimate.Status = EstimateStatus.Sent;
@@ -83,13 +85,16 @@ public class EstimatesController : ControllerBase
     [Authorize(Policy = "Customer")]
     public async Task<ActionResult<ApiResponse<object>>> Decision(Guid id, [FromBody] DecisionRequest request)
     {
-        var estimate = await _db.Estimates.FirstOrDefaultAsync(e => e.Id == id)
+        var customerId = User.RequireCustomerId();
+        var estimate = await _db.Estimates.Include(e => e.WorkOrder).FirstOrDefaultAsync(e => e.Id == id && e.WorkOrder.CustomerId == customerId)
             ?? throw new NotFoundException("Estimate not found.");
 
         if (estimate.Status != EstimateStatus.Sent)
             throw new ConflictException("Estimate is not awaiting decision.");
 
         estimate.Status = request.Approve ? EstimateStatus.Approved : EstimateStatus.Rejected;
+        estimate.CustomerApproved = request.Approve;
+        estimate.ApprovedAt = request.Approve ? DateTime.UtcNow : null;
         estimate.UpdatedAt = DateTime.UtcNow;
         if (!string.IsNullOrWhiteSpace(request.Comment))
             estimate.Notes = (estimate.Notes + " | Customer: " + request.Comment).Trim();

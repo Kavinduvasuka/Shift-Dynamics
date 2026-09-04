@@ -18,7 +18,9 @@ public class TokenService : ITokenService
     public (string Token, DateTime ExpiresAt) CreateAccessToken(User user)
     {
         var jwtSection = _config.GetSection("Jwt");
-        var key = jwtSection["Key"] ?? "ShiftDynamics_Dev_Secret_Key_Change_In_Production_Min32Chars!";
+        var key = jwtSection["Key"];
+        if (string.IsNullOrWhiteSpace(key) || key.Length < 32)
+            throw new InvalidOperationException("Jwt:Key is missing or too weak.");
         var issuer = jwtSection["Issuer"] ?? "ShiftDynamics";
         var audience = jwtSection["Audience"] ?? "ShiftDynamicsClients";
         var hours = int.TryParse(jwtSection["ExpiryHours"], out var h) ? h : 8;

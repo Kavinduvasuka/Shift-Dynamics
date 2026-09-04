@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
-using System.Security.Claims;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -17,16 +16,19 @@ public class MechanicController : ControllerBase
 
     public MechanicController(ShiftDynamicsDbContext db) => _db = db;
 
+    private async Task<Guid> CurrentMechanicId() => (await _db.Staff.AsNoTracking().FirstOrDefaultAsync(s => s.UserId == User.RequireUserId() && s.Role == SystemRole.Mechanic && s.Status == StaffStatus.Active))?.Id ?? throw new ForbiddenException("Active mechanic profile is required.");
+
     [HttpGet("jobs")]
     public async Task<ActionResult<ApiResponse<object>>> MyJobs()
     {
+        var mechanicId = await CurrentMechanicId();
         // Resolve staff from user – simplified: return all assigned active jobs
         var jobs = await _db.JobAssignments
             .AsNoTracking()
             .Include(a => a.WorkOrder).ThenInclude(w => w.Vehicle)
             .Include(a => a.WorkOrder).ThenInclude(w => w.Customer)
             .Include(a => a.WorkOrder).ThenInclude(w => w.Service)
-            .Where(a => a.IsActive)
+            .Where(a => a.IsActive && a.MechanicStaffId == mechanicId)
             .Select(a => new
             {
                 a.Id,
@@ -44,13 +46,15 @@ public class MechanicController : ControllerBase
         return Ok(ApiResponse<object>.Ok(jobs));
     }
 
-    public record TimerActionRequest(Guid WorkOrderId, Guid MechanicStaffId);
+    public record TimerActionRequest(Guid WorkOrderId);
 
     [HttpPost("timer/start")]
     public async Task<ActionResult<ApiResponse<object>>> StartTimer([FromBody] TimerActionRequest request)
     {
+        var mechanicId = await CurrentMechanicId();
+        if (!await _db.JobAssignments.AnyAsync(a => a.WorkOrderId == request.WorkOrderId && a.MechanicStaffId == mechanicId && a.IsActive)) throw new ForbiddenException("This job is not assigned to you.");
         var active = await _db.LaborSessions.AnyAsync(s =>
-            s.MechanicStaffId == request.MechanicStaffId &&
+            s.MechanicStaffId == mechanicId &&
             s.Status == LaborSessionStatus.Active);
 
         if (active)
@@ -60,7 +64,7 @@ public class MechanicController : ControllerBase
         {
             Id = Guid.NewGuid(),
             WorkOrderId = request.WorkOrderId,
-            MechanicStaffId = request.MechanicStaffId,
+            MechanicStaffId = mechanicId,
             StartedAt = DateTime.UtcNow,
             Status = LaborSessionStatus.Active
         };
@@ -81,8 +85,9 @@ public class MechanicController : ControllerBase
     [HttpPost("timer/end")]
     public async Task<ActionResult<ApiResponse<object>>> EndTimer([FromBody] TimerActionRequest request)
     {
+        var mechanicId = await CurrentMechanicId();
         var session = await _db.LaborSessions
-            .Where(s => s.MechanicStaffId == request.MechanicStaffId &&
+            .Where(s => s.MechanicStaffId == mechanicId &&
                         s.WorkOrderId == request.WorkOrderId &&
                         (s.Status == LaborSessionStatus.Active || s.Status == LaborSessionStatus.Paused))
             .OrderByDescending(s => s.StartedAt)
@@ -100,12 +105,14 @@ public class MechanicController : ControllerBase
     }
 
     public record CreateRequisitionRequest(
-        Guid WorkOrderId, Guid RequestedByStaffId, Guid? PartId,
+        Guid WorkOrderId, Guid? PartId,
         string PartSpec, int QtyRequested, RequisitionUrgency Urgency, string? Reason);
 
     [HttpPost("requisitions")]
     public async Task<ActionResult<ApiResponse<object>>> CreateRequisition([FromBody] CreateRequisitionRequest request)
     {
+        var mechanicId = await CurrentMechanicId();
+        if (!await _db.JobAssignments.AnyAsync(a => a.WorkOrderId == request.WorkOrderId && a.MechanicStaffId == mechanicId && a.IsActive)) throw new ForbiddenException("This job is not assigned to you.");
         if (request.QtyRequested <= 0)
             throw new ValidationException("Quantity must be greater than zero.");
 
@@ -113,7 +120,7 @@ public class MechanicController : ControllerBase
         {
             Id = Guid.NewGuid(),
             WorkOrderId = request.WorkOrderId,
-            RequestedByStaffId = request.RequestedByStaffId,
+            RequestedByStaffId = mechanicId,
             PartId = request.PartId,
             PartSpec = request.PartSpec.Trim(),
             QtyRequested = request.QtyRequested,

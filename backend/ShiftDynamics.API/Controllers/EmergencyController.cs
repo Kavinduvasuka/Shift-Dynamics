@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
+using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
 using System.ComponentModel.DataAnnotations;
@@ -62,20 +63,17 @@ public class EmergencyController : ControllerBase
     }
 
     [HttpPost("requests")]
-    [AllowAnonymous]
+    [Authorize(Policy = "Customer")]
     public async Task<ActionResult<ApiResponse<object>>> CreateRequest([FromBody] CreateEmergencyRequest request)
     {
-        // Public requests allowed; CustomerId optional
-        if (request.CustomerId.HasValue)
-        {
-            var exists = await _db.Customers.AnyAsync(c => c.Id == request.CustomerId);
-            if (!exists) throw new NotFoundException("Customer not found.");
-        }
+        var customerId = User.RequireCustomerId();
+        if (request.VehicleId.HasValue && !await _db.Vehicles.AnyAsync(v => v.Id == request.VehicleId && v.CustomerId == customerId))
+            throw new ShiftDynamics.API.Common.ValidationException("Vehicle does not belong to the authenticated customer.");
 
         var entity = new EmergencyRequest
         {
             Id = Guid.NewGuid(),
-            CustomerId = request.CustomerId ?? Guid.Empty,
+            CustomerId = customerId,
             VehicleId = request.VehicleId,
             Location = request.Location.Trim(),
             Latitude = request.Latitude,

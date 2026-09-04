@@ -19,7 +19,8 @@ public class InvoicesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<ApiResponse<object>>> List([FromQuery] InvoiceStatus? status)
     {
-        var query = _db.Invoices.AsNoTracking().AsQueryable();
+        var query = _db.Invoices.AsNoTracking().Include(i => i.WorkOrder).AsQueryable();
+        if (User.IsInRole(SystemRole.Customer.ToString())) { var customerId = User.RequireCustomerId(); query = query.Where(i => i.WorkOrder.CustomerId == customerId); }
         if (status.HasValue) query = query.Where(i => i.Status == status);
         var items = await query.OrderByDescending(i => i.CreatedAt).ToListAsync();
         return Ok(ApiResponse<object>.Ok(items));
@@ -31,11 +32,13 @@ public class InvoicesController : ControllerBase
     [Authorize(Policy = "ServiceAdvisor")]
     public async Task<ActionResult<ApiResponse<object>>> Create([FromBody] CreateInvoiceRequest request)
     {
+        if (request.LaborCost < 0 || request.PartsCost < 0 || request.TaxAmount < 0 || request.DiscountAmount < 0) throw new ValidationException("Invoice amounts cannot be negative.");
         if (!await _db.WorkOrders.AnyAsync(w => w.Id == request.WorkOrderId))
             throw new NotFoundException("Work order not found.");
 
         var subtotal = request.LaborCost + request.PartsCost;
         var total = subtotal + request.TaxAmount - request.DiscountAmount;
+        if (total < 0) throw new ValidationException("Discount cannot exceed the invoice subtotal plus tax.");
         var count = await _db.Invoices.CountAsync() + 1;
 
         var invoice = new Invoice

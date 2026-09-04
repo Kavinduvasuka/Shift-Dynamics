@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
+using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
 
@@ -117,7 +118,7 @@ public class ManagerController : ControllerBase
             WorkOrderId = request.WorkOrderId,
             MechanicStaffId = request.MechanicStaffId,
             BayId = request.BayId,
-            AssignedByUserId = Guid.Empty,
+            AssignedByUserId = User.RequireUserId(),
             AssignedAt = DateTime.UtcNow,
             IsActive = true
         };

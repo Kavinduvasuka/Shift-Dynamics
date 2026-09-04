@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
+using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
 
@@ -65,6 +66,7 @@ public class InventoryController : ControllerBase
     [HttpPost("parts")]
     public async Task<ActionResult<ApiResponse<object>>> CreatePart([FromBody] UpsertPartRequest request)
     {
+        if (request.OnHandQty < 0 || request.ReorderLevel < 0 || request.UnitCost < 0) throw new ValidationException("Inventory quantities and cost cannot be negative.");
         if (await _db.Parts.AnyAsync(p => p.PartNumber == request.PartNumber.Trim()))
             throw new ConflictException("Part number already exists.");
 
@@ -130,6 +132,7 @@ public class InventoryController : ControllerBase
         req.Status = request.Approve ? RequisitionStatus.Approved : RequisitionStatus.Rejected;
         req.ReviewNotes = request.Notes;
         req.ReviewedAt = DateTime.UtcNow;
+        req.ReviewedByUserId = User.RequireUserId();
 
         await _db.SaveChangesAsync();
         return Ok(ApiResponse<object>.Ok(req, request.Approve ? "Approved." : "Rejected."));
@@ -169,7 +172,7 @@ public class InventoryController : ControllerBase
             RequisitionId = req.Id,
             Type = StockMovementType.Release,
             Quantity = req.QtyRequested,
-            PerformedByUserId = Guid.Empty, // filled by auth in production
+            PerformedByUserId = User.RequireUserId(),
             Reference = req.Id.ToString(),
             CreatedAt = DateTime.UtcNow
         });

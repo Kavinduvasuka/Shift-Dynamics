@@ -24,7 +24,8 @@ public class PaymentsController : ControllerBase
     {
         await using var tx = await _db.Database.BeginTransactionAsync();
 
-        var invoice = await _db.Invoices.FirstOrDefaultAsync(i => i.Id == request.InvoiceId)
+        var customerId = User.RequireCustomerId();
+        var invoice = await _db.Invoices.Include(i => i.WorkOrder).FirstOrDefaultAsync(i => i.Id == request.InvoiceId && i.WorkOrder.CustomerId == customerId)
             ?? throw new NotFoundException("Invoice not found.");
 
         if (invoice.Status is InvoiceStatus.Paid or InvoiceStatus.Cancelled)
@@ -61,7 +62,8 @@ public class PaymentsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<ApiResponse<object>>> List([FromQuery] Guid? invoiceId)
     {
-        var query = _db.Payments.AsNoTracking().AsQueryable();
+        var customerId = User.RequireCustomerId();
+        var query = _db.Payments.AsNoTracking().Include(p => p.Invoice).ThenInclude(i => i.WorkOrder).Where(p => p.Invoice.WorkOrder.CustomerId == customerId).AsQueryable();
         if (invoiceId.HasValue) query = query.Where(p => p.InvoiceId == invoiceId);
         var items = await query.OrderByDescending(p => p.PaymentDate).ToListAsync();
         return Ok(ApiResponse<object>.Ok(items));
