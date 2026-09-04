@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -304,7 +304,7 @@
 
                         <div>
                             <span>Vehicles Today</span>
-                            <strong>12</strong>
+                            <strong id="advisorVehiclesToday">0</strong>
                             <small>3 awaiting intake</small>
                         </div>
 
@@ -319,7 +319,7 @@
 
                         <div>
                             <span>Active Job Cards</span>
-                            <strong>08</strong>
+                            <strong id="advisorActiveJobs">0</strong>
                             <small>5 currently in workshop</small>
                         </div>
 
@@ -334,7 +334,7 @@
 
                         <div>
                             <span>Pending Estimates</span>
-                            <strong>04</strong>
+                            <strong id="advisorPendingEstimates">0</strong>
                             <small>Awaiting customer approval</small>
                         </div>
 
@@ -349,7 +349,7 @@
 
                         <div>
                             <span>Ready for Handover</span>
-                            <strong>03</strong>
+                            <strong id="advisorReadyHandover">0</strong>
                             <small>Invoices completed</small>
                         </div>
 
@@ -386,7 +386,7 @@
                         </div>
 
 
-                        <div class="sd-activity-list">
+                        <div class="sd-activity-list" id="overviewActivityList">
 
                             <div class="sd-activity-item">
 
@@ -398,7 +398,7 @@
                                     </strong>
 
                                     <span>
-                                        WP CAB-1234 · Brake Inspection
+                                        WP CAB-1234 Ãƒâ€šÃ‚· Brake Inspection
                                     </span>
                                 </div>
 
@@ -419,7 +419,7 @@
                                     </strong>
 
                                     <span>
-                                        WP CAX-4581 · Diagnostic Check
+                                        WP CAX-4581 Ãƒâ€šÃ‚· Diagnostic Check
                                     </span>
                                 </div>
 
@@ -440,7 +440,7 @@
                                     </strong>
 
                                     <span>
-                                        CP KL-9087 · Full Service
+                                        CP KL-9087 Ãƒâ€šÃ‚· Full Service
                                     </span>
                                 </div>
 
@@ -851,7 +851,7 @@
 
                         <div>
                             <strong>Toyota Corolla 2020</strong>
-                            <span>WP CAB-1234 · 68,500 km</span>
+                            <span>WP CAB-1234 Ãƒâ€šÃ‚· 68,500 km</span>
                         </div>
 
                     </div>
@@ -1273,15 +1273,15 @@
                                 <select id="diagnosticJob">
 
                                     <option value="#JC-1048">
-                                        #JC-1048 · Toyota Corolla
+                                        #JC-1048 Ãƒâ€šÃ‚· Toyota Corolla
                                     </option>
 
                                     <option value="#JC-1049">
-                                        #JC-1049 · Honda Vezel
+                                        #JC-1049 Ãƒâ€šÃ‚· Honda Vezel
                                     </option>
 
                                     <option value="#JC-1050">
-                                        #JC-1050 · Nissan X-Trail
+                                        #JC-1050 Ãƒâ€šÃ‚· Nissan X-Trail
                                     </option>
 
                                 </select>
@@ -1777,8 +1777,8 @@
 
                             <div>
                                 <span>Ready for Collection</span>
-                                <h3>Toyota Corolla</h3>
-                                <p>WP CAB-1234 · Job #JC-1048</p>
+                                <h3 id="handoverVehicleName">Toyota Corolla</h3>
+                                <p id="handoverVehicleMeta">WP CAB-1234 Ãƒâ€šÃ‚· Job #JC-1048</p>
                             </div>
 
                         </div>
@@ -1898,28 +1898,24 @@
 
                             <div>
                                 <span>Customer</span>
-                                <strong>Nimal Perera</strong>
+                                <strong id="handoverCustomer">Nimal Perera</strong>
                             </div>
 
                             <div>
                                 <span>Completed Work</span>
-                                <strong>
-                                    General Service + Front Brake Pads
-                                </strong>
+                                <strong id="handoverCompletedWork">General Service + Front Brake Pads</strong>
                             </div>
 
                             <div>
                                 <span>Invoice</span>
-                                <strong>
-                                    #INV-1058 · LKR 31,000
+                                <strong id="handoverInvoice">
+                                    #INV-1058 Ãƒâ€šÃ‚· LKR 31,000
                                 </strong>
                             </div>
 
                             <div>
                                 <span>Payment</span>
-                                <strong>
-                                    Pending at Front Desk
-                                </strong>
+                                <strong id="handoverPayment">Pending at Front Desk</strong>
                             </div>
 
                         </div>

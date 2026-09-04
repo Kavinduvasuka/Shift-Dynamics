@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        FRONTEND DEMO STATE
@@ -245,6 +245,287 @@
        CUSTOMER INTAKE
        ===================================================== */
 
+    /* =====================================================
+       LIVE ADVISOR OVERVIEW
+       ===================================================== */
+
+    function updateAdvisorOverview() {
+
+        const vehiclesToday =
+            document.getElementById(
+                "advisorVehiclesToday"
+            );
+
+        const activeJobs =
+            document.getElementById(
+                "advisorActiveJobs"
+            );
+
+        const pendingEstimates =
+            document.getElementById(
+                "advisorPendingEstimates"
+            );
+
+        const readyHandover =
+            document.getElementById(
+                "advisorReadyHandover"
+            );
+
+        const activityList =
+            document.getElementById(
+                "overviewActivityList"
+            );
+
+
+        /*
+            Only Job Cards created through the current live
+            Advisor workflow are included here.
+
+            Static demo rows remain available for UI reference,
+            but they do not affect live operational counts.
+        */
+        const liveRows =
+            jobCardTable
+                ? [...jobCardTable.querySelectorAll(
+                    'tr[data-live-job="true"]'
+                )]
+                : [];
+
+
+        const plates =
+            new Set();
+
+        liveRows.forEach(row => {
+
+            const plate =
+                row.querySelector(
+                    "td:nth-child(2) small"
+                )
+                ?.textContent
+                ?.trim();
+
+            if (plate) {
+                plates.add(plate);
+            }
+        });
+
+
+        /*
+            A newly completed intake must count immediately,
+            even before its Job Card has been created.
+        */
+        if (currentIntake?.vehiclePlate) {
+            plates.add(
+                currentIntake.vehiclePlate
+            );
+        }
+
+
+        const getStatus = row =>
+            row.querySelector(".sd-status")
+                ?.textContent
+                ?.trim() || "";
+
+
+        const activeCount =
+            liveRows.filter(
+                row =>
+                    getStatus(row) !==
+                    "Completed"
+            ).length;
+
+
+        const pendingCount =
+            liveRows.filter(
+                row =>
+                    getStatus(row) ===
+                    "Awaiting Customer Approval"
+            ).length;
+
+
+        const readyCount =
+            liveRows.filter(
+                row =>
+                    getStatus(row) ===
+                    "Invoice Finalized"
+            ).length;
+
+
+        if (vehiclesToday) {
+            vehiclesToday.textContent =
+                String(plates.size)
+                    .padStart(2, "0");
+        }
+
+        if (activeJobs) {
+            activeJobs.textContent =
+                String(activeCount)
+                    .padStart(2, "0");
+        }
+
+        if (pendingEstimates) {
+            pendingEstimates.textContent =
+                String(pendingCount)
+                    .padStart(2, "0");
+        }
+
+        if (readyHandover) {
+            readyHandover.textContent =
+                String(readyCount)
+                    .padStart(2, "0");
+        }
+
+
+        if (!activityList) {
+            return;
+        }
+
+
+        const queueRows =
+            liveRows.filter(
+                row =>
+                    getStatus(row) !==
+                    "Completed"
+            );
+
+
+        if (!queueRows.length) {
+
+            activityList.innerHTML = `
+                <div class="sd-activity-item">
+                    <div>
+                        <strong>No live workshop jobs</strong>
+                        <span>
+                            New Advisor workflow activity will appear here.
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        activityList.innerHTML =
+            queueRows.map(row => {
+
+                const cells =
+                    row.querySelectorAll("td");
+
+                const jobCard =
+                    cells[0]
+                        ?.textContent
+                        ?.trim() || "";
+
+                const vehicleCell =
+                    cells[1];
+
+                const plate =
+                    vehicleCell
+                        ?.querySelector("small")
+                        ?.textContent
+                        ?.trim() || "";
+
+                const vehicleClone =
+                    vehicleCell
+                        ?.cloneNode(true);
+
+                vehicleClone
+                    ?.querySelector("small")
+                    ?.remove();
+
+                const vehicle =
+                    vehicleClone
+                        ?.textContent
+                        ?.trim() || "Vehicle";
+
+                const service =
+                    cells[2]
+                        ?.textContent
+                        ?.trim() || "";
+
+                const status =
+                    getStatus(row);
+
+
+                let statusClass =
+                    "sd-status-progress";
+
+                if (
+                    status ===
+                    "Awaiting Customer Approval" ||
+                    status ===
+                    "Estimate Pending"
+                ) {
+                    statusClass =
+                        "sd-status-waiting";
+                }
+
+                if (
+                    status ===
+                    "Invoice Finalized"
+                ) {
+                    statusClass =
+                        "sd-status-ready";
+                }
+
+
+                let displayStatus =
+                    status;
+
+                if (
+                    status ===
+                    "Awaiting Customer Approval"
+                ) {
+                    displayStatus =
+                        "Estimate";
+                }
+
+                if (
+                    status ===
+                    "Invoice Finalized"
+                ) {
+                    displayStatus =
+                        "Ready";
+                }
+
+
+                return `
+                    <div class="sd-activity-item">
+
+                        <div class="sd-activity-marker"></div>
+
+                        <div>
+                            <strong>
+                                ${escapeHTML(vehicle)}
+                            </strong>
+
+                            <span>
+                                ${escapeHTML(plate)} | ${escapeHTML(service)}
+                                ${jobCard ? ` | ${escapeHTML(jobCard)}` : ""}
+                            </span>
+                        </div>
+
+                        <span class="sd-status ${statusClass}">
+                            ${escapeHTML(displayStatus)}
+                        </span>
+
+                    </div>
+                `;
+            })
+            .join("");
+    }
+
+
+    /*
+        Run after the DOMContentLoaded callback finishes,
+        so Job Card elements are already initialized.
+    */
+    setTimeout(
+        updateAdvisorOverview,
+        0
+    );
+
     const customerIntakeForm =
         document.getElementById(
             "customerIntakeForm"
@@ -357,6 +638,7 @@
 
 
             updateInspectionVehicleSummary();
+            updateAdvisorOverview();
 
 
             setTimeout(
@@ -431,7 +713,7 @@
 
 
             span.textContent =
-                `${currentIntake.vehiclePlate} · ${mileage}`;
+                `${currentIntake.vehiclePlate} Ã‚· ${mileage}`;
         }
     }
 
@@ -706,6 +988,8 @@
 
             statusElement.textContent =
                 newStatus;
+
+            updateAdvisorOverview();
         }
     }
 
@@ -719,6 +1003,8 @@
 
         const row =
             document.createElement("tr");
+
+        row.dataset.liveJob = "true";
 
 
         row.innerHTML = `
@@ -784,6 +1070,7 @@
 
 
         addDiagnosticJobOption(job);
+        updateAdvisorOverview();
     }
 
 
@@ -811,7 +1098,7 @@
 
 
         option.textContent =
-            `${job.jobCardNumber} · ${job.vehicle}`;
+            `${job.jobCardNumber} Ã‚· ${job.vehicle}`;
 
 
         diagnosticJob.prepend(option);
@@ -964,9 +1251,9 @@
                 FRONTEND WORKFLOW:
 
                 Job Card
-                    ↓
+                    Ã¢â€ â€œ
                 Diagnostic Finding
-                    ↓
+                    Ã¢â€ â€œ
                 Customer Estimate
 
                 Real system:
@@ -1621,6 +1908,85 @@ Recommended Work:
 
 
     function prepareFinalHandover() {
+
+        /*
+            Keep the final handover screen synchronized with the
+            customer/job/estimate that actually reached invoice finalization.
+        */
+        const intake = currentIntake || {};
+        const estimate = currentEstimate || {};
+
+        const vehicleName =
+            [intake.vehicleMake, intake.vehicleModel]
+                .filter(Boolean)
+                .join(" ") || "Current Vehicle";
+
+        const jobCard =
+            estimate.jobCard ||
+            intake.jobCardNumber ||
+            "--";
+
+        const customerName =
+            intake.customerName ||
+            intake.name ||
+            "Customer";
+
+        const completedWork =
+            estimate.description ||
+            intake.serviceConcern ||
+            "Completed workshop service";
+
+        /*
+            The frontend currently has no payment transaction backend,
+            therefore payment remains a front-desk state.
+        */
+        const invoiceNumber =
+            estimate.invoiceNumber ||
+            `#INV-${String(jobCard).replace(/\D/g, "") || "NEW"}`;
+
+        const handoverVehicleName =
+            document.getElementById("handoverVehicleName");
+
+        const handoverVehicleMeta =
+            document.getElementById("handoverVehicleMeta");
+
+        const handoverCustomer =
+            document.getElementById("handoverCustomer");
+
+        const handoverCompletedWork =
+            document.getElementById("handoverCompletedWork");
+
+        const handoverInvoice =
+            document.getElementById("handoverInvoice");
+
+        const handoverPayment =
+            document.getElementById("handoverPayment");
+
+        if (handoverVehicleName) {
+            handoverVehicleName.textContent = vehicleName;
+        }
+
+        if (handoverVehicleMeta) {
+            handoverVehicleMeta.textContent =
+                `${intake.vehiclePlate || "--"} Ã‚· Job ${jobCard}`;
+        }
+
+        if (handoverCustomer) {
+            handoverCustomer.textContent = customerName;
+        }
+
+        if (handoverCompletedWork) {
+            handoverCompletedWork.textContent = completedWork;
+        }
+
+        if (handoverInvoice) {
+            handoverInvoice.textContent =
+                `${invoiceNumber} Ã‚· ${formatLKR(estimate.total || 0)}`;
+        }
+
+        if (handoverPayment) {
+            handoverPayment.textContent = "Pending at Front Desk";
+        }
 
         const handoverMessage =
             document.getElementById(
