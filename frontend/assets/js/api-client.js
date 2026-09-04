@@ -1,5 +1,5 @@
 (() => {
-  const base = (window.SHIFT_API_BASE_URL || localStorage.getItem("shift.apiBaseUrl") || "https://localhost:5001").replace(/\/$/, "");
+  const base = (window.SHIFT_API_BASE_URL || localStorage.getItem("shift.apiBaseUrl") || "http://localhost:5174").replace(/\/$/, "");
   const key = "shift.auth";
   const stored = () => { try { return JSON.parse(sessionStorage.getItem(key) || "null"); } catch { return null; } };
   const clear = () => sessionStorage.removeItem(key);
