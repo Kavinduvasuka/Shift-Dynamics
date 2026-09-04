@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
+using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
 
@@ -26,6 +27,9 @@ public class WorkOrdersController : ControllerBase
             .Include(w => w.Vehicle)
             .Include(w => w.Service)
             .AsQueryable();
+
+        if (User.IsInRole(SystemRole.Customer.ToString()))
+            query = query.Where(w => w.CustomerId == User.RequireCustomerId());
 
         if (status.HasValue)
             query = query.Where(w => w.Status == status.Value);
@@ -57,13 +61,14 @@ public class WorkOrdersController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ApiResponse<object>>> GetById(Guid id)
     {
+        var customerId = User.IsInRole(SystemRole.Customer.ToString()) ? User.RequireCustomerId() : (Guid?)null;
         var w = await _db.WorkOrders
             .AsNoTracking()
             .Include(x => x.Customer)
             .Include(x => x.Vehicle)
             .Include(x => x.Service)
             .Include(x => x.AssignedStaff)
-            .FirstOrDefaultAsync(x => x.Id == id)
+            .FirstOrDefaultAsync(x => x.Id == id && (!customerId.HasValue || x.CustomerId == customerId.Value))
             ?? throw new NotFoundException("Work order not found.");
 
         return Ok(ApiResponse<object>.Ok(w));
