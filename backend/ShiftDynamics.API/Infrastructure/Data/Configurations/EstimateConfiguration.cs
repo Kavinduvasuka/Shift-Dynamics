@@ -11,6 +11,7 @@ public class EstimateConfiguration : IEntityTypeConfiguration<Estimate>
         builder.ToTable("estimates");
 
         builder.HasKey(x => x.Id);
+        builder.ToTable(t => t.HasCheckConstraint("CK_estimates_non_negative", "\"LaborCost\" >= 0 AND \"PartsCost\" >= 0 AND \"TaxAmount\" >= 0 AND \"DiscountAmount\" >= 0 AND \"Subtotal\" >= 0 AND \"TotalAmount\" >= 0"));
 
         builder.Property(x => x.EstimateNumber)
             .IsRequired()

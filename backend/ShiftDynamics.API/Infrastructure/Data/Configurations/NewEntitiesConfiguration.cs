@@ -73,6 +73,7 @@ public class InventoryItemConfiguration : IEntityTypeConfiguration<InventoryItem
     {
         builder.ToTable("inventory_items");
         builder.HasKey(x => x.Id);
+        builder.ToTable(t => t.HasCheckConstraint("CK_inventory_items_non_negative", "\"OnHandQty\" >= 0 AND \"ReservedQty\" >= 0 AND \"ReorderLevel\" >= 0 AND \"UnitCost\" >= 0"));
         builder.Property(x => x.UnitCost).HasPrecision(18, 2);
         builder.HasIndex(x => x.PartId).IsUnique();
     }
