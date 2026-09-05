@@ -2538,77 +2538,8 @@ Recommended Work:
             }
 
 
-            invoiceFinalized = true;            /*
-                SHARED WORKFLOW:
-                Finalize invoice against the same shared Job Card.
-            */
-            if (
-                currentEstimate?.jobCard &&
-                currentEstimate.jobCard !== "Demo Job" &&
-                window.ShiftDynamicsStore &&
-                typeof window.ShiftDynamicsStore.updateJob === "function"
-            ) {
+            invoiceFinalized = true;
 
-                try {
-
-                    const now =
-                        new Date().toISOString();
-
-                    const sharedJobs =
-                        typeof window.ShiftDynamicsStore.getJobs === "function"
-                            ? window.ShiftDynamicsStore.getJobs()
-                            : [];
-
-                    const sharedJob =
-                        sharedJobs.find(
-                            job =>
-                                job.jobCardNumber ===
-                                currentEstimate.jobCard
-                        );
-
-                    const invoiceNumber =
-                        sharedJob?.invoice?.number ||
-                        `#INV-${String(currentEstimate.jobCard)
-                            .replace(/\D/g, "") || "NEW"}`;
-
-                    window.ShiftDynamicsStore.updateJob(
-                        currentEstimate.jobCard,
-                        {
-                            invoice: {
-                                ...(sharedJob?.invoice || {}),
-
-                                number:
-                                    invoiceNumber,
-
-                                status:
-                                    "Finalized",
-
-                                total:
-                                    Number(
-                                        currentEstimate.total ||
-                                        0
-                                    ),
-
-                                finalizedAt:
-                                    now
-                            },
-
-                            status:
-                                "Invoice Finalized",
-
-                            updatedAt:
-                                now
-                        }
-                    );
-
-                } catch (error) {
-
-                    console.warn(
-                        "Unable to finalize invoice in shared workflow store.",
-                        error
-                    );
-                }
-            }
 
             updateJobCardStatus(
                 currentEstimate.jobCard,
@@ -2862,63 +2793,8 @@ Recommended Work:
                     "sd-form-message error";
 
                 return;
-            }            /*
-                SHARED WORKFLOW:
-                Complete vehicle handover against the same shared Job Card.
-            */
-            if (
-                currentEstimate?.jobCard &&
-                currentEstimate.jobCard !== "Demo Job" &&
-                window.ShiftDynamicsStore &&
-                typeof window.ShiftDynamicsStore.updateJob === "function"
-            ) {
-
-                try {
-
-                    const now =
-                        new Date().toISOString();
-
-                    const sharedJobs =
-                        typeof window.ShiftDynamicsStore.getJobs === "function"
-                            ? window.ShiftDynamicsStore.getJobs()
-                            : [];
-
-                    const sharedJob =
-                        sharedJobs.find(
-                            job =>
-                                job.jobCardNumber ===
-                                currentEstimate.jobCard
-                        );
-
-                    window.ShiftDynamicsStore.updateJob(
-                        currentEstimate.jobCard,
-                        {
-                            handover: {
-                                ...(sharedJob?.handover || {}),
-
-                                status:
-                                    "Completed",
-
-                                completedAt:
-                                    now
-                            },
-
-                            status:
-                                "Completed",
-
-                            updatedAt:
-                                now
-                        }
-                    );
-
-                } catch (error) {
-
-                    console.warn(
-                        "Unable to complete handover in shared workflow store.",
-                        error
-                    );
-                }
             }
+
 
             updateJobCardStatus(
                 currentEstimate?.jobCard,

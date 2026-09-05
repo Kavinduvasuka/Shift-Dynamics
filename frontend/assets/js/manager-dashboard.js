@@ -261,6 +261,176 @@
                 .replaceAll("'", "&#039;");
         }
 
+        /* =================================================
+           SHARED STORE -> MANAGER JOB CARDS
+
+           Incoming Advisor-created jobs are rendered into the
+           existing Manager Job Card Review table.
+
+           Existing Manager review/assignment logic is reused.
+           ================================================= */
+
+        function renderSharedManagerJobs() {
+
+            if (
+                !managerJobTable ||
+                !window.ShiftDynamicsStore
+            ) {
+                return;
+            }
+
+            managerJobTable
+                .querySelectorAll(
+                    'tr[data-shared-job="true"]'
+                )
+                .forEach(row => row.remove());
+
+
+            const sharedJobs =
+                ShiftDynamicsStore.getJobs();
+
+
+            sharedJobs
+                .slice()
+                .reverse()
+                .forEach(job => {
+
+                    if (!job?.jobCardNumber) {
+                        return;
+                    }
+
+                    const vehicleName =
+                        [
+                            job.vehicle?.make,
+                            job.vehicle?.model
+                        ]
+                            .filter(Boolean)
+                            .join(" ") ||
+                        "Vehicle";
+
+                    const plate =
+                        job.vehicle?.plate ||
+                        "--";
+
+                    const service =
+                        job.serviceConcern ||
+                        "Service Job";
+
+                    const priority =
+                        job.diagnostic?.priority ||
+                        "Normal";
+
+                    const assigned =
+                        Boolean(
+                            job.assignment?.mechanicName
+                        );
+
+                    const displayStatus =
+                        assigned
+                            ? "Assigned"
+                            : "Awaiting Assignment";
+
+                    const priorityClass =
+                        priority === "High"
+                            ? "sd-priority-high"
+                            : priority === "Medium"
+                                ? "sd-priority-medium"
+                                : "sd-priority-normal";
+
+                    const statusClass =
+                        assigned
+                            ? "sd-status sd-status-progress job-status"
+                            : "sd-status sd-status-warning job-status";
+
+
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
+
+                    row.dataset.sharedJob =
+                        "true";
+
+                    row.dataset.jobCard =
+                        job.jobCardNumber;
+
+                    row.dataset.vehicle =
+                        vehicleName;
+
+                    row.dataset.plate =
+                        plate;
+
+                    row.dataset.service =
+                        service;
+
+                    row.dataset.priority =
+                        priority;
+
+
+                    row.innerHTML = `
+                        <td>
+                            <strong>
+                                ${escapeHTML(job.jobCardNumber)}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(vehicleName)}
+                            <small>
+                                ${escapeHTML(plate)}
+                            </small>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(service)}
+                        </td>
+
+                        <td>
+                            <span class="${priorityClass}">
+                                ${escapeHTML(priority)}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="${statusClass}">
+                                ${escapeHTML(displayStatus)}
+                            </span>
+                        </td>
+
+                        <td>
+                            <button
+                                type="button"
+                                class="sd-review-btn"
+                                ${assigned ? "disabled" : ""}
+                            >
+                                ${assigned ? "Assigned" : "Review"}
+                            </button>
+                        </td>
+                    `;
+
+                    managerJobTable.prepend(
+                        row
+                    );
+                });
+
+
+            const countBadge =
+                document.querySelector(
+                    "#job-cards .sd-count-badge"
+                );
+
+            if (countBadge) {
+
+                const totalRows =
+                    managerJobTable
+                        .querySelectorAll("tr")
+                        .length;
+
+                countBadge.textContent =
+                    `${totalRows} Job Card${totalRows === 1 ? "" : "s"}`;
+            }
+        }
+
         function selectJob(row, button) {
 
             if (!row) {
@@ -311,7 +481,7 @@
                 selectedJob.jobCard;
 
             selectedJobVehicle.textContent =
-                `${selectedJob.vehicle} Â· ${selectedJob.plate}`;
+                `${selectedJob.vehicle} - ${selectedJob.plate}`;
 
             mechanicSelect.disabled = false;
             baySelect.disabled = false;
@@ -324,6 +494,18 @@
             assignmentMessage.className =
                 "sd-form-message";
         }
+
+        renderSharedManagerJobs();
+
+        if (window.ShiftDynamicsStore) {
+
+            ShiftDynamicsStore.subscribe(
+                () => {
+                    renderSharedManagerJobs();
+                }
+            );
+        }
+
 
         managerJobTable?.addEventListener(
             "click",
@@ -414,6 +596,53 @@
                 }
 
                 occupiedBays.add(bay);
+
+                /* =================================================
+                   MANAGER ASSIGNMENT -> SHARED STORE
+                   Temporary frontend bridge.
+                   Backend later replaces this with an API call.
+                   ================================================= */
+
+                if (
+                    selectedJob.row.dataset.sharedJob === "true" &&
+                    window.ShiftDynamicsStore
+                ) {
+
+                    const updatedSharedJob =
+                        ShiftDynamicsStore.updateJob(
+                            selectedJob.jobCard,
+                            {
+                                status: "Assigned",
+
+                                assignment: {
+                                    mechanicName:
+                                        mechanic,
+
+                                    bay:
+                                        bay,
+
+                                    managerNote:
+                                        managerNote.value.trim(),
+
+                                    assignedAt:
+                                        new Date().toISOString()
+                                }
+                            }
+                        );
+
+                    if (!updatedSharedJob) {
+
+                        occupiedBays.delete(bay);
+
+                        assignmentMessage.textContent =
+                            `Unable to update ${selectedJob.jobCard} in the shared workflow store.`;
+
+                        assignmentMessage.className =
+                            "sd-form-message error";
+
+                        return;
+                    }
+                }
 
                 if (existingStatus) {
 
@@ -620,7 +849,7 @@
                         LKR ${formatLKR(
                             selectedVendorQuote.price
                         )}
-                        Â· Delivery:
+                        - Delivery:
                         ${escapeHTML(
                             selectedVendorQuote.delivery
                         )}
@@ -737,7 +966,7 @@
                             LKR ${formatLKR(
                                 selectedVendorQuote.price
                             )}
-                            Â· ${escapeHTML(
+                            - ${escapeHTML(
                                 selectedVendorQuote.delivery
                             )}
                             delivery

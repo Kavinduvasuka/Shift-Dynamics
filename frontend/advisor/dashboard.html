@@ -398,7 +398,7 @@
                                     </strong>
 
                                     <span>
-                                        WP CAB-1234 Ãƒâ€šÃ‚· Brake Inspection
+                                        WP CAB-1234 - Brake Inspection
                                     </span>
                                 </div>
 
@@ -419,7 +419,7 @@
                                     </strong>
 
                                     <span>
-                                        WP CAX-4581 Ãƒâ€šÃ‚· Diagnostic Check
+                                        WP CAX-4581 - Diagnostic Check
                                     </span>
                                 </div>
 
@@ -440,7 +440,7 @@
                                     </strong>
 
                                     <span>
-                                        CP KL-9087 Ãƒâ€šÃ‚· Full Service
+                                        CP KL-9087 - Full Service
                                     </span>
                                 </div>
 
@@ -851,7 +851,7 @@
 
                         <div>
                             <strong>Toyota Corolla 2020</strong>
-                            <span>WP CAB-1234 Ãƒâ€šÃ‚· 68,500 km</span>
+                            <span>WP CAB-1234 - 68,500 km</span>
                         </div>
 
                     </div>
@@ -1273,15 +1273,15 @@
                                 <select id="diagnosticJob">
 
                                     <option value="#JC-1048">
-                                        #JC-1048 Ãƒâ€šÃ‚· Toyota Corolla
+                                        #JC-1048 - Toyota Corolla
                                     </option>
 
                                     <option value="#JC-1049">
-                                        #JC-1049 Ãƒâ€šÃ‚· Honda Vezel
+                                        #JC-1049 - Honda Vezel
                                     </option>
 
                                     <option value="#JC-1050">
-                                        #JC-1050 Ãƒâ€šÃ‚· Nissan X-Trail
+                                        #JC-1050 - Nissan X-Trail
                                     </option>
 
                                 </select>
@@ -1353,9 +1353,7 @@
                                     Latest Finding
                                 </span>
 
-                                <h3>
-                                    #JC-1048
-                                </h3>
+                                <h3><span id="latestFindingJob">No diagnostic saved</span></h3>
                             </div>
 
                         </div>
@@ -1365,28 +1363,22 @@
 
                             <div>
                                 <span>Vehicle</span>
-                                <strong>Toyota Corolla</strong>
+                                <strong id="latestFindingVehicle">--</strong>
                             </div>
 
                             <div>
                                 <span>Reported Issue</span>
-                                <strong>Brake vibration</strong>
+                                <strong id="latestFindingIssue">--</strong>
                             </div>
 
                             <div>
                                 <span>Technician Finding</span>
-                                <strong>
-                                    Front brake pads worn and front
-                                    discs require resurfacing.
-                                </strong>
+                                <strong id="latestFindingTechnician">--</strong>
                             </div>
 
                             <div>
                                 <span>Recommendation</span>
-                                <strong>
-                                    Replace front pads and inspect
-                                    brake fluid condition.
-                                </strong>
+                                <strong id="latestFindingRecommendation">Not separately recorded</strong>
                             </div>
 
                         </div>
@@ -1778,7 +1770,7 @@
                             <div>
                                 <span>Ready for Collection</span>
                                 <h3 id="handoverVehicleName">Toyota Corolla</h3>
-                                <p id="handoverVehicleMeta">WP CAB-1234 Ãƒâ€šÃ‚· Job #JC-1048</p>
+                                <p id="handoverVehicleMeta">WP CAB-1234 - Job #JC-1048</p>
                             </div>
 
                         </div>
@@ -1909,7 +1901,7 @@
                             <div>
                                 <span>Invoice</span>
                                 <strong id="handoverInvoice">
-                                    #INV-1058 Ãƒâ€šÃ‚· LKR 31,000
+                                    #INV-1058 - LKR 31,000
                                 </strong>
                             </div>
 
@@ -1941,6 +1933,7 @@
 ></div>
 
 
+<script src="../assets/js/shift-dynamics-store.js"></script>
 <script src="../assets/js/advisor-dashboard.js"></script>
 
 

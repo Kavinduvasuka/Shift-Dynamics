@@ -1456,112 +1456,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
 
-            let saved = null;
+            const raw =
+                localStorage.getItem(
+                    ADVISOR_DIAGNOSTIC_STORAGE_KEY
+                );
 
-            /*
-                PRIMARY SOURCE:
-                Restore the latest diagnostic from the shared
-                Shift Dynamics Job workflow store.
-            */
-            if (
-                window.ShiftDynamicsStore &&
-                typeof window.ShiftDynamicsStore.getJobs === "function"
-            ) {
-
-                const jobsWithDiagnostics =
-                    window.ShiftDynamicsStore
-                        .getJobs()
-                        .filter(
-                            job =>
-                                job?.diagnostic?.finding
-                        )
-                        .sort(
-                            (a, b) => {
-
-                                const aTime =
-                                    new Date(
-                                        a.diagnostic?.savedAt ||
-                                        a.updatedAt ||
-                                        0
-                                    ).getTime();
-
-                                const bTime =
-                                    new Date(
-                                        b.diagnostic?.savedAt ||
-                                        b.updatedAt ||
-                                        0
-                                    ).getTime();
-
-                                return bTime - aTime;
-                            }
-                        );
-
-                const sharedJob =
-                    jobsWithDiagnostics[0];
-
-                if (sharedJob) {
-
-                    const vehicleName =
-                        [
-                            sharedJob.vehicle?.make,
-                            sharedJob.vehicle?.model
-                        ]
-                            .filter(Boolean)
-                            .join(" ") ||
-                        sharedJob.diagnostic?.vehicle ||
-                        "Vehicle";
-
-                    saved = {
-                        ...sharedJob.diagnostic,
-
-                        jobCard:
-                            sharedJob.jobCardNumber,
-
-                        vehicle:
-                            sharedJob.diagnostic?.vehicle ||
-                            vehicleName,
-
-                        reportedIssue:
-                            sharedJob.diagnostic?.reportedIssue ||
-                            sharedJob.serviceConcern ||
-                            "--"
-                    };
-                }
+            if (!raw) {
+                renderLatestDiagnostic(null);
+                return;
             }
 
-
-            /*
-                TEMPORARY FALLBACK:
-                Keep old Advisor localStorage data working while
-                we migrate the rest of the frontend.
-            */
-            if (!saved) {
-
-                const raw =
-                    localStorage.getItem(
-                        ADVISOR_DIAGNOSTIC_STORAGE_KEY
-                    );
-
-                if (raw) {
-                    saved =
-                        JSON.parse(raw);
-                }
-            }
-
+            const saved =
+                JSON.parse(raw);
 
             if (
                 !saved?.jobCard ||
                 !saved?.finding
             ) {
-
                 renderLatestDiagnostic(null);
                 return;
             }
 
-
             currentDiagnostic =
                 saved;
-
 
             const diagnosticJob =
                 document.getElementById(
@@ -1609,15 +1526,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (diagnosticPriority) {
                 diagnosticPriority.value =
-                    saved.priority ||
-                    "Normal";
+                    saved.priority || "Normal";
             }
 
 
             if (diagnosticNotes) {
                 diagnosticNotes.value =
-                    saved.finding ||
-                    "";
+                    saved.finding || "";
             }
 
 
@@ -1728,62 +1643,6 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             saveDiagnosticState();
-
-            /*
-                SHARED WORKFLOW:
-                Save Advisor diagnostic against the same shared Job Card.
-            */
-            if (
-                window.ShiftDynamicsStore &&
-                typeof window.ShiftDynamicsStore.updateJob === "function"
-            ) {
-
-                const sharedDiagnostic =
-                    buildDiagnosticContext(
-                        currentDiagnostic
-                    );
-
-                try {
-
-                    window.ShiftDynamicsStore.updateJob(
-                        currentDiagnostic.jobCard,
-                        {
-                            diagnostic: {
-                                jobCard:
-                                    sharedDiagnostic.jobCard,
-
-                                priority:
-                                    sharedDiagnostic.priority,
-
-                                finding:
-                                    sharedDiagnostic.finding,
-
-                                vehicle:
-                                    sharedDiagnostic.vehicle,
-
-                                reportedIssue:
-                                    sharedDiagnostic.reportedIssue,
-
-                                savedAt:
-                                    new Date().toISOString()
-                            },
-
-                            status:
-                                "Estimate Pending",
-
-                            updatedAt:
-                                new Date().toISOString()
-                        }
-                    );
-
-                } catch (error) {
-
-                    console.warn(
-                        "Unable to save diagnostic to shared workflow store.",
-                        error
-                    );
-                }
-            }
 
             renderLatestDiagnostic(
                 buildDiagnosticContext(
@@ -2140,67 +1999,8 @@ Recommended Work:
 
                 status:
                     "Awaiting Customer Approval"
-            };            /*
-                SHARED WORKFLOW:
-                Save Advisor estimate against the same shared Job Card.
-            */
-            if (
-                currentEstimate?.jobCard &&
-                currentEstimate.jobCard !== "Demo Job" &&
-                window.ShiftDynamicsStore &&
-                typeof window.ShiftDynamicsStore.updateJob === "function"
-            ) {
+            };
 
-                try {
-
-                    const now =
-                        new Date().toISOString();
-
-                    window.ShiftDynamicsStore.updateJob(
-                        currentEstimate.jobCard,
-                        {
-                            estimate: {
-                                description:
-                                    currentEstimate.description,
-
-                                labour:
-                                    currentEstimate.labour,
-
-                                parts:
-                                    currentEstimate.parts,
-
-                                vendor:
-                                    currentEstimate.vendor,
-
-                                other:
-                                    currentEstimate.other,
-
-                                total:
-                                    currentEstimate.total,
-
-                                status:
-                                    currentEstimate.status,
-
-                                createdAt:
-                                    now
-                            },
-
-                            status:
-                                "Awaiting Customer Approval",
-
-                            updatedAt:
-                                now
-                        }
-                    );
-
-                } catch (error) {
-
-                    console.warn(
-                        "Unable to save estimate to shared workflow store.",
-                        error
-                    );
-                }
-            }
 
             updateJobCardStatus(
                 currentEstimate.jobCard,
@@ -2232,81 +2032,8 @@ Recommended Work:
 
 
         currentEstimate.status =
-            "Approved";        /*
-            SHARED WORKFLOW:
-            Persist customer approval against the same Job Card.
-        */
-        if (
-            currentEstimate?.jobCard &&
-            currentEstimate.jobCard !== "Demo Job" &&
-            window.ShiftDynamicsStore &&
-            typeof window.ShiftDynamicsStore.updateJob === "function"
-        ) {
+            "Approved";
 
-            try {
-
-                const now =
-                    new Date().toISOString();
-
-                const sharedJobs =
-                    typeof window.ShiftDynamicsStore.getJobs === "function"
-                        ? window.ShiftDynamicsStore.getJobs()
-                        : [];
-
-                const sharedJob =
-                    sharedJobs.find(
-                        job =>
-                            job.jobCardNumber ===
-                            currentEstimate.jobCard
-                    );
-
-                window.ShiftDynamicsStore.updateJob(
-                    currentEstimate.jobCard,
-                    {
-                        estimate: {
-                            ...(sharedJob?.estimate || {}),
-
-                            description:
-                                currentEstimate.description,
-
-                            labour:
-                                currentEstimate.labour,
-
-                            parts:
-                                currentEstimate.parts,
-
-                            vendor:
-                                currentEstimate.vendor,
-
-                            other:
-                                currentEstimate.other,
-
-                            total:
-                                currentEstimate.total,
-
-                            status:
-                                "Approved",
-
-                            approvedAt:
-                                now
-                        },
-
-                        status:
-                            "Customer Approved",
-
-                        updatedAt:
-                            now
-                    }
-                );
-
-            } catch (error) {
-
-                console.warn(
-                    "Unable to save estimate approval to shared workflow store.",
-                    error
-                );
-            }
-        }
 
         updateJobCardStatus(
             currentEstimate.jobCard,
@@ -2538,77 +2265,8 @@ Recommended Work:
             }
 
 
-            invoiceFinalized = true;            /*
-                SHARED WORKFLOW:
-                Finalize invoice against the same shared Job Card.
-            */
-            if (
-                currentEstimate?.jobCard &&
-                currentEstimate.jobCard !== "Demo Job" &&
-                window.ShiftDynamicsStore &&
-                typeof window.ShiftDynamicsStore.updateJob === "function"
-            ) {
+            invoiceFinalized = true;
 
-                try {
-
-                    const now =
-                        new Date().toISOString();
-
-                    const sharedJobs =
-                        typeof window.ShiftDynamicsStore.getJobs === "function"
-                            ? window.ShiftDynamicsStore.getJobs()
-                            : [];
-
-                    const sharedJob =
-                        sharedJobs.find(
-                            job =>
-                                job.jobCardNumber ===
-                                currentEstimate.jobCard
-                        );
-
-                    const invoiceNumber =
-                        sharedJob?.invoice?.number ||
-                        `#INV-${String(currentEstimate.jobCard)
-                            .replace(/\D/g, "") || "NEW"}`;
-
-                    window.ShiftDynamicsStore.updateJob(
-                        currentEstimate.jobCard,
-                        {
-                            invoice: {
-                                ...(sharedJob?.invoice || {}),
-
-                                number:
-                                    invoiceNumber,
-
-                                status:
-                                    "Finalized",
-
-                                total:
-                                    Number(
-                                        currentEstimate.total ||
-                                        0
-                                    ),
-
-                                finalizedAt:
-                                    now
-                            },
-
-                            status:
-                                "Invoice Finalized",
-
-                            updatedAt:
-                                now
-                        }
-                    );
-
-                } catch (error) {
-
-                    console.warn(
-                        "Unable to finalize invoice in shared workflow store.",
-                        error
-                    );
-                }
-            }
 
             updateJobCardStatus(
                 currentEstimate.jobCard,
@@ -2862,63 +2520,8 @@ Recommended Work:
                     "sd-form-message error";
 
                 return;
-            }            /*
-                SHARED WORKFLOW:
-                Complete vehicle handover against the same shared Job Card.
-            */
-            if (
-                currentEstimate?.jobCard &&
-                currentEstimate.jobCard !== "Demo Job" &&
-                window.ShiftDynamicsStore &&
-                typeof window.ShiftDynamicsStore.updateJob === "function"
-            ) {
-
-                try {
-
-                    const now =
-                        new Date().toISOString();
-
-                    const sharedJobs =
-                        typeof window.ShiftDynamicsStore.getJobs === "function"
-                            ? window.ShiftDynamicsStore.getJobs()
-                            : [];
-
-                    const sharedJob =
-                        sharedJobs.find(
-                            job =>
-                                job.jobCardNumber ===
-                                currentEstimate.jobCard
-                        );
-
-                    window.ShiftDynamicsStore.updateJob(
-                        currentEstimate.jobCard,
-                        {
-                            handover: {
-                                ...(sharedJob?.handover || {}),
-
-                                status:
-                                    "Completed",
-
-                                completedAt:
-                                    now
-                            },
-
-                            status:
-                                "Completed",
-
-                            updatedAt:
-                                now
-                        }
-                    );
-
-                } catch (error) {
-
-                    console.warn(
-                        "Unable to complete handover in shared workflow store.",
-                        error
-                    );
-                }
             }
+
 
             updateJobCardStatus(
                 currentEstimate?.jobCard,
