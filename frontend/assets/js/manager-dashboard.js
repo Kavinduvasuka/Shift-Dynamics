@@ -1,4 +1,4 @@
-﻿document.addEventListener(
+document.addEventListener(
     "DOMContentLoaded",
     () => {
 
@@ -267,10 +267,6 @@
 
         let selectedJob = null;
 
-        const occupiedBays =
-            new Set(["Bay 03"]);
-
-
         function escapeHTML(value = "") {
 
             return String(value)
@@ -383,7 +379,7 @@
 
         assignmentForm?.addEventListener(
             "submit",
-            event => {
+            async event => {
 
                 event.preventDefault();
 
@@ -419,10 +415,14 @@
                 }
 
 
-                if (occupiedBays.has(bay)) {
+                const workOrderId =
+                    selectedJob.row.dataset.workOrderId;
+
+
+                if (!workOrderId) {
 
                     assignmentMessage.textContent =
-                        `${bay} is already occupied. Select another workshop bay.`;
+                        "This job card is missing its work order ID.";
 
                     assignmentMessage.className =
                         "sd-form-message error";
@@ -431,130 +431,171 @@
                 }
 
 
-                const existingStatus =
-                    selectedJob.row.querySelector(
-                        ".job-status"
-                    );
-
-
-                if (
-                    existingStatus &&
-                    existingStatus.textContent
-                        .trim() === "Assigned"
-                ) {
-
-                    assignmentMessage.textContent =
-                        `${selectedJob.jobCard} has already been assigned.`;
-
-                    assignmentMessage.className =
-                        "sd-form-message error";
-
-                    return;
-                }
-
-
-                occupiedBays.add(bay);
-
-
-                if (existingStatus) {
-
-                    existingStatus.textContent =
-                        "Assigned";
-
-                    existingStatus.className =
-                        "sd-status sd-status-progress job-status";
-                }
-
-
-                const assignmentRow =
-                    document.createElement(
-                        "tr"
-                    );
-
-
-                assignmentRow.innerHTML = `
-                    <td>
-                        <strong>
-                            ${escapeHTML(
-                                selectedJob.jobCard
-                            )}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ${escapeHTML(
-                            selectedJob.vehicle
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(mechanic)}
-                    </td>
-
-                    <td>
-                        ${escapeHTML(bay)}
-                    </td>
-
-                    <td>
-                        <span class="sd-status sd-status-progress">
-                            Assigned
-                        </span>
-                    </td>
-                `;
-
-
-                assignmentTable?.prepend(
-                    assignmentRow
-                );
-
-
-                assignmentMessage.textContent =
-                    `${selectedJob.jobCard} assigned to ${mechanic} in ${bay}.`;
-
-                assignmentMessage.className =
-                    "sd-form-message success";
-
-
-                const selectedButton =
-                    selectedJob.row.querySelector(
-                        ".sd-review-btn"
-                    );
-
-
-                if (selectedButton) {
-
-                    selectedButton.textContent =
-                        "Assigned";
-
-                    selectedButton.classList.remove(
-                        "selected"
-                    );
-
-                    selectedButton.disabled = true;
-                }
-
-
-                mechanicSelect.value = "";
-                baySelect.value = "";
-                managerNote.value = "";
-
-                mechanicSelect.disabled = true;
-                baySelect.disabled = true;
-                managerNote.disabled = true;
                 assignJobButton.disabled = true;
 
+                assignmentMessage.textContent =
+                    "Assigning job...";
 
-                selectedJobNumber.textContent =
-                    "Select a job card";
-
-                selectedJobVehicle.textContent =
-                    "Review a job card to begin.";
+                assignmentMessage.className =
+                    "sd-form-message";
 
 
-                selectedJob = null;
+                try {
+
+                    await ShiftApi.request(
+                        "/api/manager/assignments",
+                        {
+                            method: "POST",
+
+                            body: JSON.stringify({
+                                workOrderId,
+                                mechanicStaffId: mechanic,
+                                bayId: bay
+                            })
+                        }
+                    );
+
+
+                    const existingStatus =
+                        selectedJob.row.querySelector(
+                            ".job-status"
+                        );
+
+
+                    if (existingStatus) {
+
+                        existingStatus.textContent =
+                            "Assigned";
+
+                        existingStatus.className =
+                            "sd-status sd-status-progress job-status";
+                    }
+
+
+                    const assignmentRow =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    assignmentRow.innerHTML = `
+                        <td>
+                            <strong>
+                                ${escapeHTML(
+                                    selectedJob.jobCard
+                                )}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                selectedJob.vehicle
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                selectedJob.service
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                mechanicSelect.options[
+                                    mechanicSelect.selectedIndex
+                                ]?.text || mechanic
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                baySelect.options[
+                                    baySelect.selectedIndex
+                                ]?.text || bay
+                            )}
+                        </td>
+
+                        <td>
+                            <span class="sd-status sd-status-progress">
+                                Assigned
+                            </span>
+                        </td>
+                    `;
+
+
+                    assignmentTable?.prepend(
+                        assignmentRow
+                    );
+
+
+                    assignmentMessage.textContent =
+                        `${selectedJob.jobCard} assigned successfully.`;
+
+                    assignmentMessage.className =
+                        "sd-form-message success";
+
+
+                    const selectedButton =
+                        selectedJob.row.querySelector(
+                            ".sd-review-btn"
+                        );
+
+
+                    if (selectedButton) {
+
+                        selectedButton.textContent =
+                            "Assigned";
+
+                        selectedButton.classList.remove(
+                            "selected"
+                        );
+
+                        selectedButton.disabled = true;
+                    }
+
+
+                    mechanicSelect.value = "";
+                    baySelect.value = "";
+                    managerNote.value = "";
+
+                    mechanicSelect.disabled = true;
+                    baySelect.disabled = true;
+                    managerNote.disabled = true;
+                    assignJobButton.disabled = true;
+
+
+                    selectedJobNumber.textContent =
+                        "Select a job card";
+
+                    selectedJobVehicle.textContent =
+                        "Review a job card to begin.";
+
+                    selectedJob = null;
+
+
+                    /*
+                     * Refresh the manager dashboard data so the
+                     * existing UI reflects the database state.
+                     */
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "shift:manager-refresh"
+                        )
+                    );
+
+                } catch (error) {
+
+                    assignmentMessage.textContent =
+                        error?.message ||
+                        "Unable to assign the job.";
+
+                    assignmentMessage.className =
+                        "sd-form-message error";
+
+                    assignJobButton.disabled = false;
+                }
             }
         );
-
 
         /* =================================================
            VENDOR BID COMPARISON
@@ -4130,4 +4171,3 @@ document.addEventListener("DOMContentLoaded", () => {
     renderVendorRegistrations();
 
 });
-
