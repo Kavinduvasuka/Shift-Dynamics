@@ -1,0 +1,1559 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Mechanic Dashboard | Shift Dynamics
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/mechanic-dashboard.css"
+    >
+</head>
+
+<body>
+
+    <aside class="sd-sidebar" id="sidebar">
+
+        <div class="sd-brand">
+            <img
+                src="../assets/images/shift-dynamics-logo.png.png"
+                alt="Shift Dynamics"
+            >
+
+            <div>
+                <strong>Shift Dynamics</strong>
+                <span>Mechanic Station</span>
+            </div>
+        </div>
+
+
+        <nav class="sd-nav">
+
+            <button
+                type="button"
+                class="sd-nav-item active"
+                data-section="overview"
+            >
+                <i class="bi bi-grid"></i>
+                <span>Overview</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="assigned-jobs"
+            >
+                <i class="bi bi-card-checklist"></i>
+                <span>Assigned Jobs</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="active-job"
+            >
+                <i class="bi bi-stopwatch"></i>
+                <span>Active Job</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="diagnostics"
+            >
+                <i class="bi bi-wrench-adjustable"></i>
+                <span>Diagnostics</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="parts"
+            >
+                <i class="bi bi-box-seam"></i>
+                <span>Parts Requisition</span>
+            </button>
+
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="completed"
+            >
+                <i class="bi bi-check2-circle"></i>
+                <span>Completed Jobs</span>
+            </button>
+
+        </nav>
+
+
+        <a
+            class="sd-logout"
+            href="../staff-login.html"
+        >
+            <i class="bi bi-box-arrow-left"></i>
+            Logout
+        </a>
+
+    </aside>
+
+
+    <main class="sd-main">
+
+        <header class="sd-topbar">
+
+            <button
+                type="button"
+                class="sd-menu-btn"
+                id="menuButton"
+                aria-label="Open menu"
+            >
+                <i class="bi bi-list"></i>
+            </button>
+
+
+            <div>
+                <span class="sd-topbar-label">
+                    Workshop Operations
+                </span>
+
+                <h1 id="pageTitle">
+                    Mechanic Overview
+                </h1>
+            </div>
+
+
+            <div class="sd-user">
+
+                <div class="sd-user-avatar">
+                    NP
+                </div>
+
+                <div>
+                    <strong>Nimal Perera</strong>
+                    <span>Engine & Mechanical</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div class="sd-content">
+
+
+            <!-- =====================================
+                 OVERVIEW
+            ====================================== -->
+
+            <section
+                class="sd-content-section active"
+                id="overview"
+            >
+
+                <div class="sd-welcome-card">
+
+                    <div>
+                        <span class="sd-panel-label">
+                            Mechanic Station
+                        </span>
+
+                        <h2>
+                            Good morning, Nimal.
+                        </h2>
+
+                        <p>
+                            Review today's assigned workshop jobs,
+                            start active work and keep job progress
+                            updated for the service team.
+                        </p>
+                    </div>
+
+                    <div class="sd-welcome-icon">
+                        <i class="bi bi-tools"></i>
+                    </div>
+
+                </div>
+
+
+                <div class="sd-stat-grid">
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-card-checklist"></i>
+                        </div>
+
+                        <div>
+                            <span>Assigned Today</span>
+                            <strong>04</strong>
+                            <small>Jobs allocated</small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-stopwatch"></i>
+                        </div>
+
+                        <div>
+                            <span>Active Job</span>
+                            <strong>01</strong>
+                            <small>Currently in progress</small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+
+                        <div>
+                            <span>Completed Today</span>
+                            <strong>02</strong>
+                            <small>Finished jobs</small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+
+                        <div>
+                            <span>Current Bay</span>
+                            <strong>03</strong>
+                            <small>Workshop Bay</small>
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <div class="sd-dashboard-grid">
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Current Assignment
+                                </span>
+
+                                <h3>
+                                    Active Workshop Job
+                                </h3>
+                            </div>
+
+                            <span class="sd-status sd-status-progress">
+                                In Progress
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-active-job">
+
+                            <div class="sd-job-number">
+                                #JC-1052
+                            </div>
+
+                            <div class="sd-vehicle-summary">
+
+                                <div class="sd-car-icon">
+                                    <i class="bi bi-car-front"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Nissan X-Trail
+                                    </strong>
+
+                                    <span>
+                                        WP CAX-4582
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-job-info-grid">
+
+                                <div>
+                                    <span>Service</span>
+                                    <strong>
+                                        Engine Repair
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Workshop Bay</span>
+                                    <strong>
+                                        Bay 03
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Priority</span>
+                                    <strong>
+                                        High
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Estimated Finish</span>
+                                    <strong>
+                                        02:00 PM
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-job-progress-head">
+                                <span>Current Progress</span>
+                                <strong>46%</strong>
+                            </div>
+
+                            <div class="sd-progress">
+                                <span style="width:46%"></span>
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="sd-primary-btn"
+                                data-go="active-job"
+                            >
+                                <i class="bi bi-stopwatch"></i>
+                                Open Active Job
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Work Queue
+                                </span>
+
+                                <h3>
+                                    Next Assigned Jobs
+                                </h3>
+                            </div>
+
+                            <span class="sd-count-badge">
+                                3 Pending
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-queue-list">
+
+                            <button
+                                type="button"
+                                class="sd-queue-item"
+                                data-go="assigned-jobs"
+                            >
+
+                                <div>
+                                    <strong>#JC-1057</strong>
+                                    <span>
+                                        Toyota Aqua · General Service
+                                    </span>
+                                </div>
+
+                                <span class="sd-priority normal">
+                                    Normal
+                                </span>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-queue-item"
+                                data-go="assigned-jobs"
+                            >
+
+                                <div>
+                                    <strong>#JC-1058</strong>
+                                    <span>
+                                        Honda Vezel · Diagnostic Check
+                                    </span>
+                                </div>
+
+                                <span class="sd-priority high">
+                                    High
+                                </span>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-queue-item"
+                                data-go="assigned-jobs"
+                            >
+
+                                <div>
+                                    <strong>#JC-1059</strong>
+                                    <span>
+                                        Suzuki Swift · Brake Inspection
+                                    </span>
+                                </div>
+
+                                <span class="sd-priority medium">
+                                    Medium
+                                </span>
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =====================================
+                 ASSIGNED JOBS
+            ====================================== -->
+
+            <section
+                class="sd-content-section"
+                id="assigned-jobs"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+                        <span class="sd-panel-label">
+                            Workshop Queue
+                        </span>
+
+                        <h2>
+                            Assigned Jobs
+                        </h2>
+
+                        <p>
+                            Jobs allocated to you by workshop management.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="sd-job-card-grid">
+
+
+                    <article class="sd-job-card">
+
+                        <div class="sd-job-card-head">
+
+                            <div>
+                                <span class="sd-job-number">
+                                    #JC-1052
+                                </span>
+
+                                <h3>Nissan X-Trail</h3>
+
+                                <p>WP CAX-4582</p>
+                            </div>
+
+                            <span class="sd-status sd-status-progress">
+                                In Progress
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-job-card-details">
+
+                            <div>
+                                <span>Service</span>
+                                <strong>Engine Repair</strong>
+                            </div>
+
+                            <div>
+                                <span>Bay</span>
+                                <strong>Bay 03</strong>
+                            </div>
+
+                            <div>
+                                <span>Priority</span>
+                                <strong>High</strong>
+                            </div>
+
+                            <div>
+                                <span>Assigned</span>
+                                <strong>08:10 AM</strong>
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-primary-btn"
+                            data-go="active-job"
+                        >
+                            Continue Job
+                        </button>
+
+                    </article>
+
+
+                    <article class="sd-job-card">
+
+                        <div class="sd-job-card-head">
+
+                            <div>
+                                <span class="sd-job-number">
+                                    #JC-1057
+                                </span>
+
+                                <h3>Toyota Aqua</h3>
+
+                                <p>WP CBE-2714</p>
+                            </div>
+
+                            <span class="sd-status sd-status-pending">
+                                Waiting
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-job-card-details">
+
+                            <div>
+                                <span>Service</span>
+                                <strong>General Service</strong>
+                            </div>
+
+                            <div>
+                                <span>Bay</span>
+                                <strong>Bay 02</strong>
+                            </div>
+
+                            <div>
+                                <span>Priority</span>
+                                <strong>Normal</strong>
+                            </div>
+
+                            <div>
+                                <span>Assigned</span>
+                                <strong>09:05 AM</strong>
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-secondary-btn"
+                        >
+                            View Job
+                        </button>
+
+                    </article>
+
+
+                    <article class="sd-job-card">
+
+                        <div class="sd-job-card-head">
+
+                            <div>
+                                <span class="sd-job-number">
+                                    #JC-1058
+                                </span>
+
+                                <h3>Honda Vezel</h3>
+
+                                <p>WP CBF-5678</p>
+                            </div>
+
+                            <span class="sd-status sd-status-pending">
+                                Waiting
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-job-card-details">
+
+                            <div>
+                                <span>Service</span>
+                                <strong>Diagnostic Check</strong>
+                            </div>
+
+                            <div>
+                                <span>Bay</span>
+                                <strong>Pending</strong>
+                            </div>
+
+                            <div>
+                                <span>Priority</span>
+                                <strong>High</strong>
+                            </div>
+
+                            <div>
+                                <span>Assigned</span>
+                                <strong>09:45 AM</strong>
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-secondary-btn"
+                        >
+                            View Job
+                        </button>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- PLACEHOLDERS -->
+
+            <section
+    class="sd-content-section"
+    id="active-job"
+>
+
+    <div class="sd-section-heading">
+
+        <div>
+            <span class="sd-panel-label">
+                Workshop Execution
+            </span>
+
+            <h2>Active Job Station</h2>
+
+            <p>
+                Track actual labour time and record work
+                completed for the current vehicle.
+            </p>
+        </div>
+
+        <span
+            class="sd-status sd-status-pending"
+            id="activeJobStatus"
+        >
+            Ready to Start
+        </span>
+
+    </div>
+
+
+    <div class="sd-active-station-grid">
+
+
+        <!-- JOB INFORMATION -->
+
+        <article class="sd-panel">
+
+            <div class="sd-panel-header">
+
+                <div>
+                    <span class="sd-panel-label">
+                        Current Job
+                    </span>
+
+                    <h3>#JC-1052</h3>
+                </div>
+
+                <span class="sd-priority high">
+                    High Priority
+                </span>
+
+            </div>
+
+
+            <div class="sd-active-vehicle">
+
+                <div class="sd-active-car-icon">
+                    <i class="bi bi-car-front"></i>
+                </div>
+
+                <div>
+                    <strong>Nissan X-Trail</strong>
+                    <span>WP CAX-4582</span>
+                </div>
+
+            </div>
+
+
+            <div class="sd-job-info-grid">
+
+                <div>
+                    <span>Service</span>
+                    <strong>Engine Repair</strong>
+                </div>
+
+                <div>
+                    <span>Workshop Bay</span>
+                    <strong>Bay 03</strong>
+                </div>
+
+                <div>
+                    <span>Assigned By</span>
+                    <strong>Workshop Manager</strong>
+                </div>
+
+                <div>
+                    <span>Estimated Finish</span>
+                    <strong>02:00 PM</strong>
+                </div>
+
+            </div>
+
+
+            <div class="sd-concern-box">
+
+                <span>Customer Concern</span>
+
+                <p>
+                    Engine vibration at idle with reduced
+                    acceleration and abnormal engine noise.
+                </p>
+
+            </div>
+
+        </article>
+
+
+
+        <!-- TIMER -->
+
+        <article class="sd-panel sd-timer-panel">
+
+            <div class="sd-panel-header">
+
+                <div>
+                    <span class="sd-panel-label">
+                        Labour Tracking
+                    </span>
+
+                    <h3>Job Timer</h3>
+                </div>
+
+                <i class="bi bi-stopwatch sd-timer-icon"></i>
+
+            </div>
+
+
+            <div
+                class="sd-job-timer"
+                id="jobTimer"
+            >
+                00:00:00
+            </div>
+
+            <p class="sd-timer-caption">
+                Actual labour duration
+            </p>
+
+
+            <div class="sd-time-summary">
+
+                <div>
+                    <span>Started</span>
+                    <strong id="jobStartTime">--:--</strong>
+                </div>
+
+                <div>
+                    <span>Ended</span>
+                    <strong id="jobEndTime">--:--</strong>
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="sd-primary-btn sd-timer-button"
+                id="startJobButton"
+            >
+                <i class="bi bi-play-fill"></i>
+                Start Job
+            </button>
+
+
+            <button
+                type="button"
+                class="sd-end-job-btn"
+                id="endJobButton"
+                disabled
+            >
+                <i class="bi bi-stop-fill"></i>
+                End Job
+            </button>
+
+
+            <p
+                class="sd-job-message"
+                id="jobTimerMessage"
+            ></p>
+
+        </article>
+
+    </div>
+
+
+
+    <!-- WORK PROGRESS -->
+
+    <div class="sd-active-station-bottom">
+
+
+        <article class="sd-panel">
+
+            <div class="sd-panel-header">
+
+                <div>
+                    <span class="sd-panel-label">
+                        Repair Progress
+                    </span>
+
+                    <h3>Work Checklist</h3>
+                </div>
+
+                <strong id="workProgressText">
+                    0 / 5
+                </strong>
+
+            </div>
+
+
+            <div class="sd-work-checklist">
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="sd-work-check"
+                    >
+                    <span>
+                        Initial vehicle inspection completed
+                    </span>
+                </label>
+
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="sd-work-check"
+                    >
+                    <span>
+                        Diagnostic scan completed
+                    </span>
+                </label>
+
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="sd-work-check"
+                    >
+                    <span>
+                        Repair work completed
+                    </span>
+                </label>
+
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="sd-work-check"
+                    >
+                    <span>
+                        Final system test completed
+                    </span>
+                </label>
+
+
+                <label>
+                    <input
+                        type="checkbox"
+                        class="sd-work-check"
+                    >
+                    <span>
+                        Work area and vehicle checked
+                    </span>
+                </label>
+
+            </div>
+
+
+            <div class="sd-work-progress">
+                <span id="workProgressBar"></span>
+            </div>
+
+        </article>
+
+
+
+        <!-- NOTES -->
+
+        <article class="sd-panel">
+
+            <div class="sd-panel-header">
+
+                <div>
+                    <span class="sd-panel-label">
+                        Mechanic Record
+                    </span>
+
+                    <h3>Work Notes</h3>
+                </div>
+
+            </div>
+
+
+            <div class="sd-mechanic-notes">
+
+                <label for="mechanicWorkNotes">
+                    Repair / Work Performed
+                </label>
+
+                <textarea
+                    id="mechanicWorkNotes"
+                    rows="6"
+                    placeholder="Record repairs, tests, findings and work performed..."
+                ></textarea>
+
+
+                <button
+                    type="button"
+                    class="sd-secondary-btn"
+                    id="saveWorkNotesButton"
+                >
+                    <i class="bi bi-save"></i>
+                    Save Notes
+                </button>
+
+
+                <p
+                    class="sd-job-message"
+                    id="workNotesMessage"
+                ></p>
+
+            </div>
+
+        </article>
+
+    </div>
+
+
+    <!-- COMPLETION RECORD -->
+
+    <article
+        class="sd-panel sd-completion-record"
+        id="completionRecord"
+        hidden
+    >
+
+        <div class="sd-panel-header">
+
+            <div>
+                <span class="sd-panel-label">
+                    Labour Record
+                </span>
+
+                <h3>Completed Job Time Log</h3>
+            </div>
+
+            <span class="sd-status sd-status-complete">
+                Completed
+            </span>
+
+        </div>
+
+
+        <div class="sd-completion-grid">
+
+            <div>
+                <span>Job Card</span>
+                <strong>#JC-1052</strong>
+            </div>
+
+            <div>
+                <span>Start Time</span>
+                <strong id="recordStartTime">--</strong>
+            </div>
+
+            <div>
+                <span>End Time</span>
+                <strong id="recordEndTime">--</strong>
+            </div>
+
+            <div>
+                <span>Total Labour Time</span>
+                <strong id="recordDuration">--</strong>
+            </div>
+
+        </div>
+
+    </article>
+
+</section>
+
+
+            <section
+    class="sd-content-section"
+    id="diagnostics"
+>
+
+    <div class="sd-section-heading">
+
+        <div>
+            <span class="sd-panel-label">
+                Technical Record
+            </span>
+
+            <h2>
+                Diagnostics & Repair Notes
+            </h2>
+
+            <p>
+                Record technical findings, repair actions
+                and recommendations against the active job card.
+            </p>
+        </div>
+
+    </div>
+
+
+    <!-- CURRENT JOB -->
+
+    <article class="sd-panel sd-diagnostic-job">
+
+        <div class="sd-diagnostic-job-main">
+
+            <div class="sd-diagnostic-job-icon">
+                <i class="bi bi-car-front"></i>
+            </div>
+
+            <div>
+                <span class="sd-panel-label">
+                    Active Job Card
+                </span>
+
+                <h3>
+                    #JC-1052 · Nissan X-Trail
+                </h3>
+
+                <p>
+                    WP CAX-4582 · Engine Repair · Bay 03
+                </p>
+            </div>
+
+        </div>
+
+
+        <span class="sd-status sd-status-progress">
+            In Progress
+        </span>
+
+    </article>
+
+
+    <div class="sd-diagnostic-layout">
+
+
+        <!-- DIAGNOSTIC FORM -->
+
+        <article class="sd-panel">
+
+            <div class="sd-panel-header">
+
+                <div>
+                    <span class="sd-panel-label">
+                        New Technical Entry
+                    </span>
+
+                    <h3>
+                        Add Diagnostic Finding
+                    </h3>
+                </div>
+
+                <i class="bi bi-clipboard2-pulse sd-diagnostic-title-icon"></i>
+
+            </div>
+
+
+            <form
+                id="diagnosticForm"
+                novalidate
+            >
+
+                <div class="sd-diagnostic-form-grid">
+
+
+                    <div class="sd-diagnostic-field">
+
+                        <label for="diagnosticArea">
+                            System / Area
+                        </label>
+
+                        <select id="diagnosticArea">
+                            <option value="">
+                                Select system
+                            </option>
+
+                            <option value="Engine">
+                                Engine
+                            </option>
+
+                            <option value="Transmission">
+                                Transmission
+                            </option>
+
+                            <option value="Brakes">
+                                Brakes
+                            </option>
+
+                            <option value="Suspension">
+                                Suspension
+                            </option>
+
+                            <option value="Electrical">
+                                Electrical
+                            </option>
+
+                            <option value="Cooling System">
+                                Cooling System
+                            </option>
+
+                            <option value="Fuel System">
+                                Fuel System
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="sd-diagnostic-field">
+
+                        <label for="diagnosticSeverity">
+                            Severity
+                        </label>
+
+                        <select id="diagnosticSeverity">
+                            <option value="">
+                                Select severity
+                            </option>
+
+                            <option value="Low">
+                                Low
+                            </option>
+
+                            <option value="Medium">
+                                Medium
+                            </option>
+
+                            <option value="High">
+                                High
+                            </option>
+
+                            <option value="Critical">
+                                Critical
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sd-diagnostic-field">
+
+                    <label for="diagnosticFinding">
+                        Diagnostic Finding
+                    </label>
+
+                    <textarea
+                        id="diagnosticFinding"
+                        rows="4"
+                        placeholder="Describe the fault, test result or technical finding..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="sd-diagnostic-field">
+
+                    <label for="repairAction">
+                        Repair / Action Taken
+                    </label>
+
+                    <textarea
+                        id="repairAction"
+                        rows="4"
+                        placeholder="Describe the repair, adjustment, test or action performed..."
+                    ></textarea>
+
+                </div>
+
+
+                <div class="sd-diagnostic-form-grid">
+
+                    <div class="sd-diagnostic-field">
+
+                        <label for="diagnosticResult">
+                            Current Result
+                        </label>
+
+                        <select id="diagnosticResult">
+                            <option value="">
+                                Select result
+                            </option>
+
+                            <option value="Resolved">
+                                Resolved
+                            </option>
+
+                            <option value="Monitoring Required">
+                                Monitoring Required
+                            </option>
+
+                            <option value="Further Repair Required">
+                                Further Repair Required
+                            </option>
+
+                            <option value="Part Required">
+                                Part Required
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="sd-diagnostic-field">
+
+                        <label for="diagnosticRecommendation">
+                            Recommendation
+                        </label>
+
+                        <input
+                            type="text"
+                            id="diagnosticRecommendation"
+                            placeholder="Example: Replace engine mount"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="sd-diagnostic-actions">
+
+                    <button
+                        type="submit"
+                        class="sd-primary-btn"
+                    >
+                        <i class="bi bi-plus-circle"></i>
+                        Save Diagnostic Entry
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="sd-secondary-btn"
+                        id="requestPartFromDiagnostic"
+                    >
+                        <i class="bi bi-box-seam"></i>
+                        Request Part
+                    </button>
+
+                </div>
+
+
+                <p
+                    class="sd-job-message"
+                    id="diagnosticMessage"
+                ></p>
+
+            </form>
+
+        </article>
+
+
+
+        <!-- JOB SUMMARY -->
+
+        <article class="sd-panel">
+
+            <div class="sd-panel-header">
+
+                <div>
+                    <span class="sd-panel-label">
+                        Technical Summary
+                    </span>
+
+                    <h3>
+                        Job Diagnosis
+                    </h3>
+                </div>
+
+            </div>
+
+
+            <div class="sd-diagnostic-summary">
+
+                <div>
+                    <span>Customer Concern</span>
+
+                    <p>
+                        Engine vibration at idle with reduced
+                        acceleration and abnormal engine noise.
+                    </p>
+                </div>
+
+
+                <div>
+                    <span>Primary Service</span>
+                    <strong>Engine Repair</strong>
+                </div>
+
+
+                <div>
+                    <span>Mechanic</span>
+                    <strong>Nimal Perera</strong>
+                </div>
+
+
+                <div>
+                    <span>Workshop Bay</span>
+                    <strong>Bay 03</strong>
+                </div>
+
+            </div>
+
+
+            <div class="sd-diagnostic-alert">
+
+                <i class="bi bi-info-circle"></i>
+
+                <div>
+                    <strong>
+                        Parts Workflow
+                    </strong>
+
+                    <p>
+                        If a required part is not available,
+                        create a digital Parts Requisition for
+                        the Storekeeper.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="sd-secondary-btn sd-full-btn"
+                data-go="parts"
+            >
+                <i class="bi bi-arrow-right-circle"></i>
+                Open Parts Requisition
+            </button>
+
+        </article>
+
+    </div>
+
+
+
+    <!-- SAVED DIAGNOSTIC HISTORY -->
+
+    <article class="sd-panel sd-diagnostic-history">
+
+        <div class="sd-panel-header">
+
+            <div>
+                <span class="sd-panel-label">
+                    Job Card Record
+                </span>
+
+                <h3>
+                    Diagnostic History
+                </h3>
+            </div>
+
+            <span
+                class="sd-count-badge"
+                id="diagnosticCount"
+            >
+                1 Entry
+            </span>
+
+        </div>
+
+
+        <div
+            class="sd-diagnostic-list"
+            id="diagnosticList"
+        >
+
+            <article class="sd-diagnostic-entry">
+
+                <div class="sd-diagnostic-entry-head">
+
+                    <div>
+                        <strong>
+                            Engine · Initial Inspection
+                        </strong>
+
+                        <span>
+                            Nimal Perera · Today 09:32 AM
+                        </span>
+                    </div>
+
+                    <span class="sd-diagnostic-severity high">
+                        High
+                    </span>
+
+                </div>
+
+
+                <div class="sd-diagnostic-entry-grid">
+
+                    <div>
+                        <span>Finding</span>
+
+                        <p>
+                            Excessive vibration detected at idle.
+                            Engine mounting requires further inspection.
+                        </p>
+                    </div>
+
+
+                    <div>
+                        <span>Action Taken</span>
+
+                        <p>
+                            Visual inspection completed and engine
+                            mounting points checked.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="sd-diagnostic-entry-footer">
+
+                    <span>
+                        Result:
+                        <strong>
+                            Further Repair Required
+                        </strong>
+                    </span>
+
+                    <span>
+                        Recommendation:
+                        <strong>
+                            Inspect engine mount
+                        </strong>
+                    </span>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </article>
+
+</section>
+
+
+            <section
+                class="sd-content-section"
+                id="parts"
+            >
+                <div class="sd-placeholder">
+                    <i class="bi bi-box-seam"></i>
+                    <h2>Parts Requisition</h2>
+                    <p>
+                        Digital part requisition workflow will be implemented here.
+                    </p>
+                </div>
+            </section>
+
+
+            <section
+                class="sd-content-section"
+                id="completed"
+            >
+                <div class="sd-placeholder">
+                    <i class="bi bi-check2-circle"></i>
+                    <h2>Completed Jobs</h2>
+                    <p>
+                        Completed work history will be implemented here.
+                    </p>
+                </div>
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+    <script src="../assets/js/mechanic-dashboard.js"></script>
+
+</body>
+</html>
+
+

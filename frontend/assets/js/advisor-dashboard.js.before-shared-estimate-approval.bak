@@ -1,0 +1,2804 @@
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* =====================================================
+       FRONTEND DEMO STATE
+
+       Important:
+       This data exists only while this page is open.
+       Future .NET backend will store customer, vehicle,
+       inspection and job-card records in the database.
+       ===================================================== */
+
+    let currentIntake = null;
+
+    /*
+        Selected diagnostic information is temporary
+        frontend state.
+
+        Future .NET backend:
+        JobCard -> DiagnosticRecord -> Estimate
+    */
+    let currentDiagnostic = null;
+
+    /*
+        Temporary estimate workflow state.
+
+        Real application:
+        Estimate + approval status will come from
+        the .NET backend/database.
+    */
+    let currentEstimate = null;
+
+    /*
+        Temporary frontend workflow state.
+
+        Real application:
+        invoice finalization and handover permission
+        must be stored and validated by the .NET backend.
+    */
+    let invoiceFinalized = false;
+
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const navItems =
+        document.querySelectorAll(".sd-nav-item");
+
+    const sections =
+        document.querySelectorAll(".sd-section");
+
+    const pageTitle =
+        document.getElementById("pageTitle");
+
+    const sidebar =
+        document.getElementById("advisorSidebar");
+
+    const sidebarOpen =
+        document.getElementById("sidebarOpen");
+
+    const sidebarClose =
+        document.getElementById("sidebarClose");
+
+    const sidebarOverlay =
+        document.getElementById("sidebarOverlay");
+
+
+    const sectionTitles = {
+
+        overview:
+            "Workshop Overview",
+
+        "customer-intake":
+            "Customer Intake",
+
+        inspection:
+            "Walkaround Inspection",
+
+        "job-cards":
+            "Official Job Cards",
+
+        diagnostics:
+            "Diagnostic Notes",
+
+        estimates:
+            "Customer Estimates",
+
+        invoice:
+            "Invoice Compilation",
+
+        handover:
+            "Final Handover"
+    };
+
+
+    /* =====================================================
+       NAVIGATION
+       ===================================================== */
+
+    function showSection(sectionId) {
+
+        sections.forEach(section => {
+
+            section.classList.toggle(
+                "active",
+                section.id === sectionId
+            );
+
+        });
+
+
+        navItems.forEach(item => {
+
+            item.classList.toggle(
+                "active",
+                item.dataset.section === sectionId
+            );
+
+        });
+
+
+        if (pageTitle) {
+
+            pageTitle.textContent =
+                sectionTitles[sectionId] ||
+                "Service Advisor Portal";
+        }
+
+
+        closeSidebar();
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+
+    navItems.forEach(item => {
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                showSection(
+                    item.dataset.section
+                );
+
+            }
+        );
+
+    });
+
+
+    document
+        .querySelectorAll("[data-go-section]")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showSection(
+                        button.dataset.goSection
+                    );
+
+                }
+            );
+
+        });
+
+
+
+    /* =====================================================
+       MOBILE SIDEBAR
+       ===================================================== */
+
+    function openSidebar() {
+
+        sidebar?.classList.add("open");
+
+        sidebarOverlay?.classList.add("open");
+
+    }
+
+
+    function closeSidebar() {
+
+        sidebar?.classList.remove("open");
+
+        sidebarOverlay?.classList.remove("open");
+
+    }
+
+
+    sidebarOpen?.addEventListener(
+        "click",
+        openSidebar
+    );
+
+
+    sidebarClose?.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+    sidebarOverlay?.addEventListener(
+        "click",
+        closeSidebar
+    );
+
+
+
+    /* =====================================================
+       HELPER FUNCTIONS
+       ===================================================== */
+
+    function escapeHTML(value = "") {
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function generateJobCardNumber() {
+
+        const randomNumber =
+            Math.floor(
+                1000 +
+                Math.random() * 9000
+            );
+
+        return `#JC-${randomNumber}`;
+    }
+
+
+
+    /* =====================================================
+       CUSTOMER INTAKE
+       ===================================================== */
+
+    /* =====================================================
+       LIVE ADVISOR OVERVIEW
+       ===================================================== */
+
+    function updateAdvisorOverview() {
+
+        const vehiclesToday =
+            document.getElementById(
+                "advisorVehiclesToday"
+            );
+
+        const activeJobs =
+            document.getElementById(
+                "advisorActiveJobs"
+            );
+
+        const pendingEstimates =
+            document.getElementById(
+                "advisorPendingEstimates"
+            );
+
+        const readyHandover =
+            document.getElementById(
+                "advisorReadyHandover"
+            );
+
+        const activityList =
+            document.getElementById(
+                "overviewActivityList"
+            );
+
+
+        /*
+            Only Job Cards created through the current live
+            Advisor workflow are included here.
+
+            Static demo rows remain available for UI reference,
+            but they do not affect live operational counts.
+        */
+        const liveRows =
+            jobCardTable
+                ? [...jobCardTable.querySelectorAll(
+                    'tr[data-live-job="true"]'
+                )]
+                : [];
+
+
+        const plates =
+            new Set();
+
+        liveRows.forEach(row => {
+
+            const plate =
+                row.querySelector(
+                    "td:nth-child(2) small"
+                )
+                ?.textContent
+                ?.trim();
+
+            if (plate) {
+                plates.add(plate);
+            }
+        });
+
+
+        /*
+            A newly completed intake must count immediately,
+            even before its Job Card has been created.
+        */
+        if (currentIntake?.vehiclePlate) {
+            plates.add(
+                currentIntake.vehiclePlate
+            );
+        }
+
+
+        const getStatus = row =>
+            row.querySelector(".sd-status")
+                ?.textContent
+                ?.trim() || "";
+
+
+        const activeCount =
+            liveRows.filter(
+                row =>
+                    getStatus(row) !==
+                    "Completed"
+            ).length;
+
+
+        const pendingCount =
+            liveRows.filter(
+                row =>
+                    getStatus(row) ===
+                    "Awaiting Customer Approval"
+            ).length;
+
+
+        const readyCount =
+            liveRows.filter(
+                row =>
+                    getStatus(row) ===
+                    "Invoice Finalized"
+            ).length;
+
+
+        if (vehiclesToday) {
+            vehiclesToday.textContent =
+                String(plates.size)
+                    .padStart(2, "0");
+        }
+
+        if (activeJobs) {
+            activeJobs.textContent =
+                String(activeCount)
+                    .padStart(2, "0");
+        }
+
+        if (pendingEstimates) {
+            pendingEstimates.textContent =
+                String(pendingCount)
+                    .padStart(2, "0");
+        }
+
+        if (readyHandover) {
+            readyHandover.textContent =
+                String(readyCount)
+                    .padStart(2, "0");
+        }
+
+
+        if (!activityList) {
+            return;
+        }
+
+
+        const queueRows =
+            liveRows.filter(
+                row =>
+                    getStatus(row) !==
+                    "Completed"
+            );
+
+
+        if (!queueRows.length) {
+
+            activityList.innerHTML = `
+                <div class="sd-activity-item">
+                    <div>
+                        <strong>No live workshop jobs</strong>
+                        <span>
+                            New Advisor workflow activity will appear here.
+                        </span>
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        activityList.innerHTML =
+            queueRows.map(row => {
+
+                const cells =
+                    row.querySelectorAll("td");
+
+                const jobCard =
+                    cells[0]
+                        ?.textContent
+                        ?.trim() || "";
+
+                const vehicleCell =
+                    cells[1];
+
+                const plate =
+                    vehicleCell
+                        ?.querySelector("small")
+                        ?.textContent
+                        ?.trim() || "";
+
+                const vehicleClone =
+                    vehicleCell
+                        ?.cloneNode(true);
+
+                vehicleClone
+                    ?.querySelector("small")
+                    ?.remove();
+
+                const vehicle =
+                    vehicleClone
+                        ?.textContent
+                        ?.trim() || "Vehicle";
+
+                const service =
+                    cells[2]
+                        ?.textContent
+                        ?.trim() || "";
+
+                const status =
+                    getStatus(row);
+
+
+                let statusClass =
+                    "sd-status-progress";
+
+                if (
+                    status ===
+                    "Awaiting Customer Approval" ||
+                    status ===
+                    "Estimate Pending"
+                ) {
+                    statusClass =
+                        "sd-status-waiting";
+                }
+
+                if (
+                    status ===
+                    "Invoice Finalized"
+                ) {
+                    statusClass =
+                        "sd-status-ready";
+                }
+
+
+                let displayStatus =
+                    status;
+
+                if (
+                    status ===
+                    "Awaiting Customer Approval"
+                ) {
+                    displayStatus =
+                        "Estimate";
+                }
+
+                if (
+                    status ===
+                    "Invoice Finalized"
+                ) {
+                    displayStatus =
+                        "Ready";
+                }
+
+
+                return `
+                    <div class="sd-activity-item">
+
+                        <div class="sd-activity-marker"></div>
+
+                        <div>
+                            <strong>
+                                ${escapeHTML(vehicle)}
+                            </strong>
+
+                            <span>
+                                ${escapeHTML(plate)} | ${escapeHTML(service)}
+                                ${jobCard ? ` | ${escapeHTML(jobCard)}` : ""}
+                            </span>
+                        </div>
+
+                        <span class="sd-status ${statusClass}">
+                            ${escapeHTML(displayStatus)}
+                        </span>
+
+                    </div>
+                `;
+            })
+            .join("");
+    }
+
+
+    /*
+        Run after the DOMContentLoaded callback finishes,
+        so Job Card elements are already initialized.
+    */
+    setTimeout(
+        updateAdvisorOverview,
+        0
+    );
+
+    const customerIntakeForm =
+        document.getElementById(
+            "customerIntakeForm"
+        );
+
+    const intakeMessage =
+        document.getElementById(
+            "intakeMessage"
+        );
+
+
+    customerIntakeForm?.addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            if (
+                !customerIntakeForm
+                    .checkValidity()
+            ) {
+
+                intakeMessage.textContent =
+                    "Please complete all required intake fields.";
+
+                intakeMessage.className =
+                    "sd-form-message error";
+
+                customerIntakeForm
+                    .reportValidity();
+
+                return;
+            }
+
+
+            currentIntake = {
+
+                customerName:
+                    document
+                        .getElementById("customerName")
+                        .value
+                        .trim(),
+
+                customerMobile:
+                    document
+                        .getElementById("customerMobile")
+                        .value
+                        .trim(),
+
+                customerEmail:
+                    document
+                        .getElementById("customerEmail")
+                        .value
+                        .trim(),
+
+                customerNic:
+                    document
+                        .getElementById("customerNic")
+                        .value
+                        .trim(),
+
+                vehicleMake:
+                    document
+                        .getElementById("vehicleMake")
+                        .value
+                        .trim(),
+
+                vehicleModel:
+                    document
+                        .getElementById("vehicleModel")
+                        .value
+                        .trim(),
+
+                vehicleYear:
+                    document
+                        .getElementById("vehicleYear")
+                        .value,
+
+                vehiclePlate:
+                    document
+                        .getElementById("vehiclePlate")
+                        .value
+                        .trim(),
+
+                vehicleVin:
+                    document
+                        .getElementById("vehicleVin")
+                        .value
+                        .trim(),
+
+                vehicleMileage:
+                    document
+                        .getElementById("vehicleMileage")
+                        .value,
+
+                serviceConcern:
+                    document
+                        .getElementById("serviceConcern")
+                        .value
+                        .trim()
+            };
+
+
+            intakeMessage.textContent =
+                "Customer intake completed. Opening vehicle inspection...";
+
+            intakeMessage.className =
+                "sd-form-message success";
+
+
+            updateInspectionVehicleSummary();
+            updateAdvisorOverview();
+
+
+            setTimeout(
+                () => {
+
+                    showSection(
+                        "inspection"
+                    );
+
+                },
+                550
+            );
+
+        }
+    );
+
+
+
+    /* =====================================================
+       WALKAROUND INSPECTION
+       ===================================================== */
+
+    const inspectionChecks =
+        document.querySelectorAll(
+            ".inspection-check"
+        );
+
+    const inspectionProgressText =
+        document.getElementById(
+            "inspectionProgressText"
+        );
+
+
+    function updateInspectionVehicleSummary() {
+
+        if (!currentIntake) {
+            return;
+        }
+
+
+        const summary =
+            document.querySelector(
+                ".sd-vehicle-summary"
+            );
+
+
+        if (!summary) {
+            return;
+        }
+
+
+        const strong =
+            summary.querySelector("strong");
+
+        const span =
+            summary.querySelector("span");
+
+
+        if (strong) {
+
+            strong.textContent =
+                `${currentIntake.vehicleMake} ${currentIntake.vehicleModel} ${currentIntake.vehicleYear}`;
+        }
+
+
+        if (span) {
+
+            const mileage =
+                currentIntake.vehicleMileage
+                    ? `${Number(currentIntake.vehicleMileage).toLocaleString()} km`
+                    : "Mileage not recorded";
+
+
+            span.textContent =
+                `${currentIntake.vehiclePlate} - ${mileage}`;
+        }
+    }
+
+
+    function updateInspectionProgress() {
+
+        let completed = 0;
+
+
+        inspectionChecks.forEach(check => {
+
+            const card =
+                check.closest(
+                    ".sd-check-card"
+                );
+
+            const icon =
+                card?.querySelector(
+                    ".sd-check-icon i"
+                );
+
+
+            if (check.checked) {
+
+                completed++;
+
+
+                card?.classList.add(
+                    "checked"
+                );
+
+
+                if (icon) {
+
+                    icon.className =
+                        "bi bi-check-circle-fill";
+                }
+
+            } else {
+
+                card?.classList.remove(
+                    "checked"
+                );
+
+
+                if (icon) {
+
+                    icon.className =
+                        "bi bi-circle";
+                }
+            }
+
+        });
+
+
+        if (inspectionProgressText) {
+
+            inspectionProgressText.textContent =
+                `${completed} / ${inspectionChecks.length}`;
+        }
+    }
+
+
+    inspectionChecks.forEach(check => {
+
+        check.addEventListener(
+            "change",
+            updateInspectionProgress
+        );
+
+    });
+
+
+    const saveInspection =
+        document.getElementById(
+            "saveInspection"
+        );
+
+    const inspectionMessage =
+        document.getElementById(
+            "inspectionMessage"
+        );
+
+
+    saveInspection?.addEventListener(
+        "click",
+        () => {
+
+            if (!currentIntake) {
+
+                inspectionMessage.textContent =
+                    "Complete Customer Intake before creating an inspection.";
+
+                inspectionMessage.className =
+                    "sd-form-message error";
+
+                return;
+            }
+
+
+            const checkedCount =
+                document.querySelectorAll(
+                    ".inspection-check:checked"
+                ).length;
+
+
+            if (
+                checkedCount !==
+                inspectionChecks.length
+            ) {
+
+                inspectionMessage.textContent =
+                    "Complete all walkaround checkpoints before saving.";
+
+                inspectionMessage.className =
+                    "sd-form-message error";
+
+                return;
+            }
+
+
+            const inspectionNotes =
+                document
+                    .getElementById(
+                        "inspectionNotes"
+                    )
+                    ?.value
+                    .trim() || "";
+
+
+            /*
+                Prevent duplicate Job Cards.
+
+                Once this intake already has a Job Card,
+                reuse the same Job Card number instead of
+                creating another record.
+            */
+
+            if (currentIntake.jobCardNumber) {
+
+                inspectionMessage.textContent =
+                    `Job Card ${currentIntake.jobCardNumber} has already been created for this intake.`;
+
+                inspectionMessage.className =
+                    "sd-form-message success";
+
+                setTimeout(
+                    () => {
+
+                        showSection(
+                            "job-cards"
+                        );
+
+                    },
+                    500
+                );
+
+                return;
+            }
+
+
+            const jobCardNumber =
+                generateJobCardNumber();
+
+
+            currentIntake.jobCardNumber =
+                jobCardNumber;
+
+
+            addJobCard({
+                jobCardNumber,
+                vehicle:
+                    `${currentIntake.vehicleMake} ${currentIntake.vehicleModel}`,
+                plate:
+                    currentIntake.vehiclePlate,
+                service:
+                    currentIntake.serviceConcern,
+                inspectionNotes
+            });
+
+
+            /* =================================================
+               ADVISOR -> SHARED WORKFLOW STORE
+
+               Temporary frontend bridge.
+               Future implementation will call the .NET API
+               through the same service boundary.
+               ================================================= */
+
+            if (window.ShiftDynamicsStore) {
+
+                const existingSharedJob =
+                    ShiftDynamicsStore.getJob(
+                        jobCardNumber
+                    );
+
+                if (!existingSharedJob) {
+
+                    ShiftDynamicsStore.createJob({
+
+                        jobCardNumber,
+
+                        customer: {
+                            name:
+                                currentIntake.customerName || "",
+
+                            mobile:
+                                currentIntake.customerMobile || "",
+
+                            email:
+                                currentIntake.customerEmail || "",
+
+                            nic:
+                                currentIntake.customerNic || ""
+                        },
+
+                        vehicle: {
+                            make:
+                                currentIntake.vehicleMake || "",
+
+                            model:
+                                currentIntake.vehicleModel || "",
+
+                            year:
+                                currentIntake.vehicleYear || "",
+
+                            plate:
+                                currentIntake.vehiclePlate || "",
+
+                            vin:
+                                currentIntake.vehicleVin || "",
+
+                            mileage:
+                                currentIntake.vehicleMileage || ""
+                        },
+
+                        serviceConcern:
+                            currentIntake.serviceConcern || "",
+
+                        status:
+                            "Awaiting Diagnosis",
+
+                        inspection: {
+                            status:
+                                "Completed",
+
+                            notes:
+                                inspectionNotes || "",
+
+                            completedAt:
+                                new Date().toISOString()
+                        },
+
+                        assignment: {
+                            mechanicId: null,
+                            mechanicName: null,
+                            bay: null
+                        },
+
+                        diagnostic: {
+                            priority: null,
+                            finding: "",
+                            updatedAt: null
+                        },
+
+                        estimate: {
+                            description: "",
+                            labour: 0,
+                            parts: 0,
+                            vendor: 0,
+                            other: 0,
+                            total: 0,
+                            status: "Not Created"
+                        },
+
+                        repair: {
+                            status: "Not Started",
+                            checklist: [],
+                            notes: "",
+                            labourSeconds: 0
+                        },
+
+                        invoice: {
+                            number: null,
+                            status: "Not Finalized",
+                            total: 0
+                        },
+
+                        handover: {
+                            status: "Not Ready",
+                            completedAt: null
+                        },
+
+                        source:
+                            "advisor"
+                    });
+                }
+            }
+
+
+            inspectionMessage.textContent =
+                `${jobCardNumber} created successfully.`;
+
+            inspectionMessage.className =
+                "sd-form-message success";
+
+
+            setTimeout(
+                () => {
+
+                    showSection(
+                        "job-cards"
+                    );
+
+                },
+                650
+            );
+
+        }
+    );
+
+
+
+    /* =====================================================
+       JOB CARDS
+       ===================================================== */
+
+    const jobCardTable =
+        document.getElementById(
+            "jobCardTable"
+        );
+
+
+    /*
+        Update one specific Job Card using its Job Card number.
+
+        Important:
+        We do not update the first row in the table.
+        We find the correct row by Job Card ID.
+    */
+    function updateJobCardStatus(
+        jobCardNumber,
+        newStatus
+    ) {
+
+        if (
+            !jobCardTable ||
+            !jobCardNumber
+        ) {
+            return;
+        }
+
+
+        const rows =
+            jobCardTable.querySelectorAll(
+                "tr"
+            );
+
+
+        const matchingRow =
+            [...rows].find(
+                row => {
+
+                    const cardNumber =
+                        row.querySelector(
+                            "td strong"
+                        )
+                        ?.textContent
+                        ?.trim();
+
+                    return (
+                        cardNumber ===
+                        jobCardNumber
+                    );
+                }
+            );
+
+
+        if (!matchingRow) {
+            return;
+        }
+
+
+        const statusElement =
+            matchingRow.querySelector(
+                ".sd-status"
+            );
+
+
+        if (statusElement) {
+
+            statusElement.textContent =
+                newStatus;
+
+            updateAdvisorOverview();
+        }
+    }
+
+
+    function addJobCard(job) {
+
+        if (!jobCardTable) {
+            return;
+        }
+
+
+        const row =
+            document.createElement("tr");
+
+        row.dataset.liveJob = "true";
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${escapeHTML(job.jobCardNumber)}
+                </strong>
+            </td>
+
+            <td>
+                ${escapeHTML(job.vehicle)}
+
+                <small>
+                    ${escapeHTML(job.plate)}
+                </small>
+            </td>
+
+            <td>
+                ${escapeHTML(job.service)}
+            </td>
+
+            <td>
+                Service Advisor
+            </td>
+
+            <td>
+                <span class="sd-status sd-status-progress">
+                    Awaiting Diagnosis
+                </span>
+            </td>
+
+            <td>
+                <button
+                    type="button"
+                    class="sd-table-button"
+                >
+                    View
+                </button>
+            </td>
+        `;
+
+
+        jobCardTable.prepend(row);
+
+
+        const viewButton =
+            row.querySelector(
+                ".sd-table-button"
+            );
+
+
+        viewButton?.addEventListener(
+            "click",
+            () => {
+
+                showSection(
+                    "diagnostics"
+                );
+
+            }
+        );
+
+
+        addDiagnosticJobOption(job);
+        updateAdvisorOverview();
+    }
+
+
+    function addDiagnosticJobOption(job) {
+
+        const diagnosticJob =
+            document.getElementById(
+                "diagnosticJob"
+            );
+
+
+        if (!diagnosticJob) {
+            return;
+        }
+
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            job.jobCardNumber;
+
+
+        option.textContent =
+            `${job.jobCardNumber} - ${job.vehicle}`;
+
+
+        diagnosticJob.prepend(option);
+
+        diagnosticJob.value =
+            job.jobCardNumber;
+    }
+
+
+    const newJobCardButton =
+        document.getElementById(
+            "newJobCardButton"
+        );
+
+
+    newJobCardButton?.addEventListener(
+        "click",
+        () => {
+
+            showSection(
+                "customer-intake"
+            );
+
+        }
+    );
+
+
+    document
+        .querySelectorAll(".sd-table-button")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    showSection(
+                        "diagnostics"
+                    );
+
+                }
+            );
+
+        });
+
+
+
+    /* =====================================================
+       DIAGNOSTIC NOTES
+       ===================================================== */
+
+    /* =====================================================
+       DIAGNOSTIC PERSISTENCE
+       ===================================================== */
+
+    const ADVISOR_DIAGNOSTIC_STORAGE_KEY =
+        "shiftDynamicsAdvisorDiagnostic";
+
+
+    function getJobCardRow(jobCardNumber) {
+
+        if (!jobCardTable || !jobCardNumber) {
+            return null;
+        }
+
+        return [...jobCardTable.querySelectorAll("tr")]
+            .find(row => {
+
+                const number =
+                    row.querySelector("td strong")
+                        ?.textContent
+                        ?.trim();
+
+                return number === jobCardNumber;
+
+            }) || null;
+    }
+
+
+    function buildDiagnosticContext(diagnostic) {
+
+        if (!diagnostic) {
+            return null;
+        }
+
+        const row =
+            getJobCardRow(
+                diagnostic.jobCard
+            );
+
+        const cells =
+            row?.querySelectorAll("td");
+
+        const vehicleCell =
+            cells?.[1];
+
+        const vehicleClone =
+            vehicleCell?.cloneNode(true);
+
+        vehicleClone
+            ?.querySelector("small")
+            ?.remove();
+
+        const vehicle =
+            vehicleClone
+                ?.textContent
+                ?.trim() ||
+            diagnostic.jobLabel
+                ?.replace(
+                    diagnostic.jobCard,
+                    ""
+                )
+                ?.replace(
+                    /^[-| ]+/,
+                    ""
+                )
+                ?.trim() ||
+            "--";
+
+        const reportedIssue =
+            cells?.[2]
+                ?.textContent
+                ?.trim() ||
+            currentIntake?.serviceConcern ||
+            "--";
+
+        return {
+            ...diagnostic,
+            vehicle,
+            reportedIssue
+        };
+    }
+
+
+    function saveDiagnosticState() {
+
+        if (!currentDiagnostic) {
+            return;
+        }
+
+        const saved =
+            buildDiagnosticContext(
+                currentDiagnostic
+            );
+
+        localStorage.setItem(
+            ADVISOR_DIAGNOSTIC_STORAGE_KEY,
+            JSON.stringify(saved)
+        );
+    }
+
+
+    function renderLatestDiagnostic(diagnostic) {
+
+        const job =
+            document.getElementById(
+                "latestFindingJob"
+            );
+
+        const vehicle =
+            document.getElementById(
+                "latestFindingVehicle"
+            );
+
+        const issue =
+            document.getElementById(
+                "latestFindingIssue"
+            );
+
+        const finding =
+            document.getElementById(
+                "latestFindingTechnician"
+            );
+
+        const recommendation =
+            document.getElementById(
+                "latestFindingRecommendation"
+            );
+
+
+        if (!diagnostic) {
+
+            if (job) {
+                job.textContent =
+                    "No diagnostic saved";
+            }
+
+            if (vehicle) {
+                vehicle.textContent = "--";
+            }
+
+            if (issue) {
+                issue.textContent = "--";
+            }
+
+            if (finding) {
+                finding.textContent = "--";
+            }
+
+            if (recommendation) {
+                recommendation.textContent =
+                    "Not separately recorded";
+            }
+
+            return;
+        }
+
+
+        if (job) {
+            job.textContent =
+                diagnostic.jobCard || "--";
+        }
+
+        if (vehicle) {
+            vehicle.textContent =
+                diagnostic.vehicle || "--";
+        }
+
+        if (issue) {
+            issue.textContent =
+                diagnostic.reportedIssue || "--";
+        }
+
+        if (finding) {
+            finding.textContent =
+                diagnostic.finding || "--";
+        }
+
+        if (recommendation) {
+            recommendation.textContent =
+                "Not separately recorded";
+        }
+    }
+
+
+    function restoreDiagnosticState() {
+
+        try {
+
+            let saved = null;
+
+            /*
+                PRIMARY SOURCE:
+                Restore the latest diagnostic from the shared
+                Shift Dynamics Job workflow store.
+            */
+            if (
+                window.ShiftDynamicsStore &&
+                typeof window.ShiftDynamicsStore.getJobs === "function"
+            ) {
+
+                const jobsWithDiagnostics =
+                    window.ShiftDynamicsStore
+                        .getJobs()
+                        .filter(
+                            job =>
+                                job?.diagnostic?.finding
+                        )
+                        .sort(
+                            (a, b) => {
+
+                                const aTime =
+                                    new Date(
+                                        a.diagnostic?.savedAt ||
+                                        a.updatedAt ||
+                                        0
+                                    ).getTime();
+
+                                const bTime =
+                                    new Date(
+                                        b.diagnostic?.savedAt ||
+                                        b.updatedAt ||
+                                        0
+                                    ).getTime();
+
+                                return bTime - aTime;
+                            }
+                        );
+
+                const sharedJob =
+                    jobsWithDiagnostics[0];
+
+                if (sharedJob) {
+
+                    const vehicleName =
+                        [
+                            sharedJob.vehicle?.make,
+                            sharedJob.vehicle?.model
+                        ]
+                            .filter(Boolean)
+                            .join(" ") ||
+                        sharedJob.diagnostic?.vehicle ||
+                        "Vehicle";
+
+                    saved = {
+                        ...sharedJob.diagnostic,
+
+                        jobCard:
+                            sharedJob.jobCardNumber,
+
+                        vehicle:
+                            sharedJob.diagnostic?.vehicle ||
+                            vehicleName,
+
+                        reportedIssue:
+                            sharedJob.diagnostic?.reportedIssue ||
+                            sharedJob.serviceConcern ||
+                            "--"
+                    };
+                }
+            }
+
+
+            /*
+                TEMPORARY FALLBACK:
+                Keep old Advisor localStorage data working while
+                we migrate the rest of the frontend.
+            */
+            if (!saved) {
+
+                const raw =
+                    localStorage.getItem(
+                        ADVISOR_DIAGNOSTIC_STORAGE_KEY
+                    );
+
+                if (raw) {
+                    saved =
+                        JSON.parse(raw);
+                }
+            }
+
+
+            if (
+                !saved?.jobCard ||
+                !saved?.finding
+            ) {
+
+                renderLatestDiagnostic(null);
+                return;
+            }
+
+
+            currentDiagnostic =
+                saved;
+
+
+            const diagnosticJob =
+                document.getElementById(
+                    "diagnosticJob"
+                );
+
+            const diagnosticPriority =
+                document.getElementById(
+                    "diagnosticPriority"
+                );
+
+
+            if (diagnosticJob) {
+
+                const exists =
+                    [...diagnosticJob.options]
+                        .some(
+                            option =>
+                                option.value ===
+                                saved.jobCard
+                        );
+
+                if (!exists) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        saved.jobCard;
+
+                    option.textContent =
+                        `${saved.jobCard} - ${saved.vehicle || "Vehicle"}`;
+
+                    diagnosticJob.prepend(
+                        option
+                    );
+                }
+
+                diagnosticJob.value =
+                    saved.jobCard;
+            }
+
+
+            if (diagnosticPriority) {
+                diagnosticPriority.value =
+                    saved.priority ||
+                    "Normal";
+            }
+
+
+            if (diagnosticNotes) {
+                diagnosticNotes.value =
+                    saved.finding ||
+                    "";
+            }
+
+
+            renderLatestDiagnostic(
+                saved
+            );
+
+        } catch (error) {
+
+            console.warn(
+                "Unable to restore Advisor diagnostic state.",
+                error
+            );
+
+            renderLatestDiagnostic(null);
+        }
+    }
+
+
+    const saveDiagnostic =
+        document.getElementById(
+            "saveDiagnostic"
+        );
+
+    const diagnosticNotes =
+        document.getElementById(
+            "diagnosticNotes"
+        );
+
+    const diagnosticMessage =
+        document.getElementById(
+            "diagnosticMessage"
+        );
+
+
+    saveDiagnostic?.addEventListener(
+        "click",
+        () => {
+
+            const diagnosticJob =
+                document.getElementById(
+                    "diagnosticJob"
+                );
+
+            const diagnosticPriority =
+                document.getElementById(
+                    "diagnosticPriority"
+                );
+
+
+            const finding =
+                diagnosticNotes
+                    .value
+                    .trim();
+
+
+            if (!finding) {
+
+                diagnosticMessage.textContent =
+                    "Enter diagnostic findings before saving.";
+
+                diagnosticMessage.className =
+                    "sd-form-message error";
+
+                diagnosticNotes.focus();
+
+                return;
+            }
+
+
+            if (!diagnosticJob?.value) {
+
+                diagnosticMessage.textContent =
+                    "Select a Job Card before saving diagnostic notes.";
+
+                diagnosticMessage.className =
+                    "sd-form-message error";
+
+                return;
+            }
+
+
+            currentDiagnostic = {
+
+                jobCard:
+                    diagnosticJob.value,
+
+                jobLabel:
+                    diagnosticJob
+                        .options[
+                            diagnosticJob.selectedIndex
+                        ]
+                        ?.textContent
+                        ?.trim() || diagnosticJob.value,
+
+                priority:
+                    diagnosticPriority?.value ||
+                    "Normal",
+
+                finding:
+                    finding
+            };
+
+
+            updateJobCardStatus(
+                currentDiagnostic.jobCard,
+                "Estimate Pending"
+            );
+
+            saveDiagnosticState();
+
+            /*
+                SHARED WORKFLOW:
+                Save Advisor diagnostic against the same shared Job Card.
+            */
+            if (
+                window.ShiftDynamicsStore &&
+                typeof window.ShiftDynamicsStore.updateJob === "function"
+            ) {
+
+                const sharedDiagnostic =
+                    buildDiagnosticContext(
+                        currentDiagnostic
+                    );
+
+                try {
+
+                    window.ShiftDynamicsStore.updateJob(
+                        currentDiagnostic.jobCard,
+                        {
+                            diagnostic: {
+                                jobCard:
+                                    sharedDiagnostic.jobCard,
+
+                                priority:
+                                    sharedDiagnostic.priority,
+
+                                finding:
+                                    sharedDiagnostic.finding,
+
+                                vehicle:
+                                    sharedDiagnostic.vehicle,
+
+                                reportedIssue:
+                                    sharedDiagnostic.reportedIssue,
+
+                                savedAt:
+                                    new Date().toISOString()
+                            },
+
+                            status:
+                                "Estimate Pending",
+
+                            updatedAt:
+                                new Date().toISOString()
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.warn(
+                        "Unable to save diagnostic to shared workflow store.",
+                        error
+                    );
+                }
+            }
+
+            renderLatestDiagnostic(
+                buildDiagnosticContext(
+                    currentDiagnostic
+                )
+            );
+
+
+            diagnosticMessage.textContent =
+                `Diagnostic notes saved for ${currentDiagnostic.jobCard}.`;
+
+            diagnosticMessage.className =
+                "sd-form-message success";
+
+
+            /*
+                FRONTEND WORKFLOW:
+
+                Job Card
+                    ->
+                Diagnostic Finding
+                    ->
+                Customer Estimate
+
+                Real system:
+                this record will be saved through
+                the .NET API/database.
+            */
+
+
+            let prepareEstimateButton =
+                document.getElementById(
+                    "prepareEstimateFromDiagnostic"
+                );
+
+
+            if (!prepareEstimateButton) {
+
+                prepareEstimateButton =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                prepareEstimateButton.type =
+                    "button";
+
+
+                prepareEstimateButton.id =
+                    "prepareEstimateFromDiagnostic";
+
+
+                prepareEstimateButton.className =
+                    "sd-primary-button";
+
+
+                prepareEstimateButton.innerHTML =
+                    '<i class="bi bi-receipt"></i> Prepare Customer Estimate';
+
+
+                const diagnosticPanel =
+                    saveDiagnostic.closest(
+                        ".sd-panel"
+                    );
+
+
+                const formActions =
+                    saveDiagnostic.closest(
+                        ".sd-form-actions"
+                    );
+
+
+                if (formActions) {
+
+                    formActions.appendChild(
+                        prepareEstimateButton
+                    );
+
+                } else if (diagnosticPanel) {
+
+                    diagnosticPanel.appendChild(
+                        prepareEstimateButton
+                    );
+                }
+
+
+                prepareEstimateButton.addEventListener(
+                    "click",
+                    () => {
+
+                        prepareEstimateFromDiagnostic();
+
+                    }
+                );
+            }
+
+        }
+    );
+
+
+    function prepareEstimateFromDiagnostic() {
+
+        if (!currentDiagnostic) {
+
+            diagnosticMessage.textContent =
+                "Save diagnostic notes before preparing an estimate.";
+
+            diagnosticMessage.className =
+                "sd-form-message error";
+
+            return;
+        }
+
+
+        const estimateDescription =
+            document.getElementById(
+                "estimateDescription"
+            );
+
+
+        if (estimateDescription) {
+
+            estimateDescription.value =
+                `Job Card: ${currentDiagnostic.jobCard}
+
+Diagnostic Priority: ${currentDiagnostic.priority}
+
+Diagnostic Finding:
+${currentDiagnostic.finding}
+
+Recommended Work:
+`;
+        }
+
+
+        const estimateMessage =
+            document.getElementById(
+                "estimateMessage"
+            );
+
+
+        if (estimateMessage) {
+
+            estimateMessage.textContent =
+                `Preparing estimate for ${currentDiagnostic.jobCard}.`;
+
+            estimateMessage.className =
+                "sd-form-message success";
+        }
+
+
+        showSection(
+            "estimates"
+        );
+    }
+
+
+
+    /* =====================================================
+       ESTIMATE CALCULATOR
+       ===================================================== */
+
+    const estimateLabour =
+        document.getElementById(
+            "estimateLabour"
+        );
+
+    const estimateParts =
+        document.getElementById(
+            "estimateParts"
+        );
+
+    const estimateVendor =
+        document.getElementById(
+            "estimateVendor"
+        );
+
+    const estimateOther =
+        document.getElementById(
+            "estimateOther"
+        );
+
+
+    function numberValue(input) {
+
+        return Number(
+            input?.value || 0
+        );
+
+    }
+
+
+    function formatLKR(value) {
+
+        return (
+            "LKR " +
+            Number(value)
+                .toLocaleString("en-LK")
+        );
+
+    }
+
+
+    function updateEstimate() {
+
+        const labour =
+            numberValue(
+                estimateLabour
+            );
+
+        const parts =
+            numberValue(
+                estimateParts
+            );
+
+        const vendor =
+            numberValue(
+                estimateVendor
+            );
+
+        const other =
+            numberValue(
+                estimateOther
+            );
+
+
+        const total =
+            labour +
+            parts +
+            vendor +
+            other;
+
+
+        const labourDisplay =
+            document.getElementById(
+                "labourDisplay"
+            );
+
+        const partsDisplay =
+            document.getElementById(
+                "partsDisplay"
+            );
+
+        const vendorDisplay =
+            document.getElementById(
+                "vendorDisplay"
+            );
+
+        const otherDisplay =
+            document.getElementById(
+                "otherDisplay"
+            );
+
+        const estimateTotal =
+            document.getElementById(
+                "estimateTotal"
+            );
+
+
+        if (labourDisplay) {
+            labourDisplay.textContent =
+                formatLKR(labour);
+        }
+
+        if (partsDisplay) {
+            partsDisplay.textContent =
+                formatLKR(parts);
+        }
+
+        if (vendorDisplay) {
+            vendorDisplay.textContent =
+                formatLKR(vendor);
+        }
+
+        if (otherDisplay) {
+            otherDisplay.textContent =
+                formatLKR(other);
+        }
+
+        if (estimateTotal) {
+            estimateTotal.textContent =
+                formatLKR(total);
+        }
+    }
+
+
+    [
+        estimateLabour,
+        estimateParts,
+        estimateVendor,
+        estimateOther
+
+    ].forEach(input => {
+
+        input?.addEventListener(
+            "input",
+            updateEstimate
+        );
+
+    });
+
+
+    const sendEstimate =
+        document.getElementById(
+            "sendEstimate"
+        );
+
+    const estimateMessage =
+        document.getElementById(
+            "estimateMessage"
+        );
+
+
+    sendEstimate?.addEventListener(
+        "click",
+        () => {
+
+            const labour =
+                numberValue(estimateLabour);
+
+            const parts =
+                numberValue(estimateParts);
+
+            const vendor =
+                numberValue(estimateVendor);
+
+            const other =
+                numberValue(estimateOther);
+
+            const total =
+                labour +
+                parts +
+                vendor +
+                other;
+
+
+            currentEstimate = {
+
+                jobCard:
+                    currentDiagnostic?.jobCard ||
+                    "Demo Job",
+
+                description:
+                    document
+                        .getElementById("estimateDescription")
+                        ?.value
+                        .trim() || "",
+
+                labour,
+                parts,
+                vendor,
+                other,
+                total,
+
+                status:
+                    "Awaiting Customer Approval"
+            };            /*
+                SHARED WORKFLOW:
+                Save Advisor estimate against the same shared Job Card.
+            */
+            if (
+                currentEstimate?.jobCard &&
+                currentEstimate.jobCard !== "Demo Job" &&
+                window.ShiftDynamicsStore &&
+                typeof window.ShiftDynamicsStore.updateJob === "function"
+            ) {
+
+                try {
+
+                    const now =
+                        new Date().toISOString();
+
+                    window.ShiftDynamicsStore.updateJob(
+                        currentEstimate.jobCard,
+                        {
+                            estimate: {
+                                description:
+                                    currentEstimate.description,
+
+                                labour:
+                                    currentEstimate.labour,
+
+                                parts:
+                                    currentEstimate.parts,
+
+                                vendor:
+                                    currentEstimate.vendor,
+
+                                other:
+                                    currentEstimate.other,
+
+                                total:
+                                    currentEstimate.total,
+
+                                status:
+                                    currentEstimate.status,
+
+                                createdAt:
+                                    now
+                            },
+
+                            status:
+                                "Awaiting Customer Approval",
+
+                            updatedAt:
+                                now
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.warn(
+                        "Unable to save estimate to shared workflow store.",
+                        error
+                    );
+                }
+            }
+
+            updateJobCardStatus(
+                currentEstimate.jobCard,
+                "Awaiting Customer Approval"
+            );
+
+
+            estimateMessage.innerHTML = `
+                Estimate sent successfully.
+                <br>
+                <strong>Status:</strong>
+                Awaiting Customer Approval
+            `;
+
+            estimateMessage.className =
+                "sd-form-message success";
+
+
+
+        }
+    );
+
+
+    function approveEstimate() {
+
+        if (!currentEstimate) {
+            return;
+        }
+
+
+        currentEstimate.status =
+            "Approved";
+
+
+        updateJobCardStatus(
+            currentEstimate.jobCard,
+            "Customer Approved"
+        );
+
+
+        estimateMessage.innerHTML = `
+            Customer approved this estimate.
+            <br>
+            <strong>Status:</strong>
+            Approved
+        `;
+
+        estimateMessage.className =
+            "sd-form-message success";
+
+
+        populateInvoiceFromEstimate();
+
+
+        setTimeout(
+            () => {
+
+                showSection(
+                    "invoice"
+                );
+
+            },
+            650
+        );
+    }
+
+
+
+    function populateInvoiceFromEstimate() {
+
+        if (!currentEstimate) {
+            return;
+        }
+
+
+        const invoiceTable =
+            document.querySelector(
+                "#invoice .sd-table tbody"
+            );
+
+
+        if (!invoiceTable) {
+            return;
+        }
+
+
+        invoiceTable.innerHTML = `
+
+            <tr>
+                <td>
+                    Labour Charges
+                </td>
+
+                <td>
+                    Labour
+                </td>
+
+                <td>
+                    1
+                </td>
+
+                <td>
+                    ${formatLKR(currentEstimate.labour)}
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    In-stock Parts
+                </td>
+
+                <td>
+                    Part
+                </td>
+
+                <td>
+                    1
+                </td>
+
+                <td>
+                    ${formatLKR(currentEstimate.parts)}
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    External Vendor Charges
+                </td>
+
+                <td>
+                    Vendor
+                </td>
+
+                <td>
+                    1
+                </td>
+
+                <td>
+                    ${formatLKR(currentEstimate.vendor)}
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>
+                    Other Charges
+                </td>
+
+                <td>
+                    Other
+                </td>
+
+                <td>
+                    1
+                </td>
+
+                <td>
+                    ${formatLKR(currentEstimate.other)}
+                </td>
+            </tr>
+        `;
+
+
+        const invoiceTotal =
+            document.querySelector(
+                ".sd-invoice-total strong"
+            );
+
+
+        if (invoiceTotal) {
+
+            invoiceTotal.textContent =
+                formatLKR(
+                    currentEstimate.total
+                );
+        }
+
+
+        const finalizeInvoice =
+            document.getElementById(
+                "finalizeInvoice"
+            );
+
+
+        if (finalizeInvoice) {
+
+            finalizeInvoice.disabled =
+                currentEstimate.status !==
+                "Approved";
+        }
+    }
+
+
+    /*
+        DEVELOPMENT TEST ONLY
+
+        Ctrl + Shift + A simulates the customer approval
+        response while the backend is not connected.
+
+        This shortcut must be removed when the .NET API
+        provides the real customer approval status.
+    */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.ctrlKey &&
+                event.shiftKey &&
+                event.key.toLowerCase() === "a"
+            ) {
+
+                if (
+                    currentEstimate &&
+                    currentEstimate.status ===
+                    "Awaiting Customer Approval"
+                ) {
+
+                    approveEstimate();
+                }
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       INVOICE
+       ===================================================== */
+
+    const finalizeInvoice =
+        document.getElementById(
+            "finalizeInvoice"
+        );
+
+    const invoiceMessage =
+        document.getElementById(
+            "invoiceMessage"
+        );
+
+
+    finalizeInvoice?.addEventListener(
+        "click",
+        () => {
+
+            if (
+                !currentEstimate ||
+                currentEstimate.status !==
+                "Approved"
+            ) {
+
+                invoiceMessage.textContent =
+                    "Customer approval is required before finalizing the invoice.";
+
+                invoiceMessage.className =
+                    "sd-form-message error";
+
+                return;
+            }
+
+
+            invoiceFinalized = true;
+
+
+            updateJobCardStatus(
+                currentEstimate.jobCard,
+                "Invoice Finalized"
+            );
+
+
+            invoiceMessage.textContent =
+                `Invoice finalized successfully for ${formatLKR(currentEstimate.total)}. Vehicle is ready for final handover checks.`;
+
+            invoiceMessage.className =
+                "sd-form-message success";
+
+
+            prepareFinalHandover();
+
+
+            setTimeout(
+                () => {
+
+                    /*
+                        Use the dashboard's existing navigation
+                        handler instead of changing the section
+                        directly.
+                    */
+
+                    const handoverNav =
+                        document.querySelector(
+                            '[data-section="handover"]'
+                        );
+
+
+                    if (handoverNav) {
+
+                        handoverNav.click();
+
+                    } else {
+
+                        showSection(
+                            "handover"
+                        );
+                    }
+
+                },
+                650
+            );
+
+        }
+    );
+
+
+    function prepareFinalHandover() {
+
+        /*
+            Keep the final handover screen synchronized with the
+            customer/job/estimate that actually reached invoice finalization.
+        */
+        const intake = currentIntake || {};
+        const estimate = currentEstimate || {};
+
+        const vehicleName =
+            [intake.vehicleMake, intake.vehicleModel]
+                .filter(Boolean)
+                .join(" ") || "Current Vehicle";
+
+        const jobCard =
+            estimate.jobCard ||
+            intake.jobCardNumber ||
+            "--";
+
+        const customerName =
+            intake.customerName ||
+            intake.name ||
+            "Customer";
+
+        const completedWork =
+            estimate.description ||
+            intake.serviceConcern ||
+            "Completed workshop service";
+
+        /*
+            The frontend currently has no payment transaction backend,
+            therefore payment remains a front-desk state.
+        */
+        const invoiceNumber =
+            estimate.invoiceNumber ||
+            `#INV-${String(jobCard).replace(/\D/g, "") || "NEW"}`;
+
+        const handoverVehicleName =
+            document.getElementById("handoverVehicleName");
+
+        const handoverVehicleMeta =
+            document.getElementById("handoverVehicleMeta");
+
+        const handoverCustomer =
+            document.getElementById("handoverCustomer");
+
+        const handoverCompletedWork =
+            document.getElementById("handoverCompletedWork");
+
+        const handoverInvoice =
+            document.getElementById("handoverInvoice");
+
+        const handoverPayment =
+            document.getElementById("handoverPayment");
+
+        if (handoverVehicleName) {
+            handoverVehicleName.textContent = vehicleName;
+        }
+
+        if (handoverVehicleMeta) {
+            handoverVehicleMeta.textContent =
+                `${intake.vehiclePlate || "--"} - Job ${jobCard}`;
+        }
+
+        if (handoverCustomer) {
+            handoverCustomer.textContent = customerName;
+        }
+
+        if (handoverCompletedWork) {
+            handoverCompletedWork.textContent = completedWork;
+        }
+
+        if (handoverInvoice) {
+            handoverInvoice.textContent =
+                `${invoiceNumber} - ${formatLKR(estimate.total || 0)}`;
+        }
+
+        if (handoverPayment) {
+            handoverPayment.textContent = "Pending at Front Desk";
+        }
+
+        const handoverMessage =
+            document.getElementById(
+                "handoverMessage"
+            );
+
+
+        if (handoverMessage) {
+
+            handoverMessage.textContent =
+                "Invoice finalized. Complete all handover checks before releasing the vehicle.";
+
+            handoverMessage.className =
+                "sd-form-message success";
+        }
+
+
+        /*
+            Reset the handover checklist whenever a newly
+            finalized invoice enters the handover stage.
+        */
+
+        handoverChecks.forEach(
+            checkbox => {
+
+                checkbox.checked = false;
+
+            }
+        );
+
+
+        if (completeHandover) {
+
+            completeHandover.disabled =
+                true;
+        }
+
+
+        updateHandoverState();
+    }
+
+
+
+    /* =====================================================
+       FINAL HANDOVER
+       ===================================================== */
+
+    const handoverChecks =
+        document.querySelectorAll(
+            ".handover-check"
+        );
+
+    const completeHandover =
+        document.getElementById(
+            "completeHandover"
+        );
+
+    const handoverMessage =
+        document.getElementById(
+            "handoverMessage"
+        );
+
+
+    function updateHandoverState() {
+
+        const checked =
+            document.querySelectorAll(
+                ".handover-check:checked"
+            ).length;
+
+
+        if (completeHandover) {
+
+            completeHandover.disabled =
+                checked !==
+                handoverChecks.length;
+        }
+    }
+
+
+    handoverChecks.forEach(check => {
+
+        check.addEventListener(
+            "change",
+            updateHandoverState
+        );
+
+    });
+
+
+    completeHandover?.addEventListener(
+        "click",
+        () => {
+
+            if (!invoiceFinalized) {
+
+                handoverMessage.textContent =
+                    "Finalize the approved invoice before completing vehicle handover.";
+
+                handoverMessage.className =
+                    "sd-form-message error";
+
+                return;
+            }
+
+
+            const allChecksCompleted =
+                [...handoverChecks].every(
+                    checkbox =>
+                        checkbox.checked
+                );
+
+
+            if (!allChecksCompleted) {
+
+                handoverMessage.textContent =
+                    "Complete all final handover checks before releasing the vehicle.";
+
+                handoverMessage.className =
+                    "sd-form-message error";
+
+                return;
+            }
+
+
+            updateJobCardStatus(
+                currentEstimate?.jobCard,
+                "Completed"
+            );
+
+
+            handoverMessage.textContent =
+                "Vehicle handover completed successfully. Job workflow is complete.";
+
+            handoverMessage.className =
+                "sd-form-message success";
+
+
+            completeHandover.disabled =
+                true;
+
+
+            invoiceFinalized =
+                false;
+
+        }
+    );
+
+
+
+    /* =====================================================
+       INITIAL STATE
+       ===================================================== */
+
+    restoreDiagnosticState();
+
+    updateInspectionProgress();
+
+    updateEstimate();
+
+    updateHandoverState();
+
+});
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const greeting = document.getElementById("advisorGreeting");
+    if (!greeting) return;
+
+    const hour = new Date().getHours();
+    let message = "Good evening";
+
+    if (hour < 12) {
+        message = "Good morning";
+    } else if (hour < 17) {
+        message = "Good afternoon";
+    }
+
+    greeting.textContent = `${message}, Service Advisor.`;
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // advisorGreetingFixed
+    const greeting = document.getElementById("advisorGreeting");
+    if (!greeting) return;
+
+    const hour = new Date().getHours();
+    let message = "Good evening";
+
+    if (hour < 12) {
+        message = "Good morning";
+    } else if (hour < 17) {
+        message = "Good afternoon";
+    }
+
+    greeting.textContent = `${message}, Service Advisor.`;
+});

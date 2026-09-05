@@ -1,0 +1,146 @@
+/* Mechanical Blueprint Grid */
+
+.sd-login-main {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+
+    background:
+        linear-gradient(
+            135deg,
+            #F8FAFC 0%,
+            #FFFFFF 55%,
+            #FFF8F3 100%
+        ) !important;
+}
+
+/* Mechanical grid */
+.sd-login-main::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(11, 19, 43, 0.045) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(11, 19, 43, 0.045) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            rgba(249, 115, 22, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(249, 115, 22, 0.025) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        24px 24px,
+        24px 24px,
+        120px 120px,
+        120px 120px;
+}
+
+/* Original working desktop layout */
+.sd-login-container {
+    position: relative !important;
+    z-index: 3 !important;
+
+    width: min(1180px, calc(100% - 40px)) !important;
+    margin: 0 auto !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1.05fr)
+        minmax(390px, 0.75fr) !important;
+
+    align-items: center !important;
+
+    gap: clamp(55px, 8vw, 110px) !important;
+}
+
+.sd-login-intro {
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+.sd-login-intro-content {
+    width: auto !important;
+    max-width: 610px !important;
+
+    margin: 0 !important;
+
+    text-align: left !important;
+}
+
+.sd-login-form-section {
+    min-width: 0 !important;
+
+    width: auto !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+}
+
+.sd-login-card {
+    position: relative;
+    z-index: 2;
+
+    width: 100% !important;
+    max-width: 465px !important;
+
+    margin-left: auto !important;
+    margin-right: 0 !important;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+    .sd-login-container {
+        grid-template-columns: 1fr !important;
+        gap: 45px !important;
+    }
+
+    .sd-login-intro-content {
+        max-width: 680px !important;
+        margin: 0 auto !important;
+        text-align: center !important;
+    }
+
+    .sd-login-form-section {
+        width: 100% !important;
+    }
+
+    .sd-login-card {
+        max-width: 520px !important;
+        margin: 0 auto !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 575px) {
+    .sd-login-container {
+        width: min(100% - 28px, 1180px) !important;
+        gap: 34px !important;
+    }
+
+    .sd-login-main::before {
+        opacity: 0.65;
+
+        background-size:
+            22px 22px,
+            22px 22px,
+            110px 110px,
+            110px 110px;
+    }
+}

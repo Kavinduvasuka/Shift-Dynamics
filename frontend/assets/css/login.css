@@ -1,8 +1,3 @@
-/* =========================================================
-   SHIFT DYNAMICS
-   LOGIN PAGE
-   ========================================================= */
-
 :root {
     --sd-login-navy: #0B132B;
     --sd-login-navy-light: #16213E;
@@ -19,10 +14,7 @@
     --sd-login-success: #16A34A;
 }
 
-
-/* =========================================================
-   PAGE
-   ========================================================= */
+/* Page */
 
 .sd-login-page {
     min-height: 100vh;
@@ -32,10 +24,7 @@
     overflow-x: hidden;
 }
 
-
-/* =========================================================
-   HEADER
-   ========================================================= */
+/* Header */
 
 .sd-login-header {
     position: relative;
@@ -47,7 +36,6 @@
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-
 
 .sd-login-nav {
     width: min(1180px, calc(100% - 40px));
@@ -62,14 +50,12 @@
     gap: 24px;
 }
 
-
 .sd-login-brand {
     display: inline-flex;
     align-items: center;
 
     text-decoration: none;
 }
-
 
 .sd-login-logo {
     display: block;
@@ -79,7 +65,6 @@
 
     object-fit: contain;
 }
-
 
 .sd-back-home {
     display: inline-flex;
@@ -109,7 +94,6 @@
         transform 0.2s ease;
 }
 
-
 .sd-back-home:hover {
     color: var(--sd-login-white);
 
@@ -120,10 +104,7 @@
     transform: translateY(-1px);
 }
 
-
-/* =========================================================
-   MAIN
-   ========================================================= */
+/* Main */
 
 .sd-login-main {
     position: relative;
@@ -146,7 +127,6 @@
         );
 }
 
-
 .sd-login-container {
     position: relative;
     z-index: 3;
@@ -166,69 +146,15 @@
     gap: clamp(55px, 8vw, 110px);
 }
 
-
-/* =========================================================
-   DECORATIVE BACKGROUND
-   ========================================================= */
-
-.sd-login-decoration {
-    position: absolute;
-
-    border-radius: 50%;
-
-    pointer-events: none;
-
-    filter: blur(4px);
-}
-
-
-.sd-login-decoration-one {
-    width: 480px;
-    height: 480px;
-
-    top: -230px;
-    right: -150px;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(249, 115, 22, 0.11) 0%,
-            rgba(249, 115, 22, 0.035) 48%,
-            transparent 72%
-        );
-}
-
-
-.sd-login-decoration-two {
-    width: 430px;
-    height: 430px;
-
-    left: -210px;
-    bottom: -220px;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(11, 19, 43, 0.08) 0%,
-            rgba(11, 19, 43, 0.025) 48%,
-            transparent 72%
-        );
-}
-
-
-/* =========================================================
-   LEFT INTRO
-   ========================================================= */
+/* Left Intro */
 
 .sd-login-intro {
     min-width: 0;
 }
 
-
 .sd-login-intro-content {
     max-width: 610px;
 }
-
 
 .sd-login-badge {
     display: inline-flex;
@@ -253,7 +179,6 @@
     letter-spacing: 0.02em;
 }
 
-
 .sd-login-intro h1 {
     max-width: 590px;
 
@@ -270,11 +195,9 @@
     font-weight: 800;
 }
 
-
 .sd-login-intro h1 span {
     color: var(--sd-login-orange);
 }
-
 
 .sd-login-intro > .sd-login-intro-content > p {
     max-width: 570px;
@@ -288,10 +211,7 @@
     line-height: 1.8;
 }
 
-
-/* =========================================================
-   FEATURE LIST
-   ========================================================= */
+/* Feature List */
 
 .sd-login-features {
     margin-top: 36px;
@@ -300,7 +220,6 @@
 
     gap: 18px;
 }
-
 
 .sd-login-feature {
     display: grid;
@@ -311,7 +230,6 @@
 
     align-items: start;
 }
-
 
 .sd-login-feature-icon {
     width: 46px;
@@ -334,7 +252,6 @@
         0 7px 20px rgba(15, 23, 42, 0.05);
 }
 
-
 .sd-login-feature h3 {
     margin: 1px 0 4px;
 
@@ -343,7 +260,6 @@
     font-size: 0.97rem;
     font-weight: 750;
 }
-
 
 .sd-login-feature p {
     margin: 0;
@@ -357,15 +273,11 @@
     line-height: 1.6;
 }
 
-
-/* =========================================================
-   LOGIN CARD
-   ========================================================= */
+/* Login Card */
 
 .sd-login-form-section {
     min-width: 0;
 }
-
 
 .sd-login-card {
     width: 100%;
@@ -388,10 +300,7 @@
     -webkit-backdrop-filter: blur(14px);
 }
 
-
-/* =========================================================
-   CARD HEADER
-   ========================================================= */
+/* Card Header */
 
 .sd-login-card-header {
     display: flex;
@@ -401,7 +310,6 @@
 
     margin-bottom: 30px;
 }
-
 
 .sd-login-card-icon {
     flex: 0 0 auto;
@@ -422,7 +330,6 @@
     font-size: 1.25rem;
 }
 
-
 .sd-login-card-header h2 {
     margin: 0 0 4px;
 
@@ -435,7 +342,6 @@
     letter-spacing: -0.02em;
 }
 
-
 .sd-login-card-header p {
     margin: 0;
 
@@ -444,10 +350,7 @@
     font-size: 0.86rem;
 }
 
-
-/* =========================================================
-   FORM
-   ========================================================= */
+/* Form */
 
 .sd-login-form {
     display: grid;
@@ -455,11 +358,9 @@
     gap: 21px;
 }
 
-
 .sd-form-group {
     min-width: 0;
 }
-
 
 .sd-form-group label {
     display: inline-block;
@@ -473,13 +374,11 @@
     font-weight: 700;
 }
 
-
 .sd-input-wrapper {
     position: relative;
 
     width: 100%;
 }
-
 
 .sd-input-wrapper input {
     width: 100%;
@@ -510,16 +409,13 @@
         background-color 0.2s ease;
 }
 
-
 .sd-input-wrapper input::placeholder {
     color: var(--sd-login-light);
 }
 
-
 .sd-input-wrapper input:hover {
     border-color: #CBD5E1;
 }
-
 
 .sd-input-wrapper input:focus {
     border-color: rgba(249, 115, 22, 0.75);
@@ -527,7 +423,6 @@
     box-shadow:
         0 0 0 4px rgba(249, 115, 22, 0.10);
 }
-
 
 .sd-input-icon {
     position: absolute;
@@ -544,15 +439,11 @@
     pointer-events: none;
 }
 
-
 .sd-input-wrapper:focus-within .sd-input-icon {
     color: var(--sd-login-orange);
 }
 
-
-/* =========================================================
-   PASSWORD
-   ========================================================= */
+/* Password */
 
 .sd-password-label-row {
     display: flex;
@@ -561,7 +452,6 @@
 
     gap: 15px;
 }
-
 
 .sd-forgot-password {
     margin-bottom: 8px;
@@ -575,11 +465,9 @@
     text-decoration: none;
 }
 
-
 .sd-forgot-password:hover {
     text-decoration: underline;
 }
-
 
 .sd-password-toggle {
     position: absolute;
@@ -614,22 +502,17 @@
         background-color 0.2s ease;
 }
 
-
 .sd-password-toggle:hover {
     color: var(--sd-login-orange);
 
     background: var(--sd-login-orange-light);
 }
 
-
-/* =========================================================
-   REMEMBER ME
-   ========================================================= */
+/* Remember Me */
 
 .sd-login-options {
     margin-top: -5px;
 }
-
 
 .sd-remember-me {
     display: inline-flex !important;
@@ -648,7 +531,6 @@
     cursor: pointer;
 }
 
-
 .sd-remember-me input {
     width: 16px;
     height: 16px;
@@ -660,10 +542,7 @@
     cursor: pointer;
 }
 
-
-/* =========================================================
-   VALIDATION
-   ========================================================= */
+/* Validation */
 
 .sd-field-error {
     display: block;
@@ -679,14 +558,12 @@
     line-height: 1.4;
 }
 
-
 .sd-input-wrapper.sd-has-error input {
     border-color: rgba(220, 38, 38, 0.65);
 
     box-shadow:
         0 0 0 3px rgba(220, 38, 38, 0.06);
 }
-
 
 .sd-login-message {
     display: none;
@@ -700,7 +577,6 @@
     line-height: 1.5;
 }
 
-
 .sd-login-message.sd-error {
     display: block;
 
@@ -710,7 +586,6 @@
 
     color: #B91C1C;
 }
-
 
 .sd-login-message.sd-success {
     display: block;
@@ -722,10 +597,7 @@
     color: var(--sd-login-success);
 }
 
-
-/* =========================================================
-   LOGIN BUTTON
-   ========================================================= */
+/* Login Button */
 
 .sd-login-submit {
     width: 100%;
@@ -767,7 +639,6 @@
         opacity 0.2s ease;
 }
 
-
 .sd-login-submit:hover {
     transform: translateY(-2px);
 
@@ -775,11 +646,9 @@
         0 14px 30px rgba(249, 115, 22, 0.26);
 }
 
-
 .sd-login-submit:active {
     transform: translateY(0);
 }
-
 
 .sd-login-submit:disabled {
     cursor: not-allowed;
@@ -791,10 +660,7 @@
     box-shadow: none;
 }
 
-
-/* =========================================================
-   REGISTER
-   ========================================================= */
+/* Register */
 
 .sd-login-register {
     margin-top: 27px;
@@ -810,7 +676,6 @@
     font-size: 0.84rem;
 }
 
-
 .sd-login-register a {
     margin-left: 4px;
 
@@ -821,15 +686,11 @@
     text-decoration: none;
 }
 
-
 .sd-login-register a:hover {
     text-decoration: underline;
 }
 
-
-/* =========================================================
-   SECURITY NOTE
-   ========================================================= */
+/* Security Note */
 
 .sd-login-security {
     margin-top: 20px;
@@ -847,15 +708,11 @@
     text-align: center;
 }
 
-
 .sd-login-security i {
     color: var(--sd-login-orange);
 }
 
-
-/* =========================================================
-   FOOTER
-   ========================================================= */
+/* Footer */
 
 .sd-login-footer {
     min-height: 58px;
@@ -873,17 +730,13 @@
     text-align: center;
 }
 
-
 .sd-login-footer p {
     margin: 0;
 
     font-size: 0.78rem;
 }
 
-
-/* =========================================================
-   TABLET
-   ========================================================= */
+/* Tablet */
 
 @media (max-width: 991px) {
 
@@ -891,13 +744,11 @@
         padding: 55px 0;
     }
 
-
     .sd-login-container {
         grid-template-columns: 1fr;
 
         gap: 45px;
     }
-
 
     .sd-login-intro-content {
         max-width: 680px;
@@ -907,18 +758,15 @@
         text-align: center;
     }
 
-
     .sd-login-intro h1 {
         margin-left: auto;
         margin-right: auto;
     }
 
-
     .sd-login-intro > .sd-login-intro-content > p {
         margin-left: auto;
         margin-right: auto;
     }
-
 
     .sd-login-features {
         max-width: 560px;
@@ -929,7 +777,6 @@
         text-align: left;
     }
 
-
     .sd-login-card {
         max-width: 520px;
 
@@ -937,10 +784,7 @@
     }
 }
 
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
+/* Mobile */
 
 @media (max-width: 575px) {
 
@@ -950,11 +794,9 @@
         min-height: 68px;
     }
 
-
     .sd-login-logo {
         height: 43px;
     }
-
 
     .sd-back-home {
         min-height: 40px;
@@ -964,13 +806,11 @@
         font-size: 0.8rem;
     }
 
-
     .sd-login-main {
         min-height: auto;
 
         padding: 40px 0;
     }
-
 
     .sd-login-container {
         width: min(100% - 28px, 1180px);
@@ -978,18 +818,15 @@
         gap: 34px;
     }
 
-
     .sd-login-badge {
         margin-bottom: 17px;
 
         font-size: 0.73rem;
     }
 
-
     .sd-login-intro h1 {
         font-size: clamp(2rem, 10vw, 2.65rem);
     }
-
 
     .sd-login-intro > .sd-login-intro-content > p {
         font-size: 0.92rem;
@@ -997,13 +834,11 @@
         line-height: 1.7;
     }
 
-
     .sd-login-features {
         margin-top: 28px;
 
         gap: 15px;
     }
-
 
     .sd-login-feature {
         grid-template-columns: 42px minmax(0, 1fr);
@@ -1011,12 +846,10 @@
         gap: 12px;
     }
 
-
     .sd-login-feature-icon {
         width: 42px;
         height: 42px;
     }
-
 
     .sd-login-card {
         padding: 25px 20px;
@@ -1024,32 +857,25 @@
         border-radius: 17px;
     }
 
-
     .sd-login-card-header {
         margin-bottom: 25px;
     }
-
 
     .sd-login-card-icon {
         width: 44px;
         height: 44px;
     }
 
-
     .sd-login-card-header h2 {
         font-size: 1.35rem;
     }
-
 
     .sd-password-label-row {
         align-items: flex-end;
     }
 }
 
-
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
+/* Very Small Mobile */
 
 @media (max-width: 380px) {
 
@@ -1057,18 +883,15 @@
         display: none;
     }
 
-
     .sd-back-home {
         width: 42px;
 
         padding: 0;
     }
 
-
     .sd-login-feature p {
         font-size: 0.82rem;
     }
-
 
     .sd-login-card {
         padding:
@@ -1077,10 +900,7 @@
     }
 }
 
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
+/* Reduced Motion */
 
 @media (prefers-reduced-motion: reduce) {
 
@@ -1091,21 +911,14 @@
         transition: none;
     }
 
-
     .sd-back-home:hover,
     .sd-login-submit:hover {
         transform: none;
     }
 }
-/* =========================================================
-   SHIFT DYNAMICS
-   LOGIN PAGE — POLISH OVERRIDES
-   ========================================================= */
+/* Shift Dynamics Login Page — Polish Overrides */
 
-
-/* ---------------------------------------------------------
-   BRAND
-   --------------------------------------------------------- */
+/* Brand */
 
 .sd-login-header .sd-login-brand {
     display: inline-flex !important;
@@ -1118,7 +931,6 @@
     text-decoration: none !important;
 }
 
-
 .sd-login-header .sd-login-logo {
     display: block;
 
@@ -1129,7 +941,6 @@
 
     object-fit: contain;
 }
-
 
 .sd-login-header .sd-login-brand-name {
     display: inline-flex !important;
@@ -1153,89 +964,50 @@
         0 1px 10px rgba(255, 255, 255, 0.04);
 }
 
-
 .sd-login-header .sd-login-brand-name > span {
     margin-left: 6px;
 
     color: #F97316 !important;
 }
 
-
-/* ---------------------------------------------------------
-   HEADER POLISH
-   --------------------------------------------------------- */
+/* Header Polish */
 
 .sd-login-header {
     box-shadow:
         0 8px 25px rgba(11, 19, 43, 0.12);
 }
 
-
 .sd-login-nav {
     min-height: 76px;
 }
-
 
 .sd-back-home {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
 
-
 .sd-back-home i {
     transition: transform 0.2s ease;
 }
-
 
 .sd-back-home:hover i {
     transform: translateX(-2px);
 }
 
-
-/* ---------------------------------------------------------
-   MAIN BACKGROUND POLISH
-   --------------------------------------------------------- */
-
-.sd-login-main {
-    background:
-        radial-gradient(
-            circle at 88% 18%,
-            rgba(249, 115, 22, 0.08),
-            transparent 28%
-        ),
-        radial-gradient(
-            circle at 8% 82%,
-            rgba(11, 19, 43, 0.055),
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #F8FAFC 0%,
-            #FFFFFF 52%,
-            #FFF8F3 100%
-        );
-}
-
-
-/* ---------------------------------------------------------
-   INTRO POLISH
-   --------------------------------------------------------- */
+/* Intro Polish */
 
 .sd-login-badge {
     box-shadow:
         0 7px 22px rgba(249, 115, 22, 0.07);
 }
 
-
 .sd-login-intro h1 {
     text-wrap: balance;
 }
 
-
 .sd-login-feature {
     padding: 5px 0;
 }
-
 
 .sd-login-feature-icon {
     transition:
@@ -1243,7 +1015,6 @@
         border-color 0.2s ease,
         box-shadow 0.2s ease;
 }
-
 
 .sd-login-feature:hover .sd-login-feature-icon {
     transform: translateY(-2px);
@@ -1254,10 +1025,7 @@
         0 10px 25px rgba(15, 23, 42, 0.075);
 }
 
-
-/* ---------------------------------------------------------
-   LOGIN CARD POLISH
-   --------------------------------------------------------- */
+/* Login Card Polish */
 
 .sd-login-card {
     position: relative;
@@ -1268,7 +1036,6 @@
         0 24px 70px rgba(11, 19, 43, 0.10),
         0 4px 16px rgba(15, 23, 42, 0.035);
 }
-
 
 .sd-login-card::before {
     content: "";
@@ -1292,16 +1059,12 @@
     opacity: 0.9;
 }
 
-
 .sd-login-card-icon {
     box-shadow:
         0 8px 20px rgba(11, 19, 43, 0.16);
 }
 
-
-/* ---------------------------------------------------------
-   FORM POLISH
-   --------------------------------------------------------- */
+/* Form Polish */
 
 .sd-input-wrapper input {
     box-sizing: border-box;
@@ -1309,7 +1072,6 @@
     background:
         rgba(255, 255, 255, 0.96);
 }
-
 
 .sd-input-wrapper input:focus {
     background: #FFFFFF;
@@ -1320,7 +1082,6 @@
         0 0 0 4px rgba(249, 115, 22, 0.10),
         0 8px 24px rgba(15, 23, 42, 0.035);
 }
-
 
 .sd-input-wrapper input:-webkit-autofill,
 .sd-input-wrapper input:-webkit-autofill:hover,
@@ -1334,17 +1095,13 @@
         background-color 9999s ease-in-out 0s;
 }
 
-
-/* ---------------------------------------------------------
-   LOGIN BUTTON POLISH
-   --------------------------------------------------------- */
+/* Login Button Polish */
 
 .sd-login-submit {
     position: relative;
 
     overflow: hidden;
 }
-
 
 .sd-login-submit::after {
     content: "";
@@ -1368,11 +1125,9 @@
     transition: left 0.45s ease;
 }
 
-
 .sd-login-submit:hover::after {
     left: 130%;
 }
-
 
 .sd-login-submit i,
 .sd-login-submit span {
@@ -1380,10 +1135,7 @@
     z-index: 1;
 }
 
-
-/* ---------------------------------------------------------
-   LINKS
-   --------------------------------------------------------- */
+/* Links */
 
 .sd-forgot-password,
 .sd-login-register a {
@@ -1392,16 +1144,12 @@
         opacity 0.2s ease;
 }
 
-
 .sd-forgot-password:hover,
 .sd-login-register a:hover {
     color: #EA580C;
 }
 
-
-/* ---------------------------------------------------------
-   ACCESSIBILITY
-   --------------------------------------------------------- */
+/* Accessibility */
 
 .sd-login-brand:focus-visible,
 .sd-back-home:focus-visible,
@@ -1413,10 +1161,7 @@
     outline-offset: 3px;
 }
 
-
-/* ---------------------------------------------------------
-   TABLET
-   --------------------------------------------------------- */
+/* Tablet */
 
 @media (max-width: 991px) {
 
@@ -1426,10 +1171,7 @@
 
 }
 
-
-/* ---------------------------------------------------------
-   MOBILE
-   --------------------------------------------------------- */
+/* Mobile */
 
 @media (max-width: 575px) {
 
@@ -1437,27 +1179,22 @@
         gap: 12px;
     }
 
-
     .sd-login-header .sd-login-logo {
         height: 40px;
     }
 
-
     .sd-login-header .sd-login-brand {
         gap: 8px !important;
     }
-
 
     .sd-login-header .sd-login-brand-name {
         font-size: 0.76rem !important;
         letter-spacing: 0.025em !important;
     }
 
-
     .sd-login-header .sd-login-brand-name > span {
         margin-left: 4px;
     }
-
 
     .sd-login-card::before {
         height: 2px;
@@ -1465,10 +1202,7 @@
 
 }
 
-
-/* ---------------------------------------------------------
-   VERY SMALL MOBILE
-   --------------------------------------------------------- */
+/* Very Small Mobile */
 
 @media (max-width: 390px) {
 
@@ -1478,10 +1212,7 @@
 
 }
 
-
-/* ---------------------------------------------------------
-   REDUCED MOTION
-   --------------------------------------------------------- */
+/* Reduced Motion */
 
 @media (prefers-reduced-motion: reduce) {
 
@@ -1491,11 +1222,9 @@
         transition: none;
     }
 
-
     .sd-login-feature:hover .sd-login-feature-icon {
         transform: none;
     }
-
 
     .sd-login-submit:hover::after {
         left: -120%;

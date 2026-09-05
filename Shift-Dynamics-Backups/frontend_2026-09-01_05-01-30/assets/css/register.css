@@ -1,0 +1,1327 @@
+/* =========================================================
+   SHIFT DYNAMICS
+   CUSTOMER REGISTRATION PAGE
+   ========================================================= */
+
+:root {
+    --sd-navy: #0B132B;
+    --sd-navy-light: #16213E;
+    --sd-orange: #F97316;
+    --sd-orange-dark: #EA580C;
+    --sd-orange-light: #FFF1E6;
+
+    --sd-bg: #F8FAFC;
+    --sd-white: #FFFFFF;
+
+    --sd-text: #0F172A;
+    --sd-muted: #64748B;
+    --sd-light: #94A3B8;
+
+    --sd-border: #E2E8F0;
+
+    --sd-danger: #DC2626;
+    --sd-success: #16A34A;
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+}
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.sd-register-page {
+    min-height: 100vh;
+
+    background: var(--sd-bg);
+    color: var(--sd-text);
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.sd-register-header {
+    position: relative;
+    z-index: 20;
+
+    width: 100%;
+
+    background: var(--sd-navy);
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        0 8px 30px rgba(11, 19, 43, 0.12);
+}
+
+
+.sd-register-nav {
+    width: min(1180px, calc(100% - 40px));
+    min-height: 76px;
+
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 24px;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.sd-register-brand {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+
+    color: var(--sd-white);
+
+    text-decoration: none;
+}
+
+
+.sd-register-logo {
+    display: block;
+
+    width: auto;
+    height: 48px;
+
+    flex: 0 0 auto;
+
+    object-fit: contain;
+}
+
+
+.sd-register-brand-name {
+    display: inline-flex;
+    align-items: center;
+
+    white-space: nowrap;
+
+    color: var(--sd-white);
+
+    font-family: "Zen Dots", sans-serif;
+    font-size: 0.98rem;
+    font-weight: 400;
+
+    letter-spacing: 0.035em;
+
+    line-height: 1;
+
+    text-transform: uppercase;
+}
+
+
+.sd-register-brand-name > span {
+    margin-left: 6px;
+
+    color: var(--sd-orange);
+}
+
+
+/* =========================================================
+   SIGN IN BUTTON
+   ========================================================= */
+
+.sd-register-signin {
+    min-height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 9px 15px;
+
+    border:
+        1px solid rgba(255, 255, 255, 0.14);
+
+    border-radius: 10px;
+
+    color:
+        rgba(255, 255, 255, 0.9);
+
+    font-size: 0.88rem;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.sd-register-signin:hover {
+    color: var(--sd-white);
+
+    border-color:
+        rgba(249, 115, 22, 0.55);
+
+    background:
+        rgba(249, 115, 22, 0.1);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.sd-register-main {
+    position: relative;
+
+    min-height:
+        calc(100vh - 76px - 58px);
+
+    padding: 64px 0;
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(249, 115, 22, 0.08),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 7% 85%,
+            rgba(11, 19, 43, 0.06),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #F8FAFC 0%,
+            #FFFFFF 52%,
+            #FFF8F3 100%
+        );
+}
+
+
+.sd-register-container {
+    position: relative;
+    z-index: 3;
+
+    width: min(1180px, calc(100% - 40px));
+
+    margin: 0 auto;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(390px, 0.78fr);
+
+    align-items: center;
+
+    gap: clamp(55px, 8vw, 105px);
+}
+
+
+/* =========================================================
+   DECORATIONS
+   ========================================================= */
+
+.sd-register-decoration {
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+}
+
+
+.sd-register-decoration-one {
+    width: 500px;
+    height: 500px;
+
+    top: -250px;
+    right: -170px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(249, 115, 22, 0.12),
+            rgba(249, 115, 22, 0.035) 48%,
+            transparent 72%
+        );
+}
+
+
+.sd-register-decoration-two {
+    width: 450px;
+    height: 450px;
+
+    left: -220px;
+    bottom: -230px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(11, 19, 43, 0.09),
+            rgba(11, 19, 43, 0.025) 48%,
+            transparent 72%
+        );
+}
+
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+
+.sd-register-intro {
+    min-width: 0;
+}
+
+
+.sd-register-intro-content {
+    max-width: 610px;
+}
+
+
+.sd-register-badge {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 22px;
+
+    padding: 8px 13px;
+
+    border:
+        1px solid rgba(249, 115, 22, 0.16);
+
+    border-radius: 999px;
+
+    background: var(--sd-orange-light);
+
+    color: var(--sd-orange-dark);
+
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    letter-spacing: 0.02em;
+}
+
+
+.sd-register-dot {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--sd-orange);
+
+    box-shadow:
+        0 0 0 4px rgba(249, 115, 22, 0.11);
+}
+
+
+.sd-register-intro h1 {
+    max-width: 600px;
+
+    margin: 0 0 20px;
+
+    color: var(--sd-navy);
+
+    font-size:
+        clamp(2.45rem, 4.5vw, 4rem);
+
+    line-height: 1.06;
+
+    letter-spacing: -0.045em;
+
+    font-weight: 800;
+}
+
+
+.sd-register-intro h1 span {
+    color: var(--sd-orange);
+}
+
+
+.sd-register-description {
+    max-width: 570px;
+
+    margin: 0;
+
+    color: var(--sd-muted);
+
+    font-size: 1rem;
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   BENEFITS
+   ========================================================= */
+
+.sd-register-benefits {
+    margin-top: 34px;
+
+    display: grid;
+
+    gap: 17px;
+}
+
+
+.sd-register-benefit {
+    display: grid;
+
+    grid-template-columns:
+        45px minmax(0, 1fr);
+
+    gap: 14px;
+
+    align-items: start;
+}
+
+
+.sd-register-benefit-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid rgba(249, 115, 22, 0.13);
+
+    border-radius: 13px;
+
+    background: var(--sd-white);
+
+    color: var(--sd-orange);
+
+    font-size: 1.1rem;
+
+    box-shadow:
+        0 7px 20px rgba(15, 23, 42, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.sd-register-benefit:hover
+.sd-register-benefit-icon {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 24px rgba(15, 23, 42, 0.075);
+}
+
+
+.sd-register-benefit h3 {
+    margin: 1px 0 4px;
+
+    color: var(--sd-navy);
+
+    font-size: 0.96rem;
+    font-weight: 750;
+}
+
+
+.sd-register-benefit p {
+    max-width: 440px;
+
+    margin: 0;
+
+    color: var(--sd-muted);
+
+    font-size: 0.86rem;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   CUSTOMER ROLE NOTE
+   ========================================================= */
+
+.sd-register-role-note {
+    max-width: 550px;
+
+    margin-top: 30px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 15px 17px;
+
+    border:
+        1px solid rgba(11, 19, 43, 0.08);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255, 255, 255, 0.72);
+}
+
+
+.sd-register-role-note > i {
+    margin-top: 1px;
+
+    color: var(--sd-orange);
+
+    font-size: 1.15rem;
+}
+
+
+.sd-register-role-note div {
+    display: grid;
+
+    gap: 3px;
+}
+
+
+.sd-register-role-note strong {
+    color: var(--sd-navy);
+
+    font-size: 0.83rem;
+}
+
+
+.sd-register-role-note span {
+    color: var(--sd-muted);
+
+    font-size: 0.77rem;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   FORM SECTION
+   ========================================================= */
+
+.sd-register-form-section {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   REGISTER CARD
+   ========================================================= */
+
+.sd-register-card {
+    position: relative;
+
+    width: 100%;
+    max-width: 475px;
+
+    margin-left: auto;
+
+    padding:
+        clamp(27px, 4vw, 40px);
+
+    overflow: hidden;
+
+    border:
+        1px solid rgba(226, 232, 240, 0.95);
+
+    border-radius: 22px;
+
+    background:
+        rgba(255, 255, 255, 0.95);
+
+    box-shadow:
+        0 24px 70px rgba(11, 19, 43, 0.10),
+        0 4px 16px rgba(15, 23, 42, 0.035);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+
+.sd-register-card::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--sd-navy),
+            var(--sd-orange),
+            var(--sd-navy)
+        );
+}
+
+
+/* =========================================================
+   CARD HEADER
+   ========================================================= */
+
+.sd-register-card-header {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 27px;
+}
+
+
+.sd-register-card-icon {
+    flex: 0 0 auto;
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: var(--sd-navy);
+
+    color: var(--sd-white);
+
+    font-size: 1.2rem;
+
+    box-shadow:
+        0 8px 20px rgba(11, 19, 43, 0.16);
+}
+
+
+.sd-register-card-header h2 {
+    margin: 0 0 4px;
+
+    color: var(--sd-navy);
+
+    font-size: 1.5rem;
+
+    font-weight: 800;
+
+    letter-spacing: -0.02em;
+}
+
+
+.sd-register-card-header p {
+    margin: 0;
+
+    color: var(--sd-muted);
+
+    font-size: 0.84rem;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.sd-register-form {
+    display: grid;
+
+    gap: 17px;
+}
+
+
+.sd-form-group {
+    min-width: 0;
+}
+
+
+.sd-form-group label {
+    display: inline-block;
+
+    margin-bottom: 7px;
+
+    color: var(--sd-text);
+
+    font-size: 0.86rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.sd-input-wrapper {
+    position: relative;
+
+    width: 100%;
+}
+
+
+.sd-input-wrapper input {
+    width: 100%;
+    min-height: 49px;
+
+    padding:
+        12px
+        46px
+        12px
+        43px;
+
+    border:
+        1px solid var(--sd-border);
+
+    border-radius: 11px;
+
+    outline: none;
+
+    background: var(--sd-white);
+
+    color: var(--sd-text);
+
+    font: inherit;
+
+    font-size: 0.91rem;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.sd-input-wrapper input::placeholder {
+    color: var(--sd-light);
+}
+
+
+.sd-input-wrapper input:hover {
+    border-color: #CBD5E1;
+}
+
+
+.sd-input-wrapper input:focus {
+    border-color: var(--sd-orange);
+
+    box-shadow:
+        0 0 0 4px rgba(249, 115, 22, 0.10);
+}
+
+
+.sd-input-icon {
+    position: absolute;
+
+    top: 50%;
+    left: 15px;
+
+    transform: translateY(-50%);
+
+    color: var(--sd-light);
+
+    font-size: 1rem;
+
+    pointer-events: none;
+}
+
+
+.sd-input-wrapper:focus-within
+.sd-input-icon {
+    color: var(--sd-orange);
+}
+
+
+/* =========================================================
+   PASSWORD TOGGLE
+   ========================================================= */
+
+.sd-password-toggle {
+    position: absolute;
+
+    top: 50%;
+    right: 7px;
+
+    transform: translateY(-50%);
+
+    width: 37px;
+    height: 37px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--sd-muted);
+
+    font-size: 1rem;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.sd-password-toggle:hover {
+    color: var(--sd-orange);
+
+    background: var(--sd-orange-light);
+}
+
+
+/* =========================================================
+   TERMS
+   ========================================================= */
+
+.sd-register-terms {
+    margin-top: -2px;
+}
+
+
+.sd-checkbox-label {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 9px;
+
+    color: var(--sd-muted);
+
+    font-size: 0.81rem;
+
+    line-height: 1.5;
+
+    cursor: pointer;
+}
+
+
+.sd-checkbox-label input {
+    flex: 0 0 auto;
+
+    width: 16px;
+    height: 16px;
+
+    margin: 2px 0 0;
+
+    accent-color: var(--sd-orange);
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+.sd-field-error {
+    display: block;
+
+    min-height: 17px;
+
+    margin-top: 4px;
+
+    color: var(--sd-danger);
+
+    font-size: 0.74rem;
+
+    line-height: 1.35;
+}
+
+
+.sd-input-wrapper.sd-has-error input {
+    border-color:
+        rgba(220, 38, 38, 0.65);
+
+    box-shadow:
+        0 0 0 3px rgba(220, 38, 38, 0.06);
+}
+
+
+.sd-register-message {
+    display: none;
+
+    padding: 11px 13px;
+
+    border-radius: 9px;
+
+    font-size: 0.81rem;
+
+    line-height: 1.5;
+}
+
+
+.sd-register-message.sd-error {
+    display: block;
+
+    border:
+        1px solid rgba(220, 38, 38, 0.15);
+
+    background: #FEF2F2;
+
+    color: #B91C1C;
+}
+
+
+.sd-register-message.sd-success {
+    display: block;
+
+    border:
+        1px solid rgba(22, 163, 74, 0.15);
+
+    background: #F0FDF4;
+
+    color: var(--sd-success);
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.sd-register-submit {
+    width: 100%;
+    min-height: 51px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+
+    padding: 12px 20px;
+
+    border: 0;
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--sd-orange),
+            var(--sd-orange-dark)
+        );
+
+    color: var(--sd-white);
+
+    font: inherit;
+
+    font-size: 0.91rem;
+    font-weight: 750;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 10px 24px rgba(249, 115, 22, 0.20);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+.sd-register-submit:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 14px 30px rgba(249, 115, 22, 0.27);
+}
+
+
+.sd-register-submit:active {
+    transform: translateY(0);
+}
+
+
+.sd-register-submit:disabled {
+    opacity: 0.7;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   LOGIN LINK
+   ========================================================= */
+
+.sd-register-login {
+    margin-top: 24px;
+
+    padding-top: 21px;
+
+    border-top:
+        1px solid var(--sd-border);
+
+    color: var(--sd-muted);
+
+    font-size: 0.83rem;
+
+    text-align: center;
+}
+
+
+.sd-register-login a {
+    margin-left: 4px;
+
+    color: var(--sd-orange-dark);
+
+    font-weight: 750;
+
+    text-decoration: none;
+}
+
+
+.sd-register-login a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   SECURITY
+   ========================================================= */
+
+.sd-register-security {
+    margin-top: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    color: var(--sd-light);
+
+    font-size: 0.72rem;
+
+    text-align: center;
+}
+
+
+.sd-register-security i {
+    color: var(--sd-orange);
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.sd-register-footer {
+    min-height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 15px 20px;
+
+    background: var(--sd-navy);
+
+    color:
+        rgba(255, 255, 255, 0.58);
+
+    text-align: center;
+}
+
+
+.sd-register-footer p {
+    margin: 0;
+
+    font-size: 0.78rem;
+}
+
+
+/* =========================================================
+   FOCUS ACCESSIBILITY
+   ========================================================= */
+
+.sd-register-brand:focus-visible,
+.sd-register-signin:focus-visible,
+.sd-register-login a:focus-visible,
+.sd-password-toggle:focus-visible,
+.sd-register-submit:focus-visible {
+    outline:
+        3px solid rgba(249, 115, 22, 0.32);
+
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .sd-register-main {
+        padding: 55px 0;
+    }
+
+
+    .sd-register-container {
+        grid-template-columns: 1fr;
+
+        gap: 45px;
+    }
+
+
+    .sd-register-intro-content {
+        max-width: 680px;
+
+        margin: 0 auto;
+
+        text-align: center;
+    }
+
+
+    .sd-register-intro h1,
+    .sd-register-description {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .sd-register-benefits,
+    .sd-register-role-note {
+        max-width: 560px;
+
+        margin-left: auto;
+        margin-right: auto;
+
+        text-align: left;
+    }
+
+
+    .sd-register-card {
+        max-width: 520px;
+
+        margin: 0 auto;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 575px) {
+
+    .sd-register-nav {
+        width: min(100% - 28px, 1180px);
+
+        min-height: 68px;
+
+        gap: 12px;
+    }
+
+
+    .sd-register-logo {
+        height: 40px;
+    }
+
+
+    .sd-register-brand {
+        gap: 8px;
+    }
+
+
+    .sd-register-brand-name {
+        font-size: 0.76rem;
+
+        letter-spacing: 0.025em;
+    }
+
+
+    .sd-register-brand-name > span {
+        margin-left: 4px;
+    }
+
+
+    .sd-register-signin {
+        min-height: 40px;
+
+        padding: 8px 11px;
+
+        font-size: 0.79rem;
+    }
+
+
+    .sd-register-main {
+        min-height: auto;
+
+        padding: 40px 0;
+    }
+
+
+    .sd-register-container {
+        width: min(100% - 28px, 1180px);
+
+        gap: 34px;
+    }
+
+
+    .sd-register-badge {
+        margin-bottom: 17px;
+
+        font-size: 0.73rem;
+    }
+
+
+    .sd-register-intro h1 {
+        font-size:
+            clamp(2rem, 10vw, 2.65rem);
+    }
+
+
+    .sd-register-description {
+        font-size: 0.91rem;
+
+        line-height: 1.7;
+    }
+
+
+    .sd-register-benefits {
+        margin-top: 27px;
+
+        gap: 15px;
+    }
+
+
+    .sd-register-benefit {
+        grid-template-columns:
+            42px minmax(0, 1fr);
+
+        gap: 12px;
+    }
+
+
+    .sd-register-benefit-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+
+    .sd-register-card {
+        padding: 25px 20px;
+
+        border-radius: 17px;
+    }
+
+
+    .sd-register-card-header {
+        margin-bottom: 24px;
+    }
+
+
+    .sd-register-card-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+
+    .sd-register-card-header h2 {
+        font-size: 1.35rem;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .sd-register-brand-name {
+        font-size: 0.67rem;
+    }
+
+
+    .sd-register-signin span {
+        display: none;
+    }
+
+
+    .sd-register-signin {
+        width: 40px;
+
+        padding: 0;
+    }
+
+
+    .sd-register-card {
+        padding: 23px 16px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sd-register-signin,
+    .sd-register-benefit-icon,
+    .sd-password-toggle,
+    .sd-input-wrapper input,
+    .sd-register-submit {
+        transition: none;
+    }
+
+
+    .sd-register-signin:hover,
+    .sd-register-submit:hover,
+    .sd-register-benefit:hover
+    .sd-register-benefit-icon {
+        transform: none;
+    }
+
+}

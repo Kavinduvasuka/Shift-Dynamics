@@ -1,0 +1,3062 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Manager Dashboard | Shift Dynamics
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/manager-dashboard.css"
+    >
+</head>
+
+<body>
+
+    <div class="sd-dashboard">
+
+        <aside
+            class="sd-sidebar"
+            id="managerSidebar"
+        >
+
+            <div class="sd-sidebar-header">
+
+                <a
+                    href="../index.html"
+                    class="sd-brand"
+                >
+
+                    <img
+                        src="../assets/images/shift-dynamics-logo.png.png"
+                        alt="Shift Dynamics Logo"
+                    >
+
+                    <div>
+                        <strong>Shift Dynamics</strong>
+                        <span>Manager Portal</span>
+                    </div>
+
+                </a>
+
+
+                <button
+                    type="button"
+                    class="sd-sidebar-close"
+                    id="sidebarClose"
+                    aria-label="Close navigation"
+                >
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+            </div>
+
+
+            <nav class="sd-sidebar-nav">
+
+                <button
+                    type="button"
+                    class="sd-nav-item active"
+                    data-section="overview"
+                >
+                    <i class="bi bi-grid-1x2"></i>
+                    <span>Overview</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="sd-nav-item"
+                    data-section="job-cards"
+                >
+                    <i class="bi bi-card-checklist"></i>
+                    <span>Job Card Review</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="sd-nav-item"
+                    data-section="workshop"
+                >
+                    <i class="bi bi-tools"></i>
+                    <span>Workshop Load</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="sd-nav-item"
+                    data-section="vendors"
+                >
+                    <i class="bi bi-box-seam"></i>
+                    <span>Vendor Bids</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="sd-nav-item"
+                    data-section="orders"
+                >
+                    <i class="bi bi-bag-check"></i>
+                    <span>Order Approvals</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="sd-nav-item"
+                    data-section="billing"
+                >
+                    <i class="bi bi-receipt"></i>
+                    <span>Billing Review</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="sd-nav-item"
+                    data-section="analytics"
+                >
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span>Analytics</span>
+                </button>
+
+
+                <button
+                    type="button"
+                    class="sd-nav-item"
+                    data-section="users"
+                >
+                    <i class="bi bi-people"></i>
+                    <span>User Management</span>
+                </button>
+
+            </nav>
+
+
+            <div class="sd-sidebar-footer">
+
+                <div class="sd-manager-card">
+
+                    <div class="sd-manager-avatar">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+
+                    <div>
+                        <strong>Workshop Manager</strong>
+                        <span>Operations Control</span>
+                    </div>
+
+                </div>
+
+
+                <a
+                    href="../staff-login.html"
+                    class="sd-logout-btn"
+                >
+                    <i class="bi bi-box-arrow-left"></i>
+                    Logout
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <div
+            class="sd-sidebar-overlay"
+            id="sidebarOverlay"
+        ></div>
+
+
+        <main class="sd-main">
+
+            <header class="sd-topbar">
+
+                <div class="sd-topbar-left">
+
+                    <button
+                        type="button"
+                        class="sd-menu-btn"
+                        id="sidebarOpen"
+                        aria-label="Open navigation"
+                    >
+                        <i class="bi bi-list"></i>
+                    </button>
+
+
+                    <div>
+                        <p class="sd-page-eyebrow">
+                            Manager Workspace
+                        </p>
+
+                        <h1 id="pageTitle">
+                            Operations Overview
+                        </h1>
+                    </div>
+
+                </div>
+
+
+                <div class="sd-topbar-right">
+
+                    <button
+                        type="button"
+                        class="sd-icon-btn"
+                        aria-label="Notifications"
+                    >
+                        <i class="bi bi-bell"></i>
+
+                        <span
+                            class="sd-notification-dot"
+                        ></span>
+                    </button>
+
+
+                    <div class="sd-topbar-user">
+
+                        <div class="sd-topbar-avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+
+                        <div>
+                            <strong>Manager</strong>
+                            <span>Workshop Operations</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <section
+                class="sd-content-section active"
+                id="overview"
+            >
+
+                <div class="sd-welcome-card">
+
+                    <div>
+
+                        <span class="sd-welcome-label">
+                            Workshop Control Center
+                        </span>
+
+                        <h2>
+                            Good morning, Manager
+                        </h2>
+
+                        <p>
+                            Monitor workshop activity,
+                            staff workload, approvals,
+                            vendor requests and daily
+                            operational performance.
+                        </p>
+
+                    </div>
+
+
+                    <div class="sd-welcome-icon">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+
+                </div>
+
+
+                <div class="sd-stat-grid">
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-card-checklist"></i>
+                        </div>
+
+                        <div>
+                            <span>Active Job Cards</span>
+                            <strong>18</strong>
+
+                            <small>
+                                6 awaiting assignment
+                            </small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-person-gear"></i>
+                        </div>
+
+                        <div>
+                            <span>Mechanics On Duty</span>
+                            <strong>09</strong>
+
+                            <small>
+                                7 currently assigned
+                            </small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+
+                        <div>
+                            <span>Vendor Quotes</span>
+                            <strong>05</strong>
+
+                            <small>
+                                Pending comparison
+                            </small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-check2-square"></i>
+                        </div>
+
+                        <div>
+                            <span>Pending Approvals</span>
+                            <strong>04</strong>
+
+                            <small>
+                                Orders and billing
+                            </small>
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <div class="sd-dashboard-grid">
+
+                    <article class="sd-panel sd-workshop-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Live Operations
+                                </span>
+
+                                <h3>
+                                    Workshop Bay Load
+                                </h3>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="sd-text-btn"
+                                data-go="workshop"
+                            >
+                                View Workshop
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+
+                        </div>
+
+
+                        <div class="sd-bay-list">
+
+                            <div class="sd-bay-item">
+
+                                <div class="sd-bay-info">
+                                    <strong>Bay 01</strong>
+                                    <span>
+                                        Toyota Corolla
+                                    </span>
+                                </div>
+
+                                <div class="sd-progress">
+                                    <span style="width: 78%"></span>
+                                </div>
+
+                                <span class="sd-status sd-status-progress">
+                                    In Progress
+                                </span>
+
+                            </div>
+
+
+                            <div class="sd-bay-item">
+
+                                <div class="sd-bay-info">
+                                    <strong>Bay 02</strong>
+                                    <span>
+                                        Honda Vezel
+                                    </span>
+                                </div>
+
+                                <div class="sd-progress">
+                                    <span style="width: 45%"></span>
+                                </div>
+
+                                <span class="sd-status sd-status-progress">
+                                    Diagnostic
+                                </span>
+
+                            </div>
+
+
+                            <div class="sd-bay-item">
+
+                                <div class="sd-bay-info">
+                                    <strong>Bay 03</strong>
+                                    <span>
+                                        Nissan X-Trail
+                                    </span>
+                                </div>
+
+                                <div class="sd-progress">
+                                    <span style="width: 100%"></span>
+                                </div>
+
+                                <span class="sd-status sd-status-ready">
+                                    Ready
+                                </span>
+
+                            </div>
+
+
+                            <div class="sd-bay-item">
+
+                                <div class="sd-bay-info">
+                                    <strong>Bay 04</strong>
+                                    <span>
+                                        Available
+                                    </span>
+                                </div>
+
+                                <div class="sd-progress">
+                                    <span style="width: 0%"></span>
+                                </div>
+
+                                <span class="sd-status sd-status-open">
+                                    Open
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Today
+                                </span>
+
+                                <h3>
+                                    Approval Queue
+                                </h3>
+                            </div>
+
+                            <span class="sd-count-badge">
+                                4 Pending
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-approval-list">
+
+                            <button
+                                type="button"
+                                class="sd-approval-item"
+                                data-go="orders"
+                            >
+
+                                <div class="sd-approval-icon">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Vendor Parts Order
+                                    </strong>
+
+                                    <span>
+                                        #PO-2048 · Brake Kit
+                                    </span>
+                                </div>
+
+                                <i class="bi bi-chevron-right"></i>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-approval-item"
+                                data-go="vendors"
+                            >
+
+                                <div class="sd-approval-icon">
+                                    <i class="bi bi-shop"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Vendor Bid Review
+                                    </strong>
+
+                                    <span>
+                                        3 quotes available
+                                    </span>
+                                </div>
+
+                                <i class="bi bi-chevron-right"></i>
+
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-approval-item"
+                                data-go="billing"
+                            >
+
+                                <div class="sd-approval-icon">
+                                    <i class="bi bi-receipt"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Final Invoice
+                                    </strong>
+
+                                    <span>
+                                        #INV-1062
+                                    </span>
+                                </div>
+
+                                <i class="bi bi-chevron-right"></i>
+
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <div class="sd-dashboard-grid">
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Attention Required
+                                </span>
+
+                                <h3>
+                                    Recent Job Cards
+                                </h3>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="sd-text-btn"
+                                data-go="job-cards"
+                            >
+                                Review All
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+
+                        </div>
+
+
+                        <div class="sd-table-wrap">
+
+                            <table class="sd-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Job Card</th>
+                                        <th>Vehicle</th>
+                                        <th>Service</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+                                        <td>
+                                            <strong>#JC-1054</strong>
+                                        </td>
+
+                                        <td>Toyota Corolla</td>
+
+                                        <td>
+                                            Brake Service
+                                        </td>
+
+                                        <td>
+                                            <span class="sd-status sd-status-warning">
+                                                Assignment Pending
+                                            </span>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <strong>#JC-1053</strong>
+                                        </td>
+
+                                        <td>Honda Vezel</td>
+
+                                        <td>
+                                            Diagnostics
+                                        </td>
+
+                                        <td>
+                                            <span class="sd-status sd-status-progress">
+                                                In Progress
+                                            </span>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <strong>#JC-1052</strong>
+                                        </td>
+
+                                        <td>Nissan X-Trail</td>
+
+                                        <td>
+                                            Full Service
+                                        </td>
+
+                                        <td>
+                                            <span class="sd-status sd-status-ready">
+                                                Ready
+                                            </span>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Quick Access
+                                </span>
+
+                                <h3>
+                                    Manager Actions
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-quick-grid">
+
+                            <button
+                                type="button"
+                                class="sd-quick-action"
+                                data-go="job-cards"
+                            >
+                                <i class="bi bi-card-checklist"></i>
+
+                                <span>
+                                    Review Job Cards
+                                </span>
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-quick-action"
+                                data-go="workshop"
+                            >
+                                <i class="bi bi-person-workspace"></i>
+
+                                <span>
+                                    Assign Mechanics
+                                </span>
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-quick-action"
+                                data-go="vendors"
+                            >
+                                <i class="bi bi-shop-window"></i>
+
+                                <span>
+                                    Compare Bids
+                                </span>
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-quick-action"
+                                data-go="analytics"
+                            >
+                                <i class="bi bi-graph-up-arrow"></i>
+
+                                <span>
+                                    View Analytics
+                                </span>
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+            <section
+                class="sd-content-section"
+                id="job-cards"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+                        <span class="sd-panel-label">
+                            Workshop Operations
+                        </span>
+
+                        <h2>
+                            Job Card Review & Assignment
+                        </h2>
+
+                        <p>
+                            Review incoming advisor job cards
+                            and assign the correct mechanic
+                            and workshop bay.
+                        </p>
+                    </div>
+
+                    <span class="sd-count-badge">
+                        3 Job Cards
+                    </span>
+
+                </div>
+
+
+                <div class="sd-manager-job-grid">
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Incoming Work
+                                </span>
+
+                                <h3>
+                                    Advisor Job Cards
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-table-wrap">
+
+                            <table
+                                class="sd-table sd-job-table"
+                            >
+
+                                <thead>
+                                    <tr>
+                                        <th>Job Card</th>
+                                        <th>Vehicle</th>
+                                        <th>Service</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="managerJobTable">
+
+                                    <tr
+                                        data-job-card="#JC-1054"
+                                        data-vehicle="Toyota Corolla"
+                                        data-plate="WP CAB-1234"
+                                        data-service="Brake Inspection"
+                                        data-priority="High"
+                                    >
+                                        <td>
+                                            <strong>
+                                                #JC-1054
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            Toyota Corolla
+                                            <small>
+                                                WP CAB-1234
+                                            </small>
+                                        </td>
+
+                                        <td>
+                                            Brake Inspection
+                                        </td>
+
+                                        <td>
+                                            <span class="sd-priority-high">
+                                                High
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span
+                                                class="sd-status sd-status-warning job-status"
+                                            >
+                                                Awaiting Assignment
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="sd-review-btn"
+                                            >
+                                                Review
+                                            </button>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr
+                                        data-job-card="#JC-1055"
+                                        data-vehicle="Honda Vezel"
+                                        data-plate="WP CBF-5678"
+                                        data-service="Diagnostic Check"
+                                        data-priority="Medium"
+                                    >
+                                        <td>
+                                            <strong>
+                                                #JC-1055
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            Honda Vezel
+                                            <small>
+                                                WP CBF-5678
+                                            </small>
+                                        </td>
+
+                                        <td>
+                                            Diagnostic Check
+                                        </td>
+
+                                        <td>
+                                            <span class="sd-priority-medium">
+                                                Medium
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span
+                                                class="sd-status sd-status-warning job-status"
+                                            >
+                                                Awaiting Assignment
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="sd-review-btn"
+                                            >
+                                                Review
+                                            </button>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr
+                                        data-job-card="#JC-1056"
+                                        data-vehicle="Suzuki Swift"
+                                        data-plate="WP CAG-9021"
+                                        data-service="General Service"
+                                        data-priority="Normal"
+                                    >
+                                        <td>
+                                            <strong>
+                                                #JC-1056
+                                            </strong>
+                                        </td>
+
+                                        <td>
+                                            Suzuki Swift
+                                            <small>
+                                                WP CAG-9021
+                                            </small>
+                                        </td>
+
+                                        <td>
+                                            General Service
+                                        </td>
+
+                                        <td>
+                                            <span class="sd-priority-normal">
+                                                Normal
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span
+                                                class="sd-status sd-status-warning job-status"
+                                            >
+                                                Awaiting Assignment
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <button
+                                                type="button"
+                                                class="sd-review-btn"
+                                            >
+                                                Review
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </article>
+
+
+                    <article
+                        class="sd-panel sd-assignment-panel"
+                    >
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Manager Action
+                                </span>
+
+                                <h3>
+                                    Assign Workshop Job
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="sd-selected-job"
+                            id="selectedJobSummary"
+                        >
+
+                            <div class="sd-selected-job-icon">
+                                <i class="bi bi-card-checklist"></i>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Selected Job Card
+                                </span>
+
+                                <strong id="selectedJobNumber">
+                                    Select a job card
+                                </strong>
+
+                                <small id="selectedJobVehicle">
+                                    Review a job card to begin.
+                                </small>
+                            </div>
+
+                        </div>
+
+
+                        <form id="assignmentForm">
+
+                            <div class="sd-form-group">
+
+                                <label for="mechanicSelect">
+                                    Assign Mechanic
+                                </label>
+
+                                <select
+                                    id="mechanicSelect"
+                                    disabled
+                                >
+                                    <option value="">
+                                        Select mechanic
+                                    </option>
+
+                                    <option value="Nimal Perera">
+                                        Nimal Perera — Engine & Mechanical
+                                    </option>
+
+                                    <option value="Kasun Silva">
+                                        Kasun Silva — Diagnostics
+                                    </option>
+
+                                    <option value="Ruwan Fernando">
+                                        Ruwan Fernando — Brakes & Suspension
+                                    </option>
+
+                                    <option value="Dilan Jayasinghe">
+                                        Dilan Jayasinghe — General Service
+                                    </option>
+                                </select>
+
+                            </div>
+
+
+                            <div class="sd-form-group">
+
+                                <label for="baySelect">
+                                    Workshop Bay
+                                </label>
+
+                                <select
+                                    id="baySelect"
+                                    disabled
+                                >
+                                    <option value="">
+                                        Select workshop bay
+                                    </option>
+
+                                    <option value="Bay 01">
+                                        Bay 01
+                                    </option>
+
+                                    <option value="Bay 02">
+                                        Bay 02
+                                    </option>
+
+                                    <option value="Bay 03">
+                                        Bay 03
+                                    </option>
+
+                                    <option value="Bay 04">
+                                        Bay 04
+                                    </option>
+                                </select>
+
+                            </div>
+
+
+                            <div class="sd-form-group">
+
+                                <label for="managerNote">
+                                    Manager Note
+                                </label>
+
+                                <textarea
+                                    id="managerNote"
+                                    rows="4"
+                                    placeholder="Optional assignment instructions..."
+                                    disabled
+                                ></textarea>
+
+                            </div>
+
+
+                            <button
+                                type="submit"
+                                class="sd-primary-btn"
+                                id="assignJobButton"
+                                disabled
+                            >
+                                <i class="bi bi-person-check"></i>
+
+                                Assign Job
+                            </button>
+
+
+                            <p
+                                class="sd-form-message"
+                                id="assignmentMessage"
+                                aria-live="polite"
+                            ></p>
+
+                        </form>
+
+                    </article>
+
+                </div>
+
+
+                <article class="sd-panel">
+
+                    <div class="sd-panel-header">
+
+                        <div>
+                            <span class="sd-panel-label">
+                                Workshop Allocation
+                            </span>
+
+                            <h3>
+                                Current Assignments
+                            </h3>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-table-wrap">
+
+                        <table class="sd-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Job Card</th>
+                                    <th>Vehicle</th>
+                                    <th>Mechanic</th>
+                                    <th>Workshop Bay</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="assignmentTable">
+
+                                <tr>
+                                    <td>
+                                        <strong>#JC-1052</strong>
+                                    </td>
+
+                                    <td>Nissan X-Trail</td>
+
+                                    <td>Nimal Perera</td>
+
+                                    <td>Bay 03</td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-progress">
+                                            Assigned
+                                        </span>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <section
+                class="sd-content-section"
+                id="workshop"
+            >
+                <div class="sd-placeholder">
+                    <i class="bi bi-tools"></i>
+                    <h2>Workshop Load</h2>
+                    <p>
+                        Mechanic and workshop bay
+                        assignment workflow will appear here.
+                    </p>
+                </div>
+            </section>
+
+
+            <section
+                class="sd-content-section"
+                id="vendors"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+                        <span class="sd-panel-label">
+                            External Procurement
+                        </span>
+
+                        <h2>
+                            Vendor Bid Comparison
+                        </h2>
+
+                        <p>
+                            Compare external spare-parts
+                            quotations using price,
+                            availability and delivery
+                            lead time before approval.
+                        </p>
+                    </div>
+
+                    <span
+                        class="sd-count-badge"
+                        id="vendorQuoteCount"
+                    >
+                        3 Quotes
+                    </span>
+
+                </div>
+
+
+                <article class="sd-panel sd-request-summary">
+
+                    <div class="sd-panel-header">
+
+                        <div>
+                            <span class="sd-panel-label">
+                                Parts Request
+                            </span>
+
+                            <h3>
+                                #PR-3021
+                            </h3>
+                        </div>
+
+                        <span class="sd-status sd-status-warning">
+                            Manager Review
+                        </span>
+
+                    </div>
+
+
+                    <div class="sd-request-grid">
+
+                        <div>
+                            <span>Job Card</span>
+                            <strong>#JC-1054</strong>
+                        </div>
+
+                        <div>
+                            <span>Vehicle</span>
+                            <strong>Toyota Corolla</strong>
+                        </div>
+
+                        <div>
+                            <span>Requested Part</span>
+                            <strong>Front Brake Kit</strong>
+                        </div>
+
+                        <div>
+                            <span>Quantity</span>
+                            <strong>1 Set</strong>
+                        </div>
+
+                        <div>
+                            <span>Requested By</span>
+                            <strong>Storekeeper</strong>
+                        </div>
+
+                        <div>
+                            <span>Stock Status</span>
+                            <strong class="sd-out-stock">
+                                Out of Stock
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <div
+                    class="sd-vendor-grid"
+                    id="vendorQuoteGrid"
+                >
+
+                    <article
+                        class="sd-vendor-quote"
+                        data-vendor="AutoParts Lanka"
+                        data-price="28500"
+                        data-delivery="1 Day"
+                    >
+
+                        <div class="sd-vendor-top">
+
+                            <div class="sd-vendor-icon">
+                                <i class="bi bi-shop"></i>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Vendor Quote
+                                </span>
+
+                                <h3>
+                                    AutoParts Lanka
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-quote-details">
+
+                            <div>
+                                <span>Quoted Price</span>
+                                <strong>
+                                    LKR 28,500
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Delivery</span>
+                                <strong>
+                                    1 Day
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Availability</span>
+
+                                <strong class="sd-available">
+                                    In Stock
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Warranty</span>
+                                <strong>
+                                    6 Months
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-select-quote"
+                        >
+                            <i class="bi bi-check2-circle"></i>
+                            Select Quote
+                        </button>
+
+                    </article>
+
+
+                    <article
+                        class="sd-vendor-quote"
+                        data-vendor="MotorHub Spares"
+                        data-price="26400"
+                        data-delivery="3 Days"
+                    >
+
+                        <div class="sd-vendor-top">
+
+                            <div class="sd-vendor-icon">
+                                <i class="bi bi-shop"></i>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Vendor Quote
+                                </span>
+
+                                <h3>
+                                    MotorHub Spares
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-quote-details">
+
+                            <div>
+                                <span>Quoted Price</span>
+                                <strong>
+                                    LKR 26,400
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Delivery</span>
+                                <strong>
+                                    3 Days
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Availability</span>
+
+                                <strong class="sd-available">
+                                    In Stock
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Warranty</span>
+                                <strong>
+                                    3 Months
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-select-quote"
+                        >
+                            <i class="bi bi-check2-circle"></i>
+                            Select Quote
+                        </button>
+
+                    </article>
+
+
+                    <article
+                        class="sd-vendor-quote"
+                        data-vendor="Prime Auto Traders"
+                        data-price="25100"
+                        data-delivery="5 Days"
+                    >
+
+                        <div class="sd-vendor-top">
+
+                            <div class="sd-vendor-icon">
+                                <i class="bi bi-shop"></i>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Vendor Quote
+                                </span>
+
+                                <h3>
+                                    Prime Auto Traders
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-quote-details">
+
+                            <div>
+                                <span>Quoted Price</span>
+                                <strong>
+                                    LKR 25,100
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Delivery</span>
+                                <strong>
+                                    5 Days
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Availability</span>
+
+                                <strong class="sd-available">
+                                    In Stock
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Warranty</span>
+                                <strong>
+                                    6 Months
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-select-quote"
+                        >
+                            <i class="bi bi-check2-circle"></i>
+                            Select Quote
+                        </button>
+
+                    </article>
+
+                </div>
+
+
+                <article class="sd-panel sd-vendor-approval">
+
+                    <div class="sd-panel-header">
+
+                        <div>
+                            <span class="sd-panel-label">
+                                Manager Decision
+                            </span>
+
+                            <h3>
+                                Selected Vendor
+                            </h3>
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="sd-vendor-selection-empty"
+                        id="vendorSelection"
+                    >
+
+                        <i class="bi bi-shop-window"></i>
+
+                        <div>
+                            <strong>
+                                No vendor selected
+                            </strong>
+
+                            <span>
+                                Select a quote above
+                                to continue.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-vendor-actions">
+
+                        <div class="sd-form-group">
+
+                            <label for="vendorApprovalNote">
+                                Manager Approval Note
+                            </label>
+
+                            <textarea
+                                id="vendorApprovalNote"
+                                rows="3"
+                                placeholder="Optional reason or procurement note..."
+                                disabled
+                            ></textarea>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-primary-btn"
+                            id="approveVendorButton"
+                            disabled
+                        >
+                            <i class="bi bi-check2-circle"></i>
+                            Approve Selected Vendor
+                        </button>
+
+
+                        <p
+                            class="sd-form-message"
+                            id="vendorApprovalMessage"
+                            aria-live="polite"
+                        ></p>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <section
+                class="sd-content-section"
+                id="orders"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+                        <span class="sd-panel-label">
+                            Procurement Control
+                        </span>
+
+                        <h2>
+                            Purchase Order Approval
+                        </h2>
+
+                        <p>
+                            Review approved vendor details,
+                            requested parts, pricing and
+                            delivery information before
+                            authorizing the purchase order.
+                        </p>
+                    </div>
+
+                    <span
+                        class="sd-status sd-status-warning"
+                        id="purchaseOrderStatus"
+                    >
+                        Pending Approval
+                    </span>
+
+                </div>
+
+
+                <div class="sd-order-layout">
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Purchase Order
+                                </span>
+
+                                <h3>
+                                    #PO-2048
+                                </h3>
+                            </div>
+
+                            <span class="sd-count-badge">
+                                1 Item
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-order-meta-grid">
+
+                            <div>
+                                <span>Parts Request</span>
+                                <strong>#PR-3021</strong>
+                            </div>
+
+                            <div>
+                                <span>Job Card</span>
+                                <strong>#JC-1054</strong>
+                            </div>
+
+                            <div>
+                                <span>Vehicle</span>
+                                <strong>Toyota Corolla</strong>
+                            </div>
+
+                            <div>
+                                <span>Requested By</span>
+                                <strong>Storekeeper</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-table-wrap">
+
+                            <table class="sd-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Part</th>
+                                        <th>Qty</th>
+                                        <th>Unit Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong>
+                                                Front Brake Kit
+                                            </strong>
+
+                                            <small>
+                                                Toyota Corolla compatible
+                                            </small>
+                                        </td>
+
+                                        <td>1 Set</td>
+
+                                        <td>
+                                            LKR 28,500
+                                        </td>
+
+                                        <td>
+                                            <strong>
+                                                LKR 28,500
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="sd-order-total">
+
+                            <span>
+                                Purchase Order Total
+                            </span>
+
+                            <strong>
+                                LKR 28,500
+                            </strong>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+                                <span class="sd-panel-label">
+                                    Approved Vendor
+                                </span>
+
+                                <h3>
+                                    Procurement Details
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-approved-vendor-card">
+
+                            <div class="sd-vendor-icon">
+                                <i class="bi bi-shop"></i>
+                            </div>
+
+                            <div>
+                                <span>
+                                    Vendor
+                                </span>
+
+                                <strong>
+                                    AutoParts Lanka
+                                </strong>
+
+                                <small>
+                                    Approved vendor quotation
+                                </small>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-order-detail-list">
+
+                            <div>
+                                <span>Quoted Price</span>
+                                <strong>LKR 28,500</strong>
+                            </div>
+
+                            <div>
+                                <span>Delivery Lead Time</span>
+                                <strong>1 Day</strong>
+                            </div>
+
+                            <div>
+                                <span>Availability</span>
+                                <strong class="sd-available">
+                                    In Stock
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Warranty</span>
+                                <strong>6 Months</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-order-warning">
+
+                            <i class="bi bi-info-circle"></i>
+
+                            <p>
+                                Confirm that the selected
+                                vendor, price and delivery
+                                terms match the approved
+                                quotation before authorizing
+                                this order.
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <article class="sd-panel sd-order-approval-panel">
+
+                    <div class="sd-panel-header">
+
+                        <div>
+                            <span class="sd-panel-label">
+                                Manager Authorization
+                            </span>
+
+                            <h3>
+                                Final Order Approval
+                            </h3>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-form-group">
+
+                        <label for="orderApprovalNote">
+                            Manager Approval Note
+                        </label>
+
+                        <textarea
+                            id="orderApprovalNote"
+                            rows="4"
+                            placeholder="Optional procurement or approval note..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <label class="sd-confirm-check">
+
+                        <input
+                            type="checkbox"
+                            id="confirmPurchaseOrder"
+                        >
+
+                        <span>
+                            I have reviewed the vendor,
+                            part details, price and
+                            delivery terms.
+                        </span>
+
+                    </label>
+
+
+                    <button
+                        type="button"
+                        class="sd-primary-btn"
+                        id="approveOrderButton"
+                        disabled
+                    >
+                        <i class="bi bi-bag-check"></i>
+                        Approve Purchase Order
+                    </button>
+
+
+                    <p
+                        class="sd-form-message"
+                        id="orderApprovalMessage"
+                        aria-live="polite"
+                    ></p>
+
+                </article>
+
+            </section>
+
+
+            <section
+                class="sd-content-section"
+                id="billing"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+                        <span class="sd-panel-label">
+                            Financial Control
+                        </span>
+
+                        <h2>
+                            Billing Review & Final Approval
+                        </h2>
+
+                        <p>
+                            Review labour, internal parts,
+                            approved vendor costs and the
+                            final customer invoice before
+                            authorizing billing.
+                        </p>
+                    </div>
+
+                    <span
+                        class="sd-status sd-status-warning"
+                        id="billingStatus"
+                    >
+                        Pending Review
+                    </span>
+
+                </div>
+
+
+                <div class="sd-billing-layout">
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+                            <div>
+                                <span class="sd-panel-label">
+                                    Customer Invoice
+                                </span>
+
+                                <h3>#INV-1062</h3>
+                            </div>
+
+                            <span class="sd-count-badge">
+                                #JC-1054
+                            </span>
+                        </div>
+
+
+                        <div class="sd-order-meta-grid">
+
+                            <div>
+                                <span>Customer</span>
+                                <strong>
+                                    Kasun Perera
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Vehicle</span>
+                                <strong>
+                                    Toyota Corolla
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>License Plate</span>
+                                <strong>
+                                    WP CAB-1234
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Service</span>
+                                <strong>
+                                    Brake Inspection
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-table-wrap">
+
+                            <table class="sd-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    <tr>
+                                        <td>
+                                            Workshop Labour
+                                        </td>
+
+                                        <td>
+                                            Labour
+                                        </td>
+
+                                        <td>
+                                            LKR 7,500
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            Brake Fluid &
+                                            Workshop Materials
+                                        </td>
+
+                                        <td>
+                                            In-Stock Parts
+                                        </td>
+
+                                        <td>
+                                            LKR 18,500
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            Front Brake Kit
+                                        </td>
+
+                                        <td>
+                                            Vendor Part
+                                        </td>
+
+                                        <td>
+                                            LKR 28,500
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="sd-billing-totals">
+
+                            <div>
+                                <span>Labour</span>
+                                <strong>LKR 7,500</strong>
+                            </div>
+
+                            <div>
+                                <span>In-Stock Parts</span>
+                                <strong>LKR 18,500</strong>
+                            </div>
+
+                            <div>
+                                <span>Vendor Parts</span>
+                                <strong>LKR 28,500</strong>
+                            </div>
+
+                            <div class="sd-billing-grand-total">
+                                <span>Final Invoice Total</span>
+                                <strong>LKR 54,500</strong>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+                            <div>
+                                <span class="sd-panel-label">
+                                    Verification
+                                </span>
+
+                                <h3>
+                                    Billing Checks
+                                </h3>
+                            </div>
+                        </div>
+
+
+                        <div class="sd-billing-check-list">
+
+                            <div>
+                                <i class="bi bi-check2-circle"></i>
+
+                                <div>
+                                    <strong>
+                                        Labour Charges
+                                    </strong>
+
+                                    <span>
+                                        Job-card labour
+                                        included.
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <i class="bi bi-check2-circle"></i>
+
+                                <div>
+                                    <strong>
+                                        Internal Parts
+                                    </strong>
+
+                                    <span>
+                                        Workshop stock
+                                        usage included.
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <i class="bi bi-check2-circle"></i>
+
+                                <div>
+                                    <strong>
+                                        Vendor Cost
+                                    </strong>
+
+                                    <span>
+                                        Approved external
+                                        quote included.
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div>
+                                <i class="bi bi-check2-circle"></i>
+
+                                <div>
+                                    <strong>
+                                        Invoice Total
+                                    </strong>
+
+                                    <span>
+                                        Component totals
+                                        reconciled.
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-billing-info">
+
+                            <i class="bi bi-shield-check"></i>
+
+                            <p>
+                                Final approval confirms that
+                                the invoice is ready for the
+                                customer payment process.
+                            </p>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <article
+                    class="sd-panel sd-billing-approval"
+                >
+
+                    <div class="sd-panel-header">
+                        <div>
+                            <span class="sd-panel-label">
+                                Manager Authorization
+                            </span>
+
+                            <h3>
+                                Final Billing Approval
+                            </h3>
+                        </div>
+                    </div>
+
+
+                    <div class="sd-form-group">
+
+                        <label for="billingApprovalNote">
+                            Manager Note
+                        </label>
+
+                        <textarea
+                            id="billingApprovalNote"
+                            rows="3"
+                            placeholder="Optional billing review note..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <label class="sd-confirm-check">
+
+                        <input
+                            type="checkbox"
+                            id="confirmBilling"
+                        >
+
+                        <span>
+                            I have reviewed the labour,
+                            parts, vendor costs and final
+                            invoice total.
+                        </span>
+
+                    </label>
+
+
+                    <button
+                        type="button"
+                        class="sd-primary-btn"
+                        id="approveBillingButton"
+                        disabled
+                    >
+                        <i class="bi bi-check2-square"></i>
+                        Approve Final Billing
+                    </button>
+
+
+                    <p
+                        class="sd-form-message"
+                        id="billingMessage"
+                        aria-live="polite"
+                    ></p>
+
+                </article>
+
+            </section>
+
+
+            <section
+                class="sd-content-section"
+                id="analytics"
+            >
+
+                <!-- =====================================
+                     ANALYTICS HEADER
+                ====================================== -->
+
+                <div class="sd-analytics-header">
+
+                    <div>
+
+                        <span class="sd-panel-label">
+                            Business Intelligence
+                        </span>
+
+                        <h2>
+                            Workshop Performance Analytics
+                        </h2>
+
+                        <p>
+                            Monitor revenue, workshop
+                            efficiency, completed jobs,
+                            mechanic performance and
+                            procurement spending.
+                        </p>
+
+                    </div>
+
+
+                    <div class="sd-analytics-controls">
+
+                        <label
+                            for="analyticsPeriod"
+                            class="sd-analytics-filter-label"
+                        >
+                            Reporting Period
+                        </label>
+
+                        <select id="analyticsPeriod">
+
+                            <option value="7">
+                                Last 7 Days
+                            </option>
+
+                            <option
+                                value="30"
+                                selected
+                            >
+                                Last 30 Days
+                            </option>
+
+                            <option value="90">
+                                Last 90 Days
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================
+                     KPI CARDS
+                ====================================== -->
+
+                <div class="sd-analytics-kpis">
+
+                    <article
+                        class="sd-analytics-kpi"
+                    >
+
+                        <div
+                            class="sd-analytics-kpi-icon"
+                        >
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Total Revenue
+                            </span>
+
+                            <strong id="analyticsRevenue">
+                                LKR 1.84M
+                            </strong>
+
+                            <small class="sd-kpi-positive">
+                                <i class="bi bi-arrow-up-right"></i>
+                                12.8% vs previous period
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article
+                        class="sd-analytics-kpi"
+                    >
+
+                        <div
+                            class="sd-analytics-kpi-icon"
+                        >
+                            <i class="bi bi-wrench-adjustable-circle"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Completed Jobs
+                            </span>
+
+                            <strong id="analyticsJobs">
+                                86
+                            </strong>
+
+                            <small class="sd-kpi-positive">
+                                <i class="bi bi-arrow-up-right"></i>
+                                9 more jobs
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article
+                        class="sd-analytics-kpi"
+                    >
+
+                        <div
+                            class="sd-analytics-kpi-icon"
+                        >
+                            <i class="bi bi-speedometer"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Bay Utilization
+                            </span>
+
+                            <strong id="analyticsUtilization">
+                                78%
+                            </strong>
+
+                            <small>
+                                Target: 75%
+                            </small>
+
+                        </div>
+
+                    </article>
+
+
+                    <article
+                        class="sd-analytics-kpi"
+                    >
+
+                        <div
+                            class="sd-analytics-kpi-icon"
+                        >
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+
+                        <div>
+
+                            <span>
+                                Vendor Spending
+                            </span>
+
+                            <strong id="analyticsVendor">
+                                LKR 482K
+                            </strong>
+
+                            <small>
+                                26.2% of revenue
+                            </small>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <!-- =====================================
+                     MAIN CHARTS
+                ====================================== -->
+
+                <div class="sd-analytics-chart-grid">
+
+                    <article
+                        class="sd-panel sd-chart-card sd-chart-wide"
+                    >
+
+                        <div class="sd-panel-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    Financial Performance
+                                </span>
+
+                                <h3>
+                                    Revenue Trend
+                                </h3>
+
+                                <p class="sd-chart-description">
+                                    Workshop revenue generated
+                                    during the selected period.
+                                </p>
+
+                            </div>
+
+
+                            <span class="sd-chart-badge">
+                                LKR
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-chart-container">
+                            <canvas
+                                id="revenueChart"
+                            ></canvas>
+                        </div>
+
+                    </article>
+
+
+                    <article
+                        class="sd-panel sd-chart-card"
+                    >
+
+                        <div class="sd-panel-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    Job Distribution
+                                </span>
+
+                                <h3>
+                                    Jobs by Service
+                                </h3>
+
+                                <p class="sd-chart-description">
+                                    Completed workload grouped
+                                    by service category.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-chart-container">
+                            <canvas
+                                id="serviceChart"
+                            ></canvas>
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <!-- =====================================
+                     PERFORMANCE CHARTS
+                ====================================== -->
+
+                <div class="sd-analytics-chart-grid">
+
+                    <article
+                        class="sd-panel sd-chart-card"
+                    >
+
+                        <div class="sd-panel-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    Team Performance
+                                </span>
+
+                                <h3>
+                                    Mechanic Completed Jobs
+                                </h3>
+
+                                <p class="sd-chart-description">
+                                    Comparison of completed
+                                    workshop jobs per mechanic.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-chart-container">
+                            <canvas
+                                id="mechanicChart"
+                            ></canvas>
+                        </div>
+
+                    </article>
+
+
+                    <article
+                        class="sd-panel sd-chart-card"
+                    >
+
+                        <div class="sd-panel-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    Procurement Analysis
+                                </span>
+
+                                <h3>
+                                    Vendor Spending
+                                </h3>
+
+                                <p class="sd-chart-description">
+                                    External parts expenditure
+                                    across approved vendors.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-chart-container">
+                            <canvas
+                                id="vendorChart"
+                            ></canvas>
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <!-- =====================================
+                     WORKSHOP PERFORMANCE
+                ====================================== -->
+
+                <div class="sd-analytics-bottom-grid">
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    Operational Efficiency
+                                </span>
+
+                                <h3>
+                                    Workshop Bay Performance
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-bay-performance-list">
+
+                            <div class="sd-bay-performance">
+
+                                <div class="sd-bay-performance-head">
+
+                                    <div>
+                                        <strong>Bay 01</strong>
+                                        <span>
+                                            Mechanical Repairs
+                                        </span>
+                                    </div>
+
+                                    <strong>86%</strong>
+
+                                </div>
+
+                                <div class="sd-performance-bar">
+                                    <span style="width:86%"></span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-bay-performance">
+
+                                <div class="sd-bay-performance-head">
+
+                                    <div>
+                                        <strong>Bay 02</strong>
+                                        <span>
+                                            Diagnostics
+                                        </span>
+                                    </div>
+
+                                    <strong>74%</strong>
+
+                                </div>
+
+                                <div class="sd-performance-bar">
+                                    <span style="width:74%"></span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-bay-performance">
+
+                                <div class="sd-bay-performance-head">
+
+                                    <div>
+                                        <strong>Bay 03</strong>
+                                        <span>
+                                            General Service
+                                        </span>
+                                    </div>
+
+                                    <strong>91%</strong>
+
+                                </div>
+
+                                <div class="sd-performance-bar">
+                                    <span style="width:91%"></span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-bay-performance">
+
+                                <div class="sd-bay-performance-head">
+
+                                    <div>
+                                        <strong>Bay 04</strong>
+                                        <span>
+                                            Brake & Suspension
+                                        </span>
+                                    </div>
+
+                                    <strong>63%</strong>
+
+                                </div>
+
+                                <div class="sd-performance-bar">
+                                    <span style="width:63%"></span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    Management Insights
+                                </span>
+
+                                <h3>
+                                    Performance Summary
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-insight-list">
+
+                            <div class="sd-insight-item">
+
+                                <div class="sd-insight-icon">
+                                    <i class="bi bi-graph-up-arrow"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Revenue is increasing
+                                    </strong>
+
+                                    <p>
+                                        Revenue improved by
+                                        12.8% compared with the
+                                        previous reporting period.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-insight-item">
+
+                                <div class="sd-insight-icon">
+                                    <i class="bi bi-speedometer2"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Bay 03 has highest utilization
+                                    </strong>
+
+                                    <p>
+                                        Bay 03 currently operates
+                                        at 91% utilization.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-insight-item">
+
+                                <div class="sd-insight-icon">
+                                    <i class="bi bi-person-check"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Strong mechanic throughput
+                                    </strong>
+
+                                    <p>
+                                        Nimal Perera currently has
+                                        the highest completed-job
+                                        count in this demo period.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="sd-insight-item">
+
+                                <div class="sd-insight-icon">
+                                    <i class="bi bi-box-seam"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Monitor external parts costs
+                                    </strong>
+
+                                    <p>
+                                        Vendor spending represents
+                                        approximately 26% of
+                                        current revenue.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <!-- =====================================
+                     DETAIL TABLE
+                ====================================== -->
+
+                <article class="sd-panel">
+
+                    <div class="sd-panel-header">
+
+                        <div>
+
+                            <span class="sd-panel-label">
+                                Detailed Metrics
+                            </span>
+
+                            <h3>
+                                Workshop Performance Table
+                            </h3>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-table-wrap">
+
+                        <table class="sd-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Metric</th>
+                                    <th>Current Period</th>
+                                    <th>Previous Period</th>
+                                    <th>Change</th>
+                                    <th>Performance</th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            Revenue
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        LKR 1.84M
+                                    </td>
+
+                                    <td>
+                                        LKR 1.63M
+                                    </td>
+
+                                    <td class="sd-table-positive">
+                                        +12.8%
+                                    </td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-ready">
+                                            Good
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            Completed Jobs
+                                        </strong>
+                                    </td>
+
+                                    <td>86</td>
+
+                                    <td>77</td>
+
+                                    <td class="sd-table-positive">
+                                        +11.7%
+                                    </td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-ready">
+                                            Good
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            Bay Utilization
+                                        </strong>
+                                    </td>
+
+                                    <td>78%</td>
+
+                                    <td>71%</td>
+
+                                    <td class="sd-table-positive">
+                                        +7 pts
+                                    </td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-ready">
+                                            Above Target
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            Avg. Job Duration
+                                        </strong>
+                                    </td>
+
+                                    <td>4.6 hrs</td>
+
+                                    <td>5.1 hrs</td>
+
+                                    <td class="sd-table-positive">
+                                        -0.5 hrs
+                                    </td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-progress">
+                                            Improving
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            Vendor Spending
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        LKR 482K
+                                    </td>
+
+                                    <td>
+                                        LKR 438K
+                                    </td>
+
+                                    <td class="sd-table-warning">
+                                        +10.0%
+                                    </td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-warning">
+                                            Monitor
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+
+            <section
+                class="sd-content-section"
+                id="users"
+            >
+                <div class="sd-placeholder">
+                    <i class="bi bi-people"></i>
+                    <h2>User Management</h2>
+                    <p>
+                        Platform account management
+                        will be implemented here.
+                    </p>
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/js/manager-dashboard.js"></script>
+
+</body>
+
+</html>
+
+
+
+
+

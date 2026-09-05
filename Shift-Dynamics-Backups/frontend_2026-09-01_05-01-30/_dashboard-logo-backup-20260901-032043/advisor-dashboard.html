@@ -1,0 +1,1938 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Service Advisor Dashboard | Shift Dynamics</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/advisor-dashboard.css"
+    >
+
+</head>
+
+<body>
+
+
+<div class="sd-dashboard">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside
+        class="sd-sidebar"
+        id="advisorSidebar"
+    >
+
+        <div class="sd-sidebar-header">
+
+            <a
+                href="../index.html"
+                class="sd-logo-link"
+            >
+                <img
+                    src="../assets/images/shift-dynamics-logo.png.png"
+                    alt="Shift Dynamics"
+                    class="sd-logo"
+                >
+            </a>
+
+            <button
+                type="button"
+                class="sd-sidebar-close"
+                id="sidebarClose"
+                aria-label="Close navigation"
+            >
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+        </div>
+
+
+        <div class="sd-user-card">
+
+            <div class="sd-user-avatar">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+
+            <div>
+                <strong>Service Advisor</strong>
+                <span>Workshop Operations</span>
+            </div>
+
+        </div>
+
+
+        <nav class="sd-sidebar-nav">
+
+            <button
+                type="button"
+                class="sd-nav-item active"
+                data-section="overview"
+            >
+                <i class="bi bi-grid-1x2"></i>
+                <span>Overview</span>
+            </button>
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="customer-intake"
+            >
+                <i class="bi bi-person-plus"></i>
+                <span>Customer Intake</span>
+            </button>
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="inspection"
+            >
+                <i class="bi bi-clipboard-check"></i>
+                <span>Walkaround Inspection</span>
+            </button>
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="job-cards"
+            >
+                <i class="bi bi-card-checklist"></i>
+                <span>Job Cards</span>
+            </button>
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="diagnostics"
+            >
+                <i class="bi bi-activity"></i>
+                <span>Diagnostic Notes</span>
+            </button>
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="estimates"
+            >
+                <i class="bi bi-receipt"></i>
+                <span>Customer Estimates</span>
+            </button>
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="invoice"
+            >
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Invoice Compilation</span>
+            </button>
+
+            <button
+                type="button"
+                class="sd-nav-item"
+                data-section="handover"
+            >
+                <i class="bi bi-key"></i>
+                <span>Final Handover</span>
+            </button>
+
+        </nav>
+
+
+        <div class="sd-sidebar-footer">
+
+            <a
+                href="../staff-login.html"
+                class="sd-logout"
+            >
+                <i class="bi bi-box-arrow-left"></i>
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN AREA
+         ===================================================== -->
+
+    <main class="sd-main">
+
+
+        <!-- TOP BAR -->
+
+        <header class="sd-topbar">
+
+            <div class="sd-topbar-left">
+
+                <button
+                    type="button"
+                    class="sd-menu-button"
+                    id="sidebarOpen"
+                    aria-label="Open navigation"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <div>
+                    <span class="sd-topbar-label">
+                        Service Advisor Portal
+                    </span>
+
+                    <h1 id="pageTitle">
+                        Workshop Overview
+                    </h1>
+                </div>
+
+            </div>
+
+
+            <div class="sd-topbar-actions">
+
+                <button
+                    type="button"
+                    class="sd-icon-button"
+                    aria-label="Notifications"
+                >
+                    <i class="bi bi-bell"></i>
+                    <span class="sd-notification-dot"></span>
+                </button>
+
+                <div class="sd-topbar-profile">
+
+                    <div class="sd-profile-avatar">
+                        SA
+                    </div>
+
+                    <div>
+                        <strong>Advisor</strong>
+                        <span>Front Desk</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <div class="sd-content">
+
+
+            <!-- =================================================
+                 OVERVIEW
+                 ================================================= -->
+
+            <section
+                class="sd-section active"
+                id="overview"
+            >
+
+                <div class="sd-welcome-card">
+
+                    <div>
+
+                        <span class="sd-eyebrow">
+                            Workshop Operations
+                        </span>
+
+                        <h2>
+                            Good day, Service Advisor
+                        </h2>
+
+                        <p>
+                            Manage customer intake, vehicle inspections,
+                            job cards, estimates and final handovers
+                            from one workspace.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="sd-primary-button"
+                        data-go-section="customer-intake"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                        New Customer Intake
+                    </button>
+
+                </div>
+
+
+                <div class="sd-stat-grid">
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+
+                        <div>
+                            <span>Vehicles Today</span>
+                            <strong>12</strong>
+                            <small>3 awaiting intake</small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-card-checklist"></i>
+                        </div>
+
+                        <div>
+                            <span>Active Job Cards</span>
+                            <strong>08</strong>
+                            <small>5 currently in workshop</small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+
+                        <div>
+                            <span>Pending Estimates</span>
+                            <strong>04</strong>
+                            <small>Awaiting customer approval</small>
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-stat-card">
+
+                        <div class="sd-stat-icon">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+
+                        <div>
+                            <span>Ready for Handover</span>
+                            <strong>03</strong>
+                            <small>Invoices completed</small>
+                        </div>
+
+                    </article>
+
+                </div>
+
+
+                <div class="sd-overview-grid">
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-heading">
+
+                            <div>
+                                <span class="sd-eyebrow">
+                                    Live Queue
+                                </span>
+
+                                <h3>
+                                    Today's Workshop Activity
+                                </h3>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="sd-text-button"
+                                data-go-section="job-cards"
+                            >
+                                View Job Cards
+                            </button>
+
+                        </div>
+
+
+                        <div class="sd-activity-list">
+
+                            <div class="sd-activity-item">
+
+                                <div class="sd-activity-marker"></div>
+
+                                <div>
+                                    <strong>
+                                        Toyota Corolla
+                                    </strong>
+
+                                    <span>
+                                        WP CAB-1234 · Brake Inspection
+                                    </span>
+                                </div>
+
+                                <span class="sd-status sd-status-progress">
+                                    In Progress
+                                </span>
+
+                            </div>
+
+
+                            <div class="sd-activity-item">
+
+                                <div class="sd-activity-marker"></div>
+
+                                <div>
+                                    <strong>
+                                        Honda Vezel
+                                    </strong>
+
+                                    <span>
+                                        WP CAX-4581 · Diagnostic Check
+                                    </span>
+                                </div>
+
+                                <span class="sd-status sd-status-waiting">
+                                    Estimate
+                                </span>
+
+                            </div>
+
+
+                            <div class="sd-activity-item">
+
+                                <div class="sd-activity-marker"></div>
+
+                                <div>
+                                    <strong>
+                                        Nissan X-Trail
+                                    </strong>
+
+                                    <span>
+                                        CP KL-9087 · Full Service
+                                    </span>
+                                </div>
+
+                                <span class="sd-status sd-status-ready">
+                                    Ready
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-heading">
+
+                            <div>
+                                <span class="sd-eyebrow">
+                                    Quick Actions
+                                </span>
+
+                                <h3>
+                                    Advisor Tools
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-quick-grid">
+
+                            <button
+                                type="button"
+                                class="sd-quick-card"
+                                data-go-section="inspection"
+                            >
+                                <i class="bi bi-clipboard-check"></i>
+
+                                <span>
+                                    Vehicle Inspection
+                                </span>
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-quick-card"
+                                data-go-section="job-cards"
+                            >
+                                <i class="bi bi-card-checklist"></i>
+
+                                <span>
+                                    Create Job Card
+                                </span>
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-quick-card"
+                                data-go-section="estimates"
+                            >
+                                <i class="bi bi-receipt"></i>
+
+                                <span>
+                                    Prepare Estimate
+                                </span>
+                            </button>
+
+
+                            <button
+                                type="button"
+                                class="sd-quick-card"
+                                data-go-section="handover"
+                            >
+                                <i class="bi bi-key"></i>
+
+                                <span>
+                                    Vehicle Handover
+                                </span>
+                            </button>
+
+                        </div>
+
+                    </article>
+
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 CUSTOMER INTAKE
+                 ================================================= -->
+
+            <section
+                class="sd-section"
+                id="customer-intake"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+
+                        <span class="sd-eyebrow">
+                            Front Desk
+                        </span>
+
+                        <h2>
+                            Customer & Vehicle Intake
+                        </h2>
+
+                        <p>
+                            Record customer information, vehicle details
+                            and the initial service request.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    class="sd-panel sd-form-panel"
+                    id="customerIntakeForm"
+                    novalidate
+                >
+
+                    <div class="sd-form-section-title">
+                        <i class="bi bi-person"></i>
+                        Customer Information
+                    </div>
+
+
+                    <div class="sd-form-grid">
+
+                        <div class="sd-field">
+
+                            <label for="customerName">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="customerName"
+                                placeholder="Enter customer name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="sd-field">
+
+                            <label for="customerMobile">
+                                Mobile Number
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="customerMobile"
+                                placeholder="07X XXX XXXX"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="sd-field">
+
+                            <label for="customerEmail">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="customerEmail"
+                                placeholder="customer@example.com"
+                            >
+
+                        </div>
+
+
+                        <div class="sd-field">
+
+                            <label for="customerNic">
+                                NIC / Customer ID
+                            </label>
+
+                            <input
+                                type="text"
+                                id="customerNic"
+                                placeholder="Optional"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-form-section-title">
+                        <i class="bi bi-car-front"></i>
+                        Vehicle Information
+                    </div>
+
+
+                    <div class="sd-form-grid">
+
+                        <div class="sd-field">
+
+                            <label for="vehicleMake">
+                                Make
+                            </label>
+
+                            <input
+                                type="text"
+                                id="vehicleMake"
+                                placeholder="Toyota"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="sd-field">
+
+                            <label for="vehicleModel">
+                                Model
+                            </label>
+
+                            <input
+                                type="text"
+                                id="vehicleModel"
+                                placeholder="Corolla"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="sd-field">
+
+                            <label for="vehicleYear">
+                                Year
+                            </label>
+
+                            <input
+                                type="number"
+                                id="vehicleYear"
+                                min="1980"
+                                max="2030"
+                                placeholder="2020"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="sd-field">
+
+                            <label for="vehiclePlate">
+                                License Plate
+                            </label>
+
+                            <input
+                                type="text"
+                                id="vehiclePlate"
+                                placeholder="WP CAB-1234"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="sd-field">
+
+                            <label for="vehicleVin">
+                                VIN
+                            </label>
+
+                            <input
+                                type="text"
+                                id="vehicleVin"
+                                placeholder="Vehicle Identification Number"
+                            >
+
+                        </div>
+
+
+                        <div class="sd-field">
+
+                            <label for="vehicleMileage">
+                                Current Mileage
+                            </label>
+
+                            <input
+                                type="number"
+                                id="vehicleMileage"
+                                min="0"
+                                placeholder="68500"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-field sd-field-full">
+
+                        <label for="serviceConcern">
+                            Customer Concern / Service Request
+                        </label>
+
+                        <textarea
+                            id="serviceConcern"
+                            rows="4"
+                            placeholder="Describe the customer's reported issue or requested service..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                    <div
+                        class="sd-form-message"
+                        id="intakeMessage"
+                    ></div>
+
+
+                    <div class="sd-form-actions">
+
+                        <button
+                            type="reset"
+                            class="sd-secondary-button"
+                        >
+                            Clear Form
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="sd-primary-button"
+                        >
+                            <i class="bi bi-check-lg"></i>
+                            Complete Intake
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 WALKAROUND INSPECTION
+                 ================================================= -->
+
+            <section
+                class="sd-section"
+                id="inspection"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+
+                        <span class="sd-eyebrow">
+                            Vehicle Condition
+                        </span>
+
+                        <h2>
+                            Walkaround Inspection
+                        </h2>
+
+                        <p>
+                            Record the vehicle's visible condition before
+                            workshop work begins.
+                        </p>
+
+                    </div>
+
+                    <div class="sd-progress-box">
+
+                        <span>Inspection Progress</span>
+
+                        <strong id="inspectionProgressText">
+                            0 / 8
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sd-panel">
+
+                    <div class="sd-vehicle-summary">
+
+                        <div class="sd-vehicle-icon">
+                            <i class="bi bi-car-front-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Toyota Corolla 2020</strong>
+                            <span>WP CAB-1234 · 68,500 km</span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-inspection-grid">
+
+                        <label class="sd-check-card">
+
+                            <input
+                                type="checkbox"
+                                class="inspection-check"
+                            >
+
+                            <span class="sd-check-icon">
+                                <i class="bi bi-circle"></i>
+                            </span>
+
+                            <span>
+                                <strong>Front Body</strong>
+                                <small>Bumper, bonnet and lights</small>
+                            </span>
+
+                        </label>
+
+
+                        <label class="sd-check-card">
+
+                            <input
+                                type="checkbox"
+                                class="inspection-check"
+                            >
+
+                            <span class="sd-check-icon">
+                                <i class="bi bi-circle"></i>
+                            </span>
+
+                            <span>
+                                <strong>Rear Body</strong>
+                                <small>Boot, bumper and lights</small>
+                            </span>
+
+                        </label>
+
+
+                        <label class="sd-check-card">
+
+                            <input
+                                type="checkbox"
+                                class="inspection-check"
+                            >
+
+                            <span class="sd-check-icon">
+                                <i class="bi bi-circle"></i>
+                            </span>
+
+                            <span>
+                                <strong>Left Side</strong>
+                                <small>Doors, mirrors and panels</small>
+                            </span>
+
+                        </label>
+
+
+                        <label class="sd-check-card">
+
+                            <input
+                                type="checkbox"
+                                class="inspection-check"
+                            >
+
+                            <span class="sd-check-icon">
+                                <i class="bi bi-circle"></i>
+                            </span>
+
+                            <span>
+                                <strong>Right Side</strong>
+                                <small>Doors, mirrors and panels</small>
+                            </span>
+
+                        </label>
+
+
+                        <label class="sd-check-card">
+
+                            <input
+                                type="checkbox"
+                                class="inspection-check"
+                            >
+
+                            <span class="sd-check-icon">
+                                <i class="bi bi-circle"></i>
+                            </span>
+
+                            <span>
+                                <strong>Tyres & Wheels</strong>
+                                <small>Visible wear and damage</small>
+                            </span>
+
+                        </label>
+
+
+                        <label class="sd-check-card">
+
+                            <input
+                                type="checkbox"
+                                class="inspection-check"
+                            >
+
+                            <span class="sd-check-icon">
+                                <i class="bi bi-circle"></i>
+                            </span>
+
+                            <span>
+                                <strong>Glass</strong>
+                                <small>Windscreen and windows</small>
+                            </span>
+
+                        </label>
+
+
+                        <label class="sd-check-card">
+
+                            <input
+                                type="checkbox"
+                                class="inspection-check"
+                            >
+
+                            <span class="sd-check-icon">
+                                <i class="bi bi-circle"></i>
+                            </span>
+
+                            <span>
+                                <strong>Interior</strong>
+                                <small>Seats, dashboard and trim</small>
+                            </span>
+
+                        </label>
+
+
+                        <label class="sd-check-card">
+
+                            <input
+                                type="checkbox"
+                                class="inspection-check"
+                            >
+
+                            <span class="sd-check-icon">
+                                <i class="bi bi-circle"></i>
+                            </span>
+
+                            <span>
+                                <strong>Fuel & Mileage</strong>
+                                <small>Fuel level and odometer</small>
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="sd-field sd-field-full">
+
+                        <label for="inspectionNotes">
+                            Existing Damage / Inspection Notes
+                        </label>
+
+                        <textarea
+                            id="inspectionNotes"
+                            rows="4"
+                            placeholder="Record scratches, dents, cracks or other visible conditions..."
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="sd-form-actions">
+
+                        <button
+                            type="button"
+                            class="sd-primary-button"
+                            id="saveInspection"
+                        >
+                            <i class="bi bi-save"></i>
+                            Save Inspection
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="sd-form-message"
+                        id="inspectionMessage"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 JOB CARDS
+                 ================================================= -->
+
+            <section
+                class="sd-section"
+                id="job-cards"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+
+                        <span class="sd-eyebrow">
+                            Workshop Orders
+                        </span>
+
+                        <h2>
+                            Official Job Cards
+                        </h2>
+
+                        <p>
+                            Track vehicles accepted into the workshop
+                            and their current service stage.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="sd-primary-button"
+                        id="newJobCardButton"
+                    >
+                        <i class="bi bi-plus-lg"></i>
+                        New Job Card
+                    </button>
+
+                </div>
+
+
+                <div class="sd-panel sd-table-panel">
+
+                    <div class="sd-table-wrap">
+
+                        <table class="sd-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Job Card</th>
+                                    <th>Vehicle</th>
+                                    <th>Service</th>
+                                    <th>Advisor</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="jobCardTable">
+
+                                <tr>
+
+                                    <td>
+                                        <strong>#JC-1048</strong>
+                                    </td>
+
+                                    <td>
+                                        Toyota Corolla
+                                        <small>WP CAB-1234</small>
+                                    </td>
+
+                                    <td>
+                                        Brake Inspection
+                                    </td>
+
+                                    <td>
+                                        Service Advisor
+                                    </td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-progress">
+                                            In Progress
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <button class="sd-table-button">
+                                            View
+                                        </button>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>#JC-1049</strong>
+                                    </td>
+
+                                    <td>
+                                        Honda Vezel
+                                        <small>WP CAX-4581</small>
+                                    </td>
+
+                                    <td>
+                                        Diagnostic Check
+                                    </td>
+
+                                    <td>
+                                        Service Advisor
+                                    </td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-waiting">
+                                            Estimate
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <button class="sd-table-button">
+                                            View
+                                        </button>
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <strong>#JC-1050</strong>
+                                    </td>
+
+                                    <td>
+                                        Nissan X-Trail
+                                        <small>CP KL-9087</small>
+                                    </td>
+
+                                    <td>
+                                        Full Service
+                                    </td>
+
+                                    <td>
+                                        Service Advisor
+                                    </td>
+
+                                    <td>
+                                        <span class="sd-status sd-status-ready">
+                                            Ready
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <button class="sd-table-button">
+                                            View
+                                        </button>
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 DIAGNOSTICS
+                 ================================================= -->
+
+            <section
+                class="sd-section"
+                id="diagnostics"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+
+                        <span class="sd-eyebrow">
+                            Technical Findings
+                        </span>
+
+                        <h2>
+                            Diagnostic Notes
+                        </h2>
+
+                        <p>
+                            Record findings received from workshop
+                            technicians against the job card.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sd-two-column">
+
+                    <article class="sd-panel">
+
+                        <div class="sd-form-grid">
+
+                            <div class="sd-field">
+
+                                <label for="diagnosticJob">
+                                    Job Card
+                                </label>
+
+                                <select id="diagnosticJob">
+
+                                    <option value="#JC-1048">
+                                        #JC-1048 · Toyota Corolla
+                                    </option>
+
+                                    <option value="#JC-1049">
+                                        #JC-1049 · Honda Vezel
+                                    </option>
+
+                                    <option value="#JC-1050">
+                                        #JC-1050 · Nissan X-Trail
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="sd-field">
+
+                                <label for="diagnosticPriority">
+                                    Priority
+                                </label>
+
+                                <select id="diagnosticPriority">
+
+                                    <option>Normal</option>
+                                    <option>High</option>
+                                    <option>Urgent</option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-field sd-field-full">
+
+                            <label for="diagnosticNotes">
+                                Diagnostic Findings
+                            </label>
+
+                            <textarea
+                                id="diagnosticNotes"
+                                rows="7"
+                                placeholder="Enter mechanic findings, fault codes, observations and recommended work..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="sd-form-actions">
+
+                            <button
+                                type="button"
+                                class="sd-primary-button"
+                                id="saveDiagnostic"
+                            >
+                                <i class="bi bi-save"></i>
+                                Save Diagnostic Notes
+                            </button>
+
+                        </div>
+
+                        <div
+                            class="sd-form-message"
+                            id="diagnosticMessage"
+                        ></div>
+
+                    </article>
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-heading">
+
+                            <div>
+                                <span class="sd-eyebrow">
+                                    Latest Finding
+                                </span>
+
+                                <h3>
+                                    #JC-1048
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-note-summary">
+
+                            <div>
+                                <span>Vehicle</span>
+                                <strong>Toyota Corolla</strong>
+                            </div>
+
+                            <div>
+                                <span>Reported Issue</span>
+                                <strong>Brake vibration</strong>
+                            </div>
+
+                            <div>
+                                <span>Technician Finding</span>
+                                <strong>
+                                    Front brake pads worn and front
+                                    discs require resurfacing.
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Recommendation</span>
+                                <strong>
+                                    Replace front pads and inspect
+                                    brake fluid condition.
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ESTIMATES
+                 ================================================= -->
+
+            <section
+                class="sd-section"
+                id="estimates"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+
+                        <span class="sd-eyebrow">
+                            Customer Approval
+                        </span>
+
+                        <h2>
+                            Prepare Estimate
+                        </h2>
+
+                        <p>
+                            Combine labour, parts and external vendor
+                            quotations before sending for approval.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sd-two-column sd-estimate-layout">
+
+                    <article class="sd-panel">
+
+                        <div class="sd-form-grid">
+
+                            <div class="sd-field">
+
+                                <label for="estimateLabour">
+                                    Labour Cost (LKR)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="estimateLabour"
+                                    value="7500"
+                                    min="0"
+                                >
+
+                            </div>
+
+
+                            <div class="sd-field">
+
+                                <label for="estimateParts">
+                                    In-stock Parts (LKR)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="estimateParts"
+                                    value="18500"
+                                    min="0"
+                                >
+
+                            </div>
+
+
+                            <div class="sd-field">
+
+                                <label for="estimateVendor">
+                                    Vendor Quote (LKR)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="estimateVendor"
+                                    value="5000"
+                                    min="0"
+                                >
+
+                            </div>
+
+
+                            <div class="sd-field">
+
+                                <label for="estimateOther">
+                                    Other Charges (LKR)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="estimateOther"
+                                    value="0"
+                                    min="0"
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-field sd-field-full">
+
+                            <label for="estimateDescription">
+                                Work Description
+                            </label>
+
+                            <textarea
+                                id="estimateDescription"
+                                rows="4"
+                            >Front brake pad replacement, brake inspection and general service.</textarea>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="sd-panel sd-total-card">
+
+                        <span class="sd-eyebrow">
+                            Estimate #EST-1058
+                        </span>
+
+                        <h3>
+                            Customer Estimate
+                        </h3>
+
+
+                        <div class="sd-total-row">
+                            <span>Labour</span>
+                            <strong id="labourDisplay">
+                                LKR 7,500
+                            </strong>
+                        </div>
+
+                        <div class="sd-total-row">
+                            <span>Parts</span>
+                            <strong id="partsDisplay">
+                                LKR 18,500
+                            </strong>
+                        </div>
+
+                        <div class="sd-total-row">
+                            <span>Vendor</span>
+                            <strong id="vendorDisplay">
+                                LKR 5,000
+                            </strong>
+                        </div>
+
+                        <div class="sd-total-row">
+                            <span>Other</span>
+                            <strong id="otherDisplay">
+                                LKR 0
+                            </strong>
+                        </div>
+
+
+                        <div class="sd-grand-total">
+
+                            <span>
+                                Estimated Total
+                            </span>
+
+                            <strong id="estimateTotal">
+                                LKR 31,000
+                            </strong>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-primary-button sd-full-button"
+                            id="sendEstimate"
+                        >
+                            <i class="bi bi-send"></i>
+                            Send for Customer Approval
+                        </button>
+
+
+                        <div
+                            class="sd-form-message"
+                            id="estimateMessage"
+                        ></div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 INVOICE
+                 ================================================= -->
+
+            <section
+                class="sd-section"
+                id="invoice"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+
+                        <span class="sd-eyebrow">
+                            Billing
+                        </span>
+
+                        <h2>
+                            Invoice Compilation
+                        </h2>
+
+                        <p>
+                            Review completed labour and parts charges
+                            before final billing.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <article class="sd-panel">
+
+                    <div class="sd-invoice-header">
+
+                        <div>
+
+                            <span class="sd-eyebrow">
+                                Draft Invoice
+                            </span>
+
+                            <h3>
+                                #INV-1058
+                            </h3>
+
+                        </div>
+
+                        <div>
+                            <span>Toyota Corolla</span>
+                            <strong>WP CAB-1234</strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sd-table-wrap">
+
+                        <table class="sd-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>Qty</th>
+                                    <th>Amount</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td>General Service Labour</td>
+                                    <td>Labour</td>
+                                    <td>1</td>
+                                    <td>LKR 7,500</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Front Brake Pad Set</td>
+                                    <td>Part</td>
+                                    <td>1</td>
+                                    <td>LKR 18,500</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Brake Disc Resurfacing</td>
+                                    <td>Vendor</td>
+                                    <td>1</td>
+                                    <td>LKR 5,000</td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="sd-invoice-total">
+
+                        <span>Invoice Total</span>
+                        <strong>LKR 31,000</strong>
+
+                    </div>
+
+
+                    <div class="sd-form-actions">
+
+                        <button
+                            type="button"
+                            class="sd-secondary-button"
+                        >
+                            Save Draft
+                        </button>
+
+                        <button
+                            type="button"
+                            class="sd-primary-button"
+                            id="finalizeInvoice"
+                        >
+                            <i class="bi bi-check2-circle"></i>
+                            Finalize Invoice
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="sd-form-message"
+                        id="invoiceMessage"
+                    ></div>
+
+                </article>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 HANDOVER
+                 ================================================= -->
+
+            <section
+                class="sd-section"
+                id="handover"
+            >
+
+                <div class="sd-section-heading">
+
+                    <div>
+
+                        <span class="sd-eyebrow">
+                            Final Stage
+                        </span>
+
+                        <h2>
+                            Customer Handover
+                        </h2>
+
+                        <p>
+                            Confirm final checks before releasing the
+                            completed vehicle to the customer.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="sd-two-column">
+
+                    <article class="sd-panel">
+
+                        <div class="sd-handover-vehicle">
+
+                            <div class="sd-vehicle-icon">
+                                <i class="bi bi-car-front-fill"></i>
+                            </div>
+
+                            <div>
+                                <span>Ready for Collection</span>
+                                <h3>Toyota Corolla</h3>
+                                <p>WP CAB-1234 · Job #JC-1048</p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-handover-checks">
+
+                            <label>
+
+                                <input
+                                    type="checkbox"
+                                    class="handover-check"
+                                >
+
+                                <span>
+                                    Repair work confirmed complete
+                                </span>
+
+                            </label>
+
+
+                            <label>
+
+                                <input
+                                    type="checkbox"
+                                    class="handover-check"
+                                >
+
+                                <span>
+                                    Quality inspection completed
+                                </span>
+
+                            </label>
+
+
+                            <label>
+
+                                <input
+                                    type="checkbox"
+                                    class="handover-check"
+                                >
+
+                                <span>
+                                    Final invoice issued
+                                </span>
+
+                            </label>
+
+
+                            <label>
+
+                                <input
+                                    type="checkbox"
+                                    class="handover-check"
+                                >
+
+                                <span>
+                                    Customer informed
+                                </span>
+
+                            </label>
+
+
+                            <label>
+
+                                <input
+                                    type="checkbox"
+                                    class="handover-check"
+                                >
+
+                                <span>
+                                    Keys and documents ready
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="sd-primary-button sd-full-button"
+                            id="completeHandover"
+                            disabled
+                        >
+                            <i class="bi bi-key"></i>
+                            Complete Vehicle Handover
+                        </button>
+
+
+                        <div
+                            class="sd-form-message"
+                            id="handoverMessage"
+                        ></div>
+
+                    </article>
+
+
+                    <article class="sd-panel">
+
+                        <div class="sd-panel-heading">
+
+                            <div>
+                                <span class="sd-eyebrow">
+                                    Service Summary
+                                </span>
+
+                                <h3>
+                                    Final Details
+                                </h3>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-note-summary">
+
+                            <div>
+                                <span>Customer</span>
+                                <strong>Nimal Perera</strong>
+                            </div>
+
+                            <div>
+                                <span>Completed Work</span>
+                                <strong>
+                                    General Service + Front Brake Pads
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Invoice</span>
+                                <strong>
+                                    #INV-1058 · LKR 31,000
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Payment</span>
+                                <strong>
+                                    Pending at Front Desk
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+</div>
+
+
+<div
+    class="sd-sidebar-overlay"
+    id="sidebarOverlay"
+></div>
+
+
+<script src="../assets/js/advisor-dashboard.js"></script>
+
+</body>
+
+</html>

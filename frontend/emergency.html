@@ -2,12 +2,8 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>24/7 Emergency Assistance | Shift Dynamics</title>
 
@@ -26,627 +22,397 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Zen+Dots&display=swap"
         rel="stylesheet">
 
-    <!-- Shift Dynamics Main CSS -->
-    <link
-        rel="stylesheet"
-        href="assets/css/style.css">
-
-    <!-- Emergency Page CSS -->
-    <link
-        rel="stylesheet"
-        href="assets/css/emergency.css?v=60">
-
-    <!-- Leaflet CSS -->
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/emergency.css?v=60">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="assets/css/mechanical-grid.css">
 </head>
-
 
 <body>
 
+    <!-- Navigation -->
+    <nav class="sd-navbar">
 
-<!-- =====================================================
-     NAVBAR
-     ===================================================== -->
+        <div class="container sd-nav-container">
 
-<nav class="sd-navbar">
+            <a href="index.html" class="sd-brand">
+                <img
+                    src="assets/images/shift-dynamics-logo.png.png"
+                    alt="Shift Dynamics"
+                    class="sd-logo">
 
-    <div class="container sd-nav-container">
-
-        <!-- BRAND -->
-
-        <a
-            href="index.html"
-            class="sd-brand">
-
-            <img
-                src="assets/images/shift-dynamics-logo.png.png"
-                alt="Shift Dynamics"
-                class="sd-logo">
-
-            <span class="sd-brand-name">
-                SHIFT <span>DYNAMICS</span>
-            </span>
-
-        </a>
-
-
-        <!-- DESKTOP NAVIGATION -->
-
-        <div class="sd-navigation">
-
-            <a
-                href="index.html"
-                class="sd-nav-link">
-
-                Home
-
+                <span class="sd-brand-name">
+                    SHIFT <span>DYNAMICS</span>
+                </span>
             </a>
 
-            <a
-                href="index.html#features"
-                class="sd-nav-link">
+            <div class="sd-navigation">
+                <a href="index.html" class="sd-nav-link">Home</a>
+                <a href="index.html#features" class="sd-nav-link">Features</a>
+                <a href="index.html#about" class="sd-nav-link">About</a>
 
-                Features
+                <a href="login.html" class="sd-nav-login">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Login
+                </a>
+            </div>
 
-            </a>
+            <button
+                class="sd-mobile-menu"
+                id="mobileMenuButton"
+                type="button"
+                aria-label="Open navigation">
 
-            <a
-                href="index.html#about"
-                class="sd-nav-link">
+                <i class="bi bi-list"></i>
+            </button>
 
-                About
+        </div>
 
-            </a>
+        <div
+            class="sd-mobile-navigation"
+            id="mobileNavigation">
 
-            <a
-                href="pages/auth/login.html"
-                class="sd-nav-login">
+            <a href="index.html">Home</a>
+            <a href="index.html#features">Features</a>
+            <a href="index.html#about">About</a>
 
+            <a href="login.html">
                 <i class="bi bi-box-arrow-in-right"></i>
-
                 Login
-
             </a>
-
         </div>
 
+    </nav>
 
-        <!-- MOBILE MENU BUTTON -->
+    <!-- Emergency Assistance -->
+    <main class="sd-emergency-page">
 
-        <button
-            class="sd-mobile-menu"
-            id="mobileMenuButton"
-            type="button"
-            aria-label="Open navigation">
+        <!-- Hero -->
+        <section class="sd-emergency-hero sd-mechanical-grid">
+            <div class="container">
 
-            <i class="bi bi-list"></i>
+                <div class="sd-emergency-header">
 
-        </button>
-
-    </div>
-
-
-    <!-- MOBILE NAVIGATION -->
-
-    <div
-        class="sd-mobile-navigation"
-        id="mobileNavigation">
-
-        <a href="index.html">
-            Home
-        </a>
-
-        <a href="index.html#features">
-            Features
-        </a>
-
-        <a href="index.html#about">
-            About
-        </a>
-
-        <a href="pages/auth/login.html">
-
-            <i class="bi bi-box-arrow-in-right"></i>
-
-            Login
-
-        </a>
-
-    </div>
-
-</nav>
-
-
-
-<!-- =====================================================
-     EMERGENCY ASSISTANCE PAGE
-     ===================================================== -->
-
-<main class="sd-emergency-page">
-
-
-    <!-- =================================================
-         HEADER
-         ================================================= -->
-
-    <section class="sd-emergency-hero">
-
-        <div class="container">
-
-            <div class="sd-emergency-header">
-
-                <div class="sd-emergency-badge">
-
-                    <span class="sd-emergency-live-dot"></span>
-
-                    24/7 VEHICLE ASSISTANCE
-
-                </div>
-
-
-                <h1>
-
-                    Vehicle Breakdown?
-
-                    <span>
-                        We'll Help You Find a Garage.
-                    </span>
-
-                </h1>
-
-
-                <p>
-
-                    Stranded with a vehicle problem?
-
-                    Share your location and Shift Dynamics
-                    will help you find nearby garages,
-                    towing services and mobile mechanics.
-
-                </p>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =================================================
-         LOCATION SECTION
-         ================================================= -->
-
-    <section class="sd-location-section">
-
-        <div class="container">
-
-
-            <!-- LOCATION CARD -->
-
-            <div class="sd-location-card">
-
-
-                <div class="sd-location-icon">
-
-                    <i class="bi bi-geo-alt-fill"></i>
-
-                </div>
-
-
-                <div class="sd-location-content">
-
-                    <h3>
-                        Find Nearby Garages
-                    </h3>
-
-                    <p id="locationStatus">
-
-                        Allow location access to find
-                        garages near you.
-
-                    </p>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    id="getLocationButton"
-                    class="sd-location-button">
-
-                    <i class="bi bi-crosshair"></i>
-
-                    <span>
-                        Use My Location
-                    </span>
-
-                </button>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 MAP + GARAGE LIST
-                 ================================================= -->
-
-            <div class="row g-4 mt-1">
-
-
-                <!-- MAP -->
-
-                <div class="col-lg-7">
-
-                    <div class="sd-map-card">
-
-
-                        <div class="sd-map-header">
-
-                            <div>
-
-                                <span class="sd-map-label">
-                                    YOUR LOCATION
-                                </span>
-
-                                <h2>
-                                    Nearby Garage Map
-                                </h2>
-
-                            </div>
-
-
-                            <div
-                                id="mapStatus"
-                                class="sd-map-status">
-
-                                <i class="bi bi-circle-fill"></i>
-
-                                Waiting for location
-
-                            </div>
-
-                        </div>
-
-
-                        <!-- LEAFLET MAP -->
-
-                        <div
-                            id="garageMap"
-                            class="sd-garage-map">
-
-                            <div
-                                id="mapPlaceholder"
-                                class="sd-map-placeholder">
-
-                                <i class="bi bi-map"></i>
-
-                                <h3>
-                                    Location Required
-                                </h3>
-
-                                <p>
-
-                                    Click
-                                    <strong>
-                                        "Use My Location"
-                                    </strong>
-                                    to find nearby garages.
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
+                    <div class="sd-emergency-badge">
+                        <span class="sd-emergency-live-dot"></span>
+                        24/7 VEHICLE ASSISTANCE
                     </div>
 
-                </div>
-
-
-
-                <!-- GARAGE LIST -->
-
-                <div class="col-lg-5">
-
-                    <div class="sd-garage-list-card">
-
-
-                        <div class="sd-garage-list-header">
-
-                            <div>
-
-                                <span class="sd-map-label">
-                                    AVAILABLE SERVICES
-                                </span>
-
-                                <h2>
-                                    Nearby Garages
-                                </h2>
-
-                            </div>
-
-
-                            <span
-                                id="garageCount"
-                                class="sd-garage-count">
-
-                                0 garages found
-
-                            </span>
-
-                        </div>
-
-<!-- SERVICE FILTERS -->
-
-                        <div class="sd-service-filters">
-
-                            <button
-                                type="button"
-                                class="sd-service-filter active"
-                                data-filter="all">
-                                <i class="bi bi-grid"></i>
-                                All
-                            </button>
-
-                            <button
-                                type="button"
-                                class="sd-service-filter"
-                                data-filter="garage">
-                                <i class="bi bi-tools"></i>
-                                Garages
-                            </button>
-
-                            <button
-                                type="button"
-                                class="sd-service-filter"
-                                data-filter="towing">
-                                <i class="bi bi-truck"></i>
-                                Towing
-                            </button>
-
-                            <button
-                                type="button"
-                                class="sd-service-filter"
-                                data-filter="mobile">
-                                <i class="bi bi-wrench-adjustable"></i>
-                                Mobile
-                            </button>
-
-                        </div>
-                        <div
-                            id="garageList"
-                            class="sd-garage-list">
-
-
-                            <div class="sd-empty-garages">
-
-                                <i class="bi bi-car-front"></i>
-
-                                <h3>
-                                    No location yet
-                                </h3>
-
-                                <p>
-
-                                    Use your location to
-                                    find nearby garages.
-
-                                </p>
-
-                            </div>
-
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 SERVICE TYPES
-                 ================================================= -->
-
-            <div class="sd-assistance-services">
-
-                <div class="row g-4">
-
-
-                    <!-- GARAGES -->
-
-                    <div class="col-md-4">
-
-                        <div class="sd-info-card">
-
-                            <div class="sd-info-icon">
-
-                                <i class="bi bi-tools"></i>
-
-                            </div>
-
-                            <h3>
-                                Nearby Garages
-                            </h3>
-
-                            <p>
-
-                                Find garages that can
-                                help with vehicle repairs
-                                and breakdown problems.
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- TOWING -->
-
-                    <div class="col-md-4">
-
-                        <div class="sd-info-card">
-
-                            <div class="sd-info-icon">
-
-                                <i class="bi bi-truck"></i>
-
-                            </div>
-
-                            <h3>
-                                Towing Services
-                            </h3>
-
-                            <p>
-
-                                Locate vehicle recovery
-                                and towing assistance
-                                when your vehicle cannot
-                                continue driving.
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- MOBILE MECHANICS -->
-
-                    <div class="col-md-4">
-
-                        <div class="sd-info-card">
-
-                            <div class="sd-info-icon">
-
-                                <i class="bi bi-wrench-adjustable"></i>
-
-                            </div>
-
-                            <h3>
-                                Mobile Mechanics
-                            </h3>
-
-                            <p>
-
-                                Find mobile vehicle
-                                assistance services that
-                                may come to your location.
-
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <!-- =================================================
-                 PRIVACY NOTICE
-                 ================================================= -->
-
-            <div class="sd-location-privacy">
-
-                <i class="bi bi-shield-check"></i>
-
-                <div>
-
-                    <strong>
-                        Your location is only used to find
-                        nearby vehicle services.
-                    </strong>
+                    <h1>
+                        Vehicle Breakdown?
+                        <span>We'll Help You Find a Garage.</span>
+                    </h1>
 
                     <p>
-
-                        Shift Dynamics requests your browser
-                        location only when you choose
-                        <strong>
-                            "Use My Location"
-                        </strong>.
-
+                        Stranded with a vehicle problem?
+                        Share your location and Shift Dynamics
+                        will help you find nearby garages,
+                        towing services and mobile mechanics.
                     </p>
 
                 </div>
 
             </div>
+        </section>
 
-        </div>
+        <!-- Location & Services -->
+        <section class="sd-location-section sd-mechanical-grid">
+            <div class="container">
 
-    </section>
+                <!-- Location -->
+                <div class="sd-location-card">
 
-</main>
+                    <div class="sd-location-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
 
+                    <div class="sd-location-content">
+                        <h3>Find Nearby Garages</h3>
 
+                        <p id="locationStatus">
+                            Allow location access to find
+                            garages near you.
+                        </p>
+                    </div>
 
-<!-- =====================================================
-     FOOTER
-     ===================================================== -->
+                    <button
+                        type="button"
+                        id="getLocationButton"
+                        class="sd-location-button">
 
-<footer class="sd-footer">
+                        <i class="bi bi-crosshair"></i>
+                        <span>Use My Location</span>
+                    </button>
 
-    <div class="container">
+                </div>
 
-        <div class="row align-items-center">
+                <!-- Map & Garage List -->
+                <div class="row g-4 mt-1">
 
-            <div class="col-md-6">
+                    <!-- Map -->
+                    <div class="col-lg-7">
+                        <div class="sd-map-card">
 
-                <p>
+                            <div class="sd-map-header">
+                                <div>
+                                    <span class="sd-map-label">
+                                        YOUR LOCATION
+                                    </span>
 
-                    © 2026 Shift Dynamics.
-                    Vehicle assistance when you need it.
+                                    <h2>Nearby Garage Map</h2>
+                                </div>
 
-                </p>
+                                <div
+                                    id="mapStatus"
+                                    class="sd-map-status">
+
+                                    <i class="bi bi-circle-fill"></i>
+                                    Waiting for location
+                                </div>
+                            </div>
+
+                            <div
+                                id="garageMap"
+                                class="sd-garage-map">
+
+                                <div
+                                    id="mapPlaceholder"
+                                    class="sd-map-placeholder">
+
+                                    <i class="bi bi-map"></i>
+
+                                    <h3>Location Required</h3>
+
+                                    <p>
+                                        Click
+                                        <strong>"Use My Location"</strong>
+                                        to find nearby garages.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Garage List -->
+                    <div class="col-lg-5">
+                        <div class="sd-garage-list-card">
+
+                            <div class="sd-garage-list-header">
+                                <div>
+                                    <span class="sd-map-label">
+                                        AVAILABLE SERVICES
+                                    </span>
+
+                                    <h2>Nearby Garages</h2>
+                                </div>
+
+                                <span
+                                    id="garageCount"
+                                    class="sd-garage-count">
+
+                                    0 garages found
+                                </span>
+                            </div>
+
+                            <!-- Service Filters -->
+                            <div class="sd-service-filters">
+
+                                <button
+                                    type="button"
+                                    class="sd-service-filter active"
+                                    data-filter="all">
+
+                                    <i class="bi bi-grid"></i>
+                                    All
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="sd-service-filter"
+                                    data-filter="garage">
+
+                                    <i class="bi bi-tools"></i>
+                                    Garages
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="sd-service-filter"
+                                    data-filter="towing">
+
+                                    <i class="bi bi-truck"></i>
+                                    Towing
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="sd-service-filter"
+                                    data-filter="mobile">
+
+                                    <i class="bi bi-wrench-adjustable"></i>
+                                    Mobile
+                                </button>
+
+                            </div>
+
+                            <div
+                                id="garageList"
+                                class="sd-garage-list">
+
+                                <div class="sd-empty-garages">
+                                    <i class="bi bi-car-front"></i>
+
+                                    <h3>No location yet</h3>
+
+                                    <p>
+                                        Use your location to
+                                        find nearby garages.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Service Types -->
+                <div class="sd-assistance-services">
+                    <div class="row g-4">
+
+                        <div class="col-md-4">
+                            <div class="sd-info-card">
+
+                                <div class="sd-info-icon">
+                                    <i class="bi bi-tools"></i>
+                                </div>
+
+                                <h3>Nearby Garages</h3>
+
+                                <p>
+                                    Find garages that can
+                                    help with vehicle repairs
+                                    and breakdown problems.
+                                </p>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="sd-info-card">
+
+                                <div class="sd-info-icon">
+                                    <i class="bi bi-truck"></i>
+                                </div>
+
+                                <h3>Towing Services</h3>
+
+                                <p>
+                                    Locate vehicle recovery
+                                    and towing assistance
+                                    when your vehicle cannot
+                                    continue driving.
+                                </p>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="sd-info-card">
+
+                                <div class="sd-info-icon">
+                                    <i class="bi bi-wrench-adjustable"></i>
+                                </div>
+
+                                <h3>Mobile Mechanics</h3>
+
+                                <p>
+                                    Find mobile vehicle
+                                    assistance services that
+                                    may come to your location.
+                                </p>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Privacy -->
+                <div class="sd-location-privacy">
+                    <i class="bi bi-shield-check"></i>
+
+                    <div>
+                        <strong>
+                            Your location is only used to find
+                            nearby vehicle services.
+                        </strong>
+
+                        <p>
+                            Shift Dynamics requests your browser
+                            location only when you choose
+                            <strong>"Use My Location"</strong>.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="sd-footer sd-shared-footer">
+        <div class="container">
+
+            <div class="sd-footer-inner">
+
+                <div class="sd-shared-footer-brand">
+                    <img
+                        src="assets/images/shift-dynamics-logo.png.png"
+                        alt="Shift Dynamics">
+
+                    <div>
+                        <strong>
+                            SHIFT <span>DYNAMICS</span>
+                        </strong>
+
+                        <small>
+                            Smart Garage & Auto Care Management
+                        </small>
+                    </div>
+                </div>
+
+                <div class="sd-footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#features">Features</a>
+                    <a href="index.html#about">About</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="emergency.html">Emergency</a>
+                </div>
 
             </div>
 
+            <div class="sd-footer-bottom">
+                <span>
+                    &copy; 2026 Shift Dynamics.
+                </span>
 
-            <div class="col-md-6 text-md-end">
-
-                <p>
-                    24/7 Emergency Assistance
-                </p>
-
+                <span>
+                    24/7 Vehicle Emergency Assistance
+                </span>
             </div>
 
         </div>
+    </footer>
 
-    </div>
-
-</footer>
-
-
-
-<!-- =====================================================
-     JAVASCRIPT
-     ===================================================== -->
-
-<!-- Leaflet -->
-<script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-</script>
-
-
-<!-- Shift Dynamics Emergency JavaScript -->
-<script src="assets/js/emergency.js?v=50"></script>
-
-
-<!-- Main website JavaScript -->
-<!--<script
-    src="assets/js/app.js">
-</script>-->
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="assets/js/emergency.js?v=50"></script>
 
 </body>
 
