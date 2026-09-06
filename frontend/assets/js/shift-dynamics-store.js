@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    SHIFT DYNAMICS - SHARED WORKFLOW STORE
 
    Temporary frontend persistence layer.
@@ -25,7 +25,11 @@ window.ShiftDynamicsStore = (() => {
 
         return {
             version: STATE_VERSION,
-            jobs: []
+            jobs: [],
+            bookings: [],
+            customerProfile: null,
+            vehicles: [],
+            emergencyRequests: []
         };
     }
 
@@ -59,7 +63,28 @@ window.ShiftDynamicsStore = (() => {
                     STATE_VERSION,
 
                 jobs:
-                    parsed.jobs
+                    parsed.jobs,
+
+                bookings:
+                    Array.isArray(parsed.bookings)
+                        ? parsed.bookings
+                        : [],
+
+                customerProfile:
+                    parsed.customerProfile &&
+                    typeof parsed.customerProfile === "object"
+                        ? parsed.customerProfile
+                        : null,
+
+                vehicles:
+                    Array.isArray(parsed.vehicles)
+                        ? parsed.vehicles
+                        : [],
+
+                emergencyRequests:
+                    Array.isArray(parsed.emergencyRequests)
+                        ? parsed.emergencyRequests
+                        : []
             };
 
         } catch (error) {
@@ -81,6 +106,27 @@ window.ShiftDynamicsStore = (() => {
             jobs:
                 Array.isArray(state?.jobs)
                     ? state.jobs
+                    : [],
+
+            bookings:
+                Array.isArray(state?.bookings)
+                    ? state.bookings
+                    : [],
+
+            customerProfile:
+                state?.customerProfile &&
+                typeof state.customerProfile === "object"
+                    ? state.customerProfile
+                    : null,
+
+            vehicles:
+                Array.isArray(state?.vehicles)
+                    ? state.vehicles
+                    : [],
+
+            emergencyRequests:
+                Array.isArray(state?.emergencyRequests)
+                    ? state.emergencyRequests
                     : []
         };
 
@@ -187,6 +233,150 @@ window.ShiftDynamicsStore = (() => {
     }
 
 
+    function getBookings() {
+
+        return [
+            ...(readState().bookings || [])
+        ];
+    }
+
+
+    function getBooking(bookingId) {
+
+        if (!bookingId) {
+            return null;
+        }
+
+        return (
+            (readState().bookings || [])
+                .find(
+                    booking =>
+                        booking.bookingId ===
+                        bookingId
+                ) || null
+        );
+    }
+
+
+    function createBooking(booking) {
+
+        if (!booking) {
+            throw new Error(
+                "Booking data is required."
+            );
+        }
+
+        const state =
+            readState();
+
+        const now =
+            new Date().toISOString();
+
+        const bookingId =
+            booking.bookingId ||
+            `BK-${Date.now()
+                .toString(36)
+                .toUpperCase()}-${Math.random()
+                .toString(36)
+                .slice(2, 6)
+                .toUpperCase()}`;
+
+        const exists =
+            (state.bookings || [])
+                .some(
+                    item =>
+                        item.bookingId ===
+                        bookingId
+                );
+
+        if (exists) {
+            throw new Error(
+                `Booking ${bookingId} already exists.`
+            );
+        }
+
+        const newBooking = {
+            ...booking,
+
+            bookingId,
+
+            status:
+                booking.status ||
+                "Submitted",
+
+            createdAt:
+                booking.createdAt ||
+                now,
+
+            updatedAt:
+                now
+        };
+
+        state.bookings =
+            state.bookings || [];
+
+        state.bookings.push(
+            newBooking
+        );
+
+        writeState(
+            state
+        );
+
+        return newBooking;
+    }
+
+
+    function updateBooking(
+        bookingId,
+        patch
+    ) {
+
+        if (!bookingId) {
+            return null;
+        }
+
+        const state =
+            readState();
+
+        state.bookings =
+            state.bookings || [];
+
+        const index =
+            state.bookings.findIndex(
+                booking =>
+                    booking.bookingId ===
+                    bookingId
+            );
+
+        if (index === -1) {
+            return null;
+        }
+
+        const current =
+            state.bookings[index];
+
+        const updated = {
+            ...current,
+            ...(patch || {}),
+
+            bookingId:
+                current.bookingId,
+
+            updatedAt:
+                new Date().toISOString()
+        };
+
+        state.bookings[index] =
+            updated;
+
+        writeState(
+            state
+        );
+
+        return updated;
+    }
+
     function updateJob(
         jobCardNumber,
         patch
@@ -229,6 +419,404 @@ window.ShiftDynamicsStore = (() => {
         );
 
         return updated;
+    }
+
+
+    function getCustomerProfile() {
+
+        const profile =
+            readState().customerProfile;
+
+        return profile
+            ? { ...profile }
+            : null;
+    }
+
+
+    function saveCustomerProfile(profile) {
+
+        if (
+            !profile ||
+            typeof profile !== "object"
+        ) {
+            throw new Error(
+                "Customer profile data is required."
+            );
+        }
+
+        const state =
+            readState();
+
+        const now =
+            new Date().toISOString();
+
+        const current =
+            state.customerProfile || {};
+
+        state.customerProfile = {
+            ...current,
+            ...profile,
+
+            createdAt:
+                current.createdAt ||
+                profile.createdAt ||
+                now,
+
+            updatedAt:
+                now
+        };
+
+        writeState(
+            state
+        );
+
+        return {
+            ...state.customerProfile
+        };
+    }
+
+
+    function getVehicles() {
+
+        return [
+            ...(readState().vehicles || [])
+        ];
+    }
+
+
+    function getVehicle(vehicleId) {
+
+        if (!vehicleId) {
+            return null;
+        }
+
+        return (
+            (readState().vehicles || [])
+                .find(
+                    vehicle =>
+                        vehicle.vehicleId ===
+                        vehicleId
+                ) || null
+        );
+    }
+
+
+    function createVehicle(vehicle) {
+
+        if (!vehicle) {
+            throw new Error(
+                "Vehicle data is required."
+            );
+        }
+
+        const state =
+            readState();
+
+        const now =
+            new Date().toISOString();
+
+        const vehicleId =
+            vehicle.vehicleId ||
+            `VH-${Date.now()
+                .toString(36)
+                .toUpperCase()}-${Math.random()
+                .toString(36)
+                .slice(2, 6)
+                .toUpperCase()}`;
+
+        state.vehicles =
+            state.vehicles || [];
+
+        const exists =
+            state.vehicles.some(
+                item =>
+                    item.vehicleId ===
+                    vehicleId
+            );
+
+        if (exists) {
+            throw new Error(
+                `Vehicle ${vehicleId} already exists.`
+            );
+        }
+
+        const newVehicle = {
+            ...vehicle,
+
+            vehicleId,
+
+            createdAt:
+                vehicle.createdAt ||
+                now,
+
+            updatedAt:
+                now
+        };
+
+        state.vehicles.push(
+            newVehicle
+        );
+
+        writeState(
+            state
+        );
+
+        return {
+            ...newVehicle
+        };
+    }
+
+
+    function updateVehicle(
+        vehicleId,
+        patch
+    ) {
+
+        if (!vehicleId) {
+            return null;
+        }
+
+        const state =
+            readState();
+
+        state.vehicles =
+            state.vehicles || [];
+
+        const index =
+            state.vehicles.findIndex(
+                vehicle =>
+                    vehicle.vehicleId ===
+                    vehicleId
+            );
+
+        if (index === -1) {
+            return null;
+        }
+
+        const current =
+            state.vehicles[index];
+
+        const updated = {
+            ...current,
+            ...(patch || {}),
+
+            vehicleId:
+                current.vehicleId,
+
+            updatedAt:
+                new Date().toISOString()
+        };
+
+        state.vehicles[index] =
+            updated;
+
+        writeState(
+            state
+        );
+
+        return {
+            ...updated
+        };
+    }
+
+
+    function deleteVehicle(vehicleId) {
+
+        if (!vehicleId) {
+            return false;
+        }
+
+        const state =
+            readState();
+
+        state.vehicles =
+            state.vehicles || [];
+
+        const before =
+            state.vehicles.length;
+
+        state.vehicles =
+            state.vehicles.filter(
+                vehicle =>
+                    vehicle.vehicleId !==
+                    vehicleId
+            );
+
+        if (
+            state.vehicles.length ===
+            before
+        ) {
+            return false;
+        }
+
+        writeState(
+            state
+        );
+
+        return true;
+    }
+
+    /* =====================================================
+       EMERGENCY REQUESTS
+       ===================================================== */
+
+    function getEmergencyRequests() {
+
+        return [
+            ...(readState().emergencyRequests || [])
+        ];
+    }
+
+
+    function getEmergencyRequest(
+        requestId
+    ) {
+
+        if (!requestId) {
+            return null;
+        }
+
+        return (
+            (readState().emergencyRequests || [])
+                .find(
+                    request =>
+                        request.requestId ===
+                        requestId
+                ) || null
+        );
+    }
+
+
+    function createEmergencyRequest(
+        request
+    ) {
+
+        if (!request) {
+            throw new Error(
+                "Emergency request data is required."
+            );
+        }
+
+        const state =
+            readState();
+
+        state.emergencyRequests =
+            state.emergencyRequests || [];
+
+        const now =
+            new Date().toISOString();
+
+        const requestId =
+            request.requestId ||
+            `#EMG-${
+                Date.now()
+                    .toString()
+                    .slice(-6)
+            }${
+                Math.floor(
+                    10 + Math.random() * 90
+                )
+            }`;
+
+
+        const exists =
+            state.emergencyRequests.some(
+                item =>
+                    item.requestId ===
+                    requestId
+            );
+
+        if (exists) {
+            throw new Error(
+                `Emergency request ${requestId} already exists.`
+            );
+        }
+
+
+        const newRequest = {
+            ...request,
+
+            requestId,
+
+            status:
+                request.status ||
+                "Requested",
+
+            createdAt:
+                request.createdAt ||
+                now,
+
+            updatedAt:
+                now
+        };
+
+
+        state.emergencyRequests.push(
+            newRequest
+        );
+
+        writeState(
+            state
+        );
+
+        return {
+            ...newRequest
+        };
+    }
+
+
+    function updateEmergencyRequest(
+        requestId,
+        patch
+    ) {
+
+        if (!requestId) {
+            return null;
+        }
+
+        const state =
+            readState();
+
+        state.emergencyRequests =
+            state.emergencyRequests || [];
+
+        const index =
+            state.emergencyRequests.findIndex(
+                request =>
+                    request.requestId ===
+                    requestId
+            );
+
+        if (index === -1) {
+            return null;
+        }
+
+
+        const current =
+            state.emergencyRequests[index];
+
+        const updated = {
+            ...current,
+            ...(patch || {}),
+
+            requestId:
+                current.requestId,
+
+            updatedAt:
+                new Date().toISOString()
+        };
+
+
+        state.emergencyRequests[index] =
+            updated;
+
+        writeState(
+            state
+        );
+
+        return {
+            ...updated
+        };
     }
 
 
@@ -295,7 +883,28 @@ window.ShiftDynamicsStore = (() => {
         getJob,
         createJob,
         updateJob,
-        subscribe
+
+        getBookings,
+        getBooking,
+        createBooking,
+        updateBooking,
+
+        getCustomerProfile,
+        saveCustomerProfile,
+
+        getVehicles,
+        getVehicle,
+        createVehicle,
+        updateVehicle,
+        deleteVehicle,
+
+        
+        getEmergencyRequests,
+        getEmergencyRequest,
+        createEmergencyRequest,
+        updateEmergencyRequest,
+
+subscribe
     };
 
 })();

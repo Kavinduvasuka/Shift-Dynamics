@@ -133,13 +133,6 @@
         <span>Service History</span>
     </a>
     <a
-        href="emergency-history.html"
-        class="sd-nav-item"
-    >
-        <i class="bi bi-life-preserver"></i>
-        <span>Emergency History</span>
-    </a>
-    <a
         href="modifications.html"
         class="sd-nav-item"
     >
@@ -282,68 +275,16 @@
 
                                 </thead>
 
-                                <tbody>
+                                
 
-                                    <tr>
 
-                                        <td>#INV-1008</td>
-
-                                        <td>Toyota Corolla</td>
-
-                                        <td>12 Aug 2026</td>
-
-                                        <td>LKR 24,500</td>
-
-                                        <td>
-
-                                            <span class="sd-status-badge paid">
-                                                Paid
-                                            </span>
-
-                                        </td>
-
-                                        <td>
-
-                                            <button
-                                                class="sd-table-action sd-view-invoice"
-                                                type="button"
-                                            >
-                                                View
-                                            </button>
-
-                                        </td>
-
-                                    </tr>
-
-                                    <tr>
-
-                                        <td>#INV-1012</td>
-
-                                        <td>Toyota Corolla</td>
-
-                                        <td>28 Aug 2026</td>
-
-                                        <td>LKR 31,000</td>
-
-                                        <td>
-                                            <span class="sd-status-badge pending">
-                                                Pending
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            <button
-                                                class="sd-table-action sd-pay-now"
-                                                type="button"
-                                                data-invoice="INV-1012"
-                                                data-amount="31000"
-                                            >
-                                                Pay Now
-                                            </button>
-                                        </td>
-
-                                    </tr>
-                                </tbody>
+        <tbody id="customerPaymentsBody">
+            <tr>
+                <td colspan="6">
+                    Loading invoices...
+                </td>
+            </tr>
+        </tbody>
 
                             </table>
 
@@ -359,69 +300,6 @@
 
     </div>
 
-<!-- Invoice Modal -->
-
-<div
-    class="sd-modal"
-    id="invoiceModal"
-    aria-hidden="true"
->
-
-    <div
-        class="sd-modal-overlay"
-        data-close-invoice
-    ></div>
-
-    <div class="sd-modal-card">
-
-        <div class="sd-modal-header">
-
-            <div>
-                <span class="sd-panel-label">
-                    INVOICE #INV-1008
-                </span>
-
-                <h2>Invoice Details</h2>
-
-                <p>
-                    Toyota Corolla &bull; 12 Aug 2026
-                </p>
-            </div>
-
-            <button
-                class="sd-modal-close"
-                id="invoiceModalClose"
-                type="button"
-                aria-label="Close invoice"
-            >
-                <i class="bi bi-x-lg"></i>
-            </button>
-
-        </div>
-
-        <div class="sd-estimate-lines">
-
-            <div>
-                <span>General Service</span>
-                <strong>LKR 16,500</strong>
-            </div>
-
-            <div>
-                <span>Engine Oil & Filter</span>
-                <strong>LKR 5,000</strong>
-            </div>
-
-            <div>
-                <span>Labour</span>
-                <strong>LKR 3,000</strong>
-            </div>
-
-        </div>
-
-        <div class="sd-estimate-total">
-            <span>Total Paid</span>
-            <strong>LKR 24,500</strong>
-        </div>
 
         <div class="sd-modal-actions">
 
@@ -855,9 +733,10 @@
         </div>
 
     </div>
-
+    <script src="../assets/js/shift-dynamics-store.js"></script>
     <script src="../assets/js/customer-dashboard.js"></script>
 
 </body>
 
 </html>
+

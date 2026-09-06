@@ -133,13 +133,6 @@
         <span>Service History</span>
     </a>
     <a
-        href="emergency-history.html"
-        class="sd-nav-item"
-    >
-        <i class="bi bi-life-preserver"></i>
-        <span>Emergency History</span>
-    </a>
-    <a
         href="modifications.html"
         class="sd-nav-item"
     >
@@ -263,15 +256,16 @@
 
     </div>
 
-    <div class="sd-dashboard-card">
+        <div
+            class="sd-dashboard-card"
+            id="serviceHistoryContainer"
+        >
+            <h3>Service History</h3>
 
-        <h3>Service History</h3>
-
-        <p class="sd-muted-text">
-            Your completed service records will appear here.
-        </p>
-
-    </div>
+            <p class="sd-muted-text">
+                Loading completed service records...
+            </p>
+        </div>
 
 </section>
 
@@ -778,6 +772,7 @@
 
     </div>
 
+    <script src="../assets/js/shift-dynamics-store.js"></script>
     <script src="../assets/js/customer-dashboard.js"></script>
 
 </body>

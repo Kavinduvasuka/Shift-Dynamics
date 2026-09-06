@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        FRONTEND DEMO STATE
@@ -535,7 +535,188 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById(
             "intakeMessage"
         );
+    /* =====================================================
+       CUSTOMER BOOKING -> ADVISOR INTAKE BRIDGE
+       ===================================================== */
 
+    let sourceBookingId = null;
+
+
+    function loadLatestCustomerBookingIntoIntake() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function"
+        ) {
+            return;
+        }
+
+
+        const bookings =
+            window.ShiftDynamicsStore.getBookings();
+
+
+        if (
+            !Array.isArray(bookings) ||
+            bookings.length === 0
+        ) {
+            return;
+        }
+
+
+        /*
+            Only bookings that have not already entered
+            the Advisor intake workflow are eligible.
+        */
+        const pendingBookings =
+            bookings.filter(
+                booking =>
+                    booking &&
+                    (
+                        booking.status === "Submitted" ||
+                        !booking.status
+                    )
+            );
+
+
+        if (pendingBookings.length === 0) {
+            return;
+        }
+
+
+        /*
+            Newest submitted booking first.
+        */
+        const booking =
+            [...pendingBookings].sort(
+                (a, b) =>
+                    new Date(
+                        b.createdAt || 0
+                    ) -
+                    new Date(
+                        a.createdAt || 0
+                    )
+            )[0];
+
+
+        sourceBookingId =
+            booking.bookingId || null;
+
+
+        const customer =
+            booking.customer || {};
+
+        const vehicle =
+            booking.vehicleDetails || {};
+
+
+        const setValue =
+            (id, value) => {
+
+                const element =
+                    document.getElementById(id);
+
+                if (!element) {
+                    return;
+                }
+
+                element.value =
+                    value ?? "";
+            };
+
+
+        setValue(
+            "customerName",
+            customer.name
+        );
+
+        setValue(
+            "customerMobile",
+            customer.phone ||
+            customer.mobile
+        );
+
+        setValue(
+            "customerEmail",
+            customer.email
+        );
+
+        setValue(
+            "customerNic",
+            customer.nic
+        );
+
+
+        setValue(
+            "vehicleMake",
+            vehicle.make
+        );
+
+        setValue(
+            "vehicleModel",
+            vehicle.model
+        );
+
+        setValue(
+            "vehicleYear",
+            vehicle.year
+        );
+
+        setValue(
+            "vehiclePlate",
+            vehicle.plate
+        );
+
+        setValue(
+            "vehicleVin",
+            vehicle.vin
+        );
+
+        setValue(
+            "vehicleMileage",
+            vehicle.mileage
+        );
+
+
+        const serviceParts = [];
+
+        if (booking.service) {
+            serviceParts.push(
+                booking.service
+            );
+        }
+
+        if (booking.notes) {
+            serviceParts.push(
+                booking.notes
+            );
+        }
+
+
+        setValue(
+            "serviceConcern",
+            serviceParts.join(" - ")
+        );
+
+
+        if (intakeMessage) {
+
+            intakeMessage.textContent =
+                `Customer booking ${booking.bookingId} loaded into intake.`;
+
+            intakeMessage.className =
+                "sd-form-message success";
+        }
+
+
+        console.log(
+            "Customer booking loaded into Advisor intake:",
+            booking
+        );
+    }
+
+
+    loadLatestCustomerBookingIntoIntake();
 
     customerIntakeForm?.addEventListener(
         "submit",
@@ -628,7 +809,30 @@ document.addEventListener("DOMContentLoaded", () => {
                         .value
                         .trim()
             };
+            /*
+                Link this Advisor intake back to the
+                original customer booking.
+            */
+            if (
+                sourceBookingId &&
+                window.ShiftDynamicsStore &&
+                typeof window.ShiftDynamicsStore.updateBooking === "function"
+            ) {
 
+                window.ShiftDynamicsStore.updateBooking(
+                    sourceBookingId,
+                    {
+                        status:
+                            "Intake Completed",
+
+                        advisorIntakeCompletedAt:
+                            new Date().toISOString()
+                    }
+                );
+
+                currentIntake.bookingId =
+                    sourceBookingId;
+            }
 
             intakeMessage.textContent =
                 "Customer intake completed. Opening vehicle inspection...";
@@ -915,6 +1119,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     ShiftDynamicsStore.createJob({
 
                         jobCardNumber,
+                        bookingId:
+                            currentIntake.bookingId || null,
+
+                        vehicleId:
+                            currentIntake.vehicleId || null,
 
                         customer: {
                             name:
@@ -2327,7 +2536,6 @@ Recommended Work:
 
         populateInvoiceFromEstimate();
 
-
         setTimeout(
             () => {
 
@@ -2341,6 +2549,549 @@ Recommended Work:
     }
 
 
+
+
+/* =====================================================
+   CUSTOMER ESTIMATE APPROVAL -> ADVISOR LIVE SYNC
+   ===================================================== */
+
+/* =====================================================
+   ADVISOR INVOICE STORE HYDRATION
+   ===================================================== */
+
+function hydrateAdvisorInvoiceFromSharedStore() {
+
+    if (
+        !window.ShiftDynamicsStore ||
+        typeof window.ShiftDynamicsStore.getJobs !== "function"
+    ) {
+        return;
+    }
+
+    const jobs =
+        window.ShiftDynamicsStore.getJobs() || [];
+
+    /*
+     * Prefer the most recently updated real Job Card
+     * that already has estimate/invoice workflow data.
+     */
+    const candidates =
+        jobs
+            .filter(
+                job =>
+                    job &&
+                    job.jobCardNumber &&
+                    (
+                        job.invoice?.number ||
+                        job.estimate?.status
+                    )
+            )
+            .sort(
+                (a, b) => {
+
+                    const aTime =
+                        new Date(
+                            a.payment?.paidAt ||
+                            a.invoice?.finalizedAt ||
+                            a.updatedAt ||
+                            a.createdAt ||
+                            0
+                        ).getTime();
+
+                    const bTime =
+                        new Date(
+                            b.payment?.paidAt ||
+                            b.invoice?.finalizedAt ||
+                            b.updatedAt ||
+                            b.createdAt ||
+                            0
+                        ).getTime();
+
+                    return bTime - aTime;
+                }
+            );
+
+    const sharedJob =
+        candidates[0] || null;
+
+    if (!sharedJob) {
+        return;
+    }
+
+    currentEstimate = {
+        ...(sharedJob.estimate || {}),
+        jobCard:
+            sharedJob.jobCardNumber,
+
+        description:
+            sharedJob.estimate?.description || "",
+
+        labour:
+            Number(
+                sharedJob.estimate?.labour || 0
+            ),
+
+        parts:
+            Number(
+                sharedJob.estimate?.parts || 0
+            ),
+
+        vendor:
+            Number(
+                sharedJob.estimate?.vendor || 0
+            ),
+
+        other:
+            (() => {
+
+                const labour =
+                    Number(
+                        sharedJob.estimate?.labour || 0
+                    );
+
+                const parts =
+                    Number(
+                        sharedJob.estimate?.parts || 0
+                    );
+
+                const vendor =
+                    Number(
+                        sharedJob.estimate?.vendor || 0
+                    );
+
+                const invoiceTotal =
+                    Number(
+                        sharedJob.invoice?.total || 0
+                    );
+
+                /*
+                 * Once the invoice is finalized, treat the
+                 * finalized invoice total as authoritative.
+                 * This prevents stale estimate.other values
+                 * from corrupting the invoice line display.
+                 */
+                if (
+                    sharedJob.invoice?.status === "Finalized" &&
+                    Number.isFinite(invoiceTotal)
+                ) {
+
+                    return Math.max(
+                        0,
+                        invoiceTotal -
+                        labour -
+                        parts -
+                        vendor
+                    );
+                }
+
+                return Number(
+                    sharedJob.estimate?.other || 0
+                );
+            })(),
+
+        total:
+            Number(
+                sharedJob.invoice?.total ||
+                sharedJob.estimate?.total ||
+                0
+            ),
+
+        status:
+            sharedJob.estimate?.status ||
+            "Approved"
+    };
+
+    if (
+        sharedJob.invoice?.status === "Finalized"
+    ) {
+        invoiceFinalized = true;
+    }
+
+    populateInvoiceFromEstimate();
+
+    if (
+        typeof syncAdvisorInvoiceFromSharedJob ===
+        "function"
+    ) {
+        syncAdvisorInvoiceFromSharedJob(
+            sharedJob
+        );
+    }
+
+
+    /* =====================================================
+       INITIAL HANDOVER UI REFRESH
+       ===================================================== */
+
+    if (
+        typeof prepareFinalHandover === "function"
+    ) {
+        prepareFinalHandover();
+    }
+
+    if (
+        typeof updateHandoverState === "function"
+    ) {
+        updateHandoverState();
+    }
+
+    console.log(
+        "Advisor invoice hydrated:",
+        {
+            jobCard:
+                sharedJob.jobCardNumber,
+
+            invoice:
+                sharedJob.invoice,
+
+            payment:
+                sharedJob.payment
+        }
+    );
+}
+
+/* =====================================================
+   INITIAL ADVISOR INVOICE HYDRATION
+   ===================================================== */
+
+setTimeout(
+    () => {
+        hydrateAdvisorInvoiceFromSharedStore();
+    },
+    0
+);
+
+function syncCurrentEstimateFromSharedStore() {
+
+    if (
+        !currentEstimate?.jobCard ||
+        currentEstimate.jobCard === "Demo Job" ||
+        !window.ShiftDynamicsStore ||
+        typeof window.ShiftDynamicsStore.getJob !== "function"
+    ) {
+        return;
+    }
+
+    const sharedJob =
+        window.ShiftDynamicsStore.getJob(
+            currentEstimate.jobCard
+        );
+
+    if (
+        !sharedJob ||
+        !sharedJob.estimate
+    ) {
+        return;
+    }
+
+    const sharedEstimate =
+        sharedJob.estimate;
+
+    const previousStatus =
+        currentEstimate.status;
+
+    currentEstimate = {
+        ...currentEstimate,
+        ...sharedEstimate,
+        jobCard:
+            currentEstimate.jobCard
+    };
+
+    updateJobCardStatus(
+        currentEstimate.jobCard,
+        sharedJob.status ||
+        currentEstimate.status
+    );
+
+    if (
+        currentEstimate.status ===
+        "Approved"
+    ) {
+
+        if (
+            previousStatus !==
+            "Approved"
+        ) {
+            estimateMessage.innerHTML = `
+                Customer approved this estimate.
+                <br>
+                <strong>Status:</strong>
+                Approved
+            `;
+
+            estimateMessage.className =
+                "sd-form-message success";
+        }
+
+        /*
+            Customer approved the estimate.
+            Prevent accidental resubmission.
+        */
+        if (sendEstimate) {
+            sendEstimate.disabled = true;
+            sendEstimate.innerHTML = `
+                <i class="bi bi-check-circle"></i>
+                Customer Approved
+            `;
+        }
+
+        populateInvoiceFromEstimate();
+    }
+
+    if (
+        currentEstimate.status ===
+        "Changes Requested"
+    ) {
+
+        estimateMessage.innerHTML = `
+            Customer requested changes to this estimate.
+            <br>
+            <strong>Reason:</strong>
+            ${sharedEstimate.changeRequestReason || "No reason provided"}
+        `;
+
+        estimateMessage.className =
+            "sd-form-message error";
+    }
+}
+
+
+if (
+    window.ShiftDynamicsStore &&
+    typeof window.ShiftDynamicsStore.subscribe === "function"
+) {
+
+    window.ShiftDynamicsStore.subscribe(
+        () => {
+            syncCurrentEstimateFromSharedStore();
+        }
+    );
+}
+
+    /* =====================================================
+       ADVISOR INVOICE + PAYMENT LIVE SYNC
+       ===================================================== */
+
+    function syncAdvisorInvoiceFromSharedJob(sharedJob) {
+
+        if (!sharedJob) {
+            return;
+        }
+
+        const invoice =
+            sharedJob.invoice || {};
+
+        const payment =
+            sharedJob.payment || {};
+
+        const vehicleName =
+            [
+                sharedJob.vehicle?.make,
+                sharedJob.vehicle?.model
+            ]
+                .filter(Boolean)
+                .join(" ") ||
+            "Vehicle";
+
+        const vehiclePlate =
+            sharedJob.vehicle?.plate ||
+            "--";
+
+        const invoiceHeader =
+            document.querySelector(
+                "#invoice .sd-invoice-header"
+            );
+
+        if (invoiceHeader) {
+
+            const label =
+                invoiceHeader.querySelector(
+                    ".sd-eyebrow"
+                );
+
+            const number =
+                invoiceHeader.querySelector(
+                    "h3"
+                );
+
+            const vehicleBlock =
+                invoiceHeader.querySelector(
+                    "div:last-child"
+                );
+
+            const vehicleText =
+                vehicleBlock?.querySelector(
+                    "span"
+                );
+
+            const plateText =
+                vehicleBlock?.querySelector(
+                    "strong"
+                );
+
+
+            if (label) {
+
+                if (payment.status === "Paid") {
+                    label.textContent =
+                        "Paid Invoice";
+                } else if (
+                    invoice.status === "Finalized"
+                ) {
+                    label.textContent =
+                        "Finalized Invoice";
+                } else {
+                    label.textContent =
+                        "Draft Invoice";
+                }
+            }
+
+
+            if (
+                number &&
+                invoice.number
+            ) {
+                number.textContent =
+                    invoice.number;
+            }
+
+
+            if (vehicleText) {
+                vehicleText.textContent =
+                    vehicleName;
+            }
+
+
+            if (plateText) {
+                plateText.textContent =
+                    vehiclePlate;
+            }
+        }
+
+
+        const invoiceTotal =
+            document.querySelector(
+                "#invoice .sd-invoice-total strong"
+            );
+
+        if (invoiceTotal) {
+            invoiceTotal.textContent =
+                formatLKR(
+                    Number(
+                        invoice.total ||
+                        sharedJob.estimate?.total ||
+                        0
+                    )
+                );
+        }
+
+
+        const finalizeButton =
+            document.getElementById(
+                "finalizeInvoice"
+            );
+
+        const invoiceMessage =
+            document.getElementById(
+                "invoiceMessage"
+            );
+
+
+        if (
+            payment.status === "Paid"
+        ) {
+
+            invoiceFinalized = true;
+
+            if (finalizeButton) {
+                finalizeButton.disabled = true;
+                finalizeButton.innerHTML = `
+                    <i class="bi bi-check2-circle"></i>
+                    Payment Received
+                `;
+            }
+
+            if (invoiceMessage) {
+                invoiceMessage.textContent =
+                    `Customer payment received: ${formatLKR(
+                        Number(
+                            payment.amount ||
+                            invoice.total ||
+                            0
+                        )
+                    )}.`;
+
+                invoiceMessage.className =
+                    "sd-form-message success";
+            }
+
+        } else if (
+            invoice.status === "Finalized"
+        ) {
+
+            invoiceFinalized = true;
+
+            if (finalizeButton) {
+                finalizeButton.disabled = true;
+                finalizeButton.innerHTML = `
+                    <i class="bi bi-check2-circle"></i>
+                    Invoice Finalized
+                `;
+            }
+
+            if (invoiceMessage) {
+                invoiceMessage.textContent =
+                    "Invoice finalized. Awaiting customer payment.";
+
+                invoiceMessage.className =
+                    "sd-form-message success";
+            }
+        }
+
+
+        /*
+         * Keep Final Handover summary synchronized too.
+         */
+        const handoverInvoice =
+            document.getElementById(
+                "handoverInvoice"
+            );
+
+        const handoverPayment =
+            document.getElementById(
+                "handoverPayment"
+            );
+
+
+        if (
+            handoverInvoice &&
+            invoice.number
+        ) {
+            handoverInvoice.textContent =
+                `${invoice.number} - ${formatLKR(
+                    Number(
+                        invoice.total ||
+                        sharedJob.estimate?.total ||
+                        0
+                    )
+                )}`;
+        }
+
+
+        if (handoverPayment) {
+
+            handoverPayment.textContent =
+                payment.status === "Paid"
+                    ? `Paid - ${formatLKR(
+                        Number(
+                            payment.amount ||
+                            invoice.total ||
+                            0
+                        )
+                    )}`
+                    : "Pending Payment";
+        }
+    }
 
     function populateInvoiceFromEstimate() {
 
@@ -2662,83 +3413,217 @@ Recommended Work:
 
     function prepareFinalHandover() {
 
-        /*
-            Keep the final handover screen synchronized with the
-            customer/job/estimate that actually reached invoice finalization.
-        */
-        const intake = currentIntake || {};
-        const estimate = currentEstimate || {};
+        let sharedJob = null;
 
-        const vehicleName =
-            [intake.vehicleMake, intake.vehicleModel]
-                .filter(Boolean)
-                .join(" ") || "Current Vehicle";
+        if (
+            window.ShiftDynamicsStore &&
+            typeof window.ShiftDynamicsStore.getJobs === "function"
+        ) {
+
+            const jobs =
+                window.ShiftDynamicsStore.getJobs() || [];
+
+            if (currentEstimate?.jobCard) {
+
+                sharedJob =
+                    jobs.find(
+                        job =>
+                            job.jobCardNumber ===
+                            currentEstimate.jobCard
+                    ) || null;
+            }
+
+            if (!sharedJob) {
+
+                const candidates =
+                    jobs
+                        .filter(
+                            job =>
+                                job.invoice?.status === "Finalized" ||
+                                job.payment?.status === "Paid"
+                        )
+                        .sort(
+                            (a, b) =>
+                                new Date(
+                                    b.payment?.paidAt ||
+                                    b.invoice?.finalizedAt ||
+                                    b.updatedAt ||
+                                    0
+                                ) -
+                                new Date(
+                                    a.payment?.paidAt ||
+                                    a.invoice?.finalizedAt ||
+                                    a.updatedAt ||
+                                    0
+                                )
+                        );
+
+                sharedJob =
+                    candidates[0] || null;
+            }
+        }
+
+        const sharedEstimate =
+            sharedJob?.estimate || {};
+
+        const sharedInvoice =
+            sharedJob?.invoice || {};
+
+        const sharedPayment =
+            sharedJob?.payment || {};
+
+        const sharedCustomer =
+            sharedJob?.customer || {};
+
+        const sharedVehicle =
+            sharedJob?.vehicle || {};
 
         const jobCard =
-            estimate.jobCard ||
-            intake.jobCardNumber ||
+            sharedJob?.jobCardNumber ||
+            currentEstimate?.jobCard ||
+            "--";
+
+        const vehicleName =
+            [
+                sharedVehicle.make,
+                sharedVehicle.model
+            ]
+                .filter(
+                    value =>
+                        typeof value === "string" &&
+                        value.trim()
+                )
+                .join(" ") ||
+            (
+                typeof sharedVehicle.name === "string"
+                    ? sharedVehicle.name
+                    : ""
+            ) ||
+            "Current Vehicle";
+
+        const vehiclePlate =
+            [
+                sharedVehicle.plate,
+                sharedVehicle.registration,
+                sharedVehicle.registrationNumber,
+                sharedJob?.vehiclePlate
+            ]
+                .find(
+                    value =>
+                        typeof value === "string" &&
+                        value.trim()
+                ) ||
             "--";
 
         const customerName =
-            intake.customerName ||
-            intake.name ||
+            [
+                sharedCustomer.name,
+                sharedCustomer.fullName,
+                sharedJob?.customerName
+            ]
+                .find(
+                    value =>
+                        typeof value === "string" &&
+                        value.trim()
+                ) ||
             "Customer";
 
         const completedWork =
-            estimate.description ||
-            intake.serviceConcern ||
+            sharedEstimate.description ||
+            sharedJob?.serviceConcern ||
+            currentEstimate?.description ||
             "Completed workshop service";
 
-        /*
-            The frontend currently has no payment transaction backend,
-            therefore payment remains a front-desk state.
-        */
         const invoiceNumber =
-            estimate.invoiceNumber ||
-            `#INV-${String(jobCard).replace(/\D/g, "") || "NEW"}`;
+            sharedInvoice.number ||
+            currentEstimate?.invoiceNumber ||
+            `#INV-${
+                String(jobCard).replace(/\D/g, "") ||
+                "NEW"
+            }`;
+
+        const invoiceAmount =
+            Number(
+                sharedInvoice.total ||
+                sharedEstimate.total ||
+                currentEstimate?.total ||
+                0
+            );
 
         const handoverVehicleName =
-            document.getElementById("handoverVehicleName");
+            document.getElementById(
+                "handoverVehicleName"
+            );
 
         const handoverVehicleMeta =
-            document.getElementById("handoverVehicleMeta");
+            document.getElementById(
+                "handoverVehicleMeta"
+            );
 
         const handoverCustomer =
-            document.getElementById("handoverCustomer");
+            document.getElementById(
+                "handoverCustomer"
+            );
 
         const handoverCompletedWork =
-            document.getElementById("handoverCompletedWork");
+            document.getElementById(
+                "handoverCompletedWork"
+            );
 
         const handoverInvoice =
-            document.getElementById("handoverInvoice");
+            document.getElementById(
+                "handoverInvoice"
+            );
 
         const handoverPayment =
-            document.getElementById("handoverPayment");
+            document.getElementById(
+                "handoverPayment"
+            );
 
         if (handoverVehicleName) {
-            handoverVehicleName.textContent = vehicleName;
+            handoverVehicleName.textContent =
+                vehicleName;
         }
 
         if (handoverVehicleMeta) {
             handoverVehicleMeta.textContent =
-                `${intake.vehiclePlate || "--"} - Job ${jobCard}`;
+                `${vehiclePlate} - Job ${jobCard}`;
         }
 
         if (handoverCustomer) {
-            handoverCustomer.textContent = customerName;
+            handoverCustomer.textContent =
+                customerName;
         }
 
         if (handoverCompletedWork) {
-            handoverCompletedWork.textContent = completedWork;
+            handoverCompletedWork.textContent =
+                completedWork;
         }
 
         if (handoverInvoice) {
             handoverInvoice.textContent =
-                `${invoiceNumber} - ${formatLKR(estimate.total || 0)}`;
+                `${invoiceNumber} - ${formatLKR(
+                    invoiceAmount
+                )}`;
         }
 
         if (handoverPayment) {
-            handoverPayment.textContent = "Pending at Front Desk";
+
+            const paymentAmount =
+                Number(
+                    sharedPayment.amount ||
+                    sharedInvoice.total ||
+                    sharedEstimate.total ||
+                    invoiceAmount ||
+                    0
+                );
+
+            handoverPayment.textContent =
+                sharedPayment.status === "Paid"
+                    ? `Paid - ${formatLKR(
+                        paymentAmount
+                    )}`
+                    : "Pending Payment";
         }
 
         const handoverMessage =
@@ -2746,39 +3631,42 @@ Recommended Work:
                 "handoverMessage"
             );
 
-
         if (handoverMessage) {
 
             handoverMessage.textContent =
-                "Invoice finalized. Complete all handover checks before releasing the vehicle.";
+                sharedPayment.status === "Paid"
+                    ? "Payment received. Complete all handover checks before releasing the vehicle."
+                    : "Invoice finalized. Complete all handover checks before releasing the vehicle.";
 
             handoverMessage.className =
                 "sd-form-message success";
         }
 
-
-        /*
-            Reset the handover checklist whenever a newly
-            finalized invoice enters the handover stage.
-        */
-
         handoverChecks.forEach(
             checkbox => {
-
                 checkbox.checked = false;
-
             }
         );
 
-
         if (completeHandover) {
-
-            completeHandover.disabled =
-                true;
+            completeHandover.disabled = true;
         }
 
-
         updateHandoverState();
+
+        console.log(
+            "Final handover prepared:",
+            {
+                jobCard,
+                vehicleName,
+                vehiclePlate,
+                customerName,
+                invoiceNumber,
+                invoiceAmount,
+                paymentStatus:
+                    sharedPayment.status
+            }
+        );
     }
 
 
@@ -2829,6 +3717,29 @@ Recommended Work:
 
     });
 
+
+    /* =====================================================
+       HANDOVER PAYMENT LIVE REFRESH
+       ===================================================== */
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+
+                if (
+                    currentEstimate?.jobCard
+                ) {
+
+                    prepareFinalHandover();
+                    updateHandoverState();
+                }
+            }
+        );
+    }
 
     completeHandover?.addEventListener(
         "click",
@@ -2999,3 +3910,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     greeting.textContent = `${message}, Service Advisor.`;
 });
+
+
+
+
+
+
+
+
+

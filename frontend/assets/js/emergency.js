@@ -1,4 +1,4 @@
-/* =====================================================
+﻿/* =====================================================
    SHIFT DYNAMICS
    24/7 EMERGENCY ASSISTANCE
    GARAGE / SERVICE FINDER
@@ -596,7 +596,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </span>
 
                         <span>
-                            ⭐ ${garage.rating}
+                            â­ ${garage.rating}
                         </span>
 
                         <span>
@@ -606,8 +606,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span>
                             ${
                                 garage.open
-                                    ? "🟢 Open now"
-                                    : "🔴 Closed"
+                                    ? "ðŸŸ¢ Open now"
+                                    : "ðŸ”´ Closed"
                             }
                         </span>
 
@@ -1247,3 +1247,4 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+

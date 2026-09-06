@@ -501,6 +501,22 @@ clearInterval(timerInterval);
                 jobRunning = false;
                 jobCompleted = true;
 
+                const completedChecklist =
+                    [...workChecks]
+                        .filter(item => item.checked)
+                        .map(item => {
+                            const label =
+                                item.closest("label")?.textContent ||
+                                item.parentElement?.textContent ||
+                                item.value ||
+                                "";
+
+                            return label
+                                .replace(/\s+/g, " ")
+                                .trim();
+                        })
+                        .filter(Boolean);
+
                 const endedAt = new Date();
 
                 jobEndTime.textContent =
@@ -566,6 +582,9 @@ recordStartTime.textContent =
 
                                 status:
                                     "Completed",
+
+                                checklist:
+                                    completedChecklist,
 
                                 labourSeconds:
                                     elapsedSeconds,

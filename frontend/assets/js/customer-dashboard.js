@@ -448,17 +448,37 @@ if (vehicleForm) {
 
             if (editingVehicleCard) {
 
+                const vehiclePatch = {
+                    make,
+                    model,
+                    year,
+                    plate,
+                    trim,
+                    engine,
+                    vin
+                };
+
+                const vehicleId =
+                    editingVehicleCard.dataset.vehicleId;
+
+                let updatedVehicle =
+                    vehiclePatch;
+
+                if (
+                    vehicleId &&
+                    window.ShiftDynamicsStore &&
+                    typeof window.ShiftDynamicsStore.updateVehicle === "function"
+                ) {
+                    updatedVehicle =
+                        window.ShiftDynamicsStore.updateVehicle(
+                            vehicleId,
+                            vehiclePatch
+                        ) || vehiclePatch;
+                }
+
                 updateVehicleCard(
                     editingVehicleCard,
-                    {
-                        make,
-                        model,
-                        year,
-                        plate,
-                        trim,
-                        engine,
-                        vin
-                    }
+                    updatedVehicle
                 );
 
 
@@ -483,16 +503,33 @@ if (vehicleForm) {
                CREATE NEW VEHICLE
                ----------------------------------------- */
 
+            const vehicleData = {
+                make,
+                model,
+                year,
+                plate,
+                trim,
+                engine,
+                vin
+            };
+
+            let savedVehicle =
+                vehicleData;
+
+            if (
+                window.ShiftDynamicsStore &&
+                typeof window.ShiftDynamicsStore.createVehicle === "function"
+            ) {
+                savedVehicle =
+                    window.ShiftDynamicsStore.createVehicle(
+                        vehicleData
+                    );
+            }
+
             const card =
-                createVehicleCard({
-                    make,
-                    model,
-                    year,
-                    plate,
-                    trim,
-                    engine,
-                    vin
-                });
+                createVehicleCard(
+                    savedVehicle
+                );
 
 
             vehicleGrid.appendChild(card);
@@ -531,6 +568,46 @@ function createVehicleCard(vehicle) {
 }
 
 
+
+/* =====================================================
+   RESTORE SHARED CUSTOMER VEHICLES
+   ===================================================== */
+
+function restoreSharedVehicles() {
+
+    if (
+        !vehicleGrid ||
+        !window.ShiftDynamicsStore ||
+        typeof window.ShiftDynamicsStore.getVehicles !== "function"
+    ) {
+        return;
+    }
+
+    const storedVehicles =
+        window.ShiftDynamicsStore.getVehicles();
+
+    if (!storedVehicles.length) {
+        return;
+    }
+
+    vehicleGrid.innerHTML =
+        "";
+
+    storedVehicles.forEach(
+        vehicle => {
+
+            vehicleGrid.appendChild(
+                createVehicleCard(
+                    vehicle
+                )
+            );
+        }
+    );
+}
+
+
+restoreSharedVehicles();
+
 /* =====================================================
    UPDATE VEHICLE CARD
    ===================================================== */
@@ -540,7 +617,14 @@ function updateVehicleCard(
     vehicle
 ) {
 
-    card.dataset.make =
+    /*
+        CUSTOMER VEHICLES -> SHARED STORE
+    */
+    if (vehicle.vehicleId) {
+        card.dataset.vehicleId =
+            vehicle.vehicleId;
+    }
+card.dataset.make =
         vehicle.make;
 
     card.dataset.model =
@@ -586,7 +670,7 @@ function updateVehicleCard(
         <p>
             ${escapeHTML(vehicle.year)}
             ${vehicle.trim
-                ? " â€¢ " + escapeHTML(vehicle.trim)
+                ? " ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ " + escapeHTML(vehicle.trim)
                 : ""}
         </p>
 
@@ -728,6 +812,18 @@ if (vehicleGrid) {
                     return;
                 }
 
+                const vehicleId =
+                    card.dataset.vehicleId;
+
+                if (
+                    vehicleId &&
+                    window.ShiftDynamicsStore &&
+                    typeof window.ShiftDynamicsStore.deleteVehicle === "function"
+                ) {
+                    window.ShiftDynamicsStore.deleteVehicle(
+                        vehicleId
+                    );
+                }
 
                 card.remove();
 
@@ -881,35 +977,35 @@ function escapeHTML(value) {
 
         "General Service": {
             icon: "bi-wrench-adjustable",
-            duration: "Approx. 1â€“2 hours",
+            duration: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 hours",
             description:
                 "Routine maintenance package covering essential service checks and general vehicle care."
         },
 
         "Vehicle Inspection": {
             icon: "bi-search",
-            duration: "Approx. 45â€“90 minutes",
+            duration: "Approx. 45ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ90 minutes",
             description:
                 "A detailed vehicle condition inspection covering major safety and mechanical areas."
         },
 
         "Engine Diagnostic": {
             icon: "bi-speedometer2",
-            duration: "Approx. 1â€“2 hours",
+            duration: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 hours",
             description:
                 "Diagnostic assessment for engine warning lights, performance issues and related faults."
         },
 
         "Brake Service": {
             icon: "bi-disc",
-            duration: "Approx. 1â€“2 hours",
+            duration: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 hours",
             description:
                 "Brake system inspection and service covering braking components and overall condition."
         },
 
         "Modification Consultation": {
             icon: "bi-tools",
-            duration: "Approx. 30â€“60 minutes",
+            duration: "Approx. 30ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ60 minutes",
             description:
                 "Consultation for vehicle upgrades such as exhausts, rims, tuning and other modifications."
         }
@@ -1521,10 +1617,83 @@ function escapeHTML(value) {
                    to the .NET backend API.
                    ----------------------------------------- */
 
+                                /*
+                    LIVE CUSTOMER BOOKING CONTEXT
+
+                    Profile and vehicle information come from the
+                    shared frontend store instead of demo HTML data.
+                */
+
+                const customerProfile =
+                    (
+                        window.ShiftDynamicsStore &&
+                        typeof window.ShiftDynamicsStore.getCustomerProfile === "function"
+                    )
+                        ? window.ShiftDynamicsStore.getCustomerProfile()
+                        : null;
+
+                const sharedVehicles =
+                    (
+                        window.ShiftDynamicsStore &&
+                        typeof window.ShiftDynamicsStore.getVehicles === "function"
+                    )
+                        ? window.ShiftDynamicsStore.getVehicles()
+                        : [];
+
+                const selectedVehicleDetails =
+                    sharedVehicles.find(
+                        vehicle =>
+                            `${vehicle.make || ""} ${vehicle.model || ""}`.trim() ===
+                            selectedVehicle
+                    ) || null;
+
                 const bookingData = {
+
+                    customer:
+                        customerProfile
+                            ? {
+                                name:
+                                    customerProfile.name || "",
+
+                                email:
+                                    customerProfile.email || "",
+
+                                phone:
+                                    customerProfile.phone || ""
+                            }
+                            : null,
 
                     vehicle:
                         selectedVehicle,
+
+                    vehicleDetails:
+                        selectedVehicleDetails
+                            ? {
+                                vehicleId:
+                                    selectedVehicleDetails.vehicleId || "",
+
+                                make:
+                                    selectedVehicleDetails.make || "",
+
+                                model:
+                                    selectedVehicleDetails.model || "",
+
+                                year:
+                                    selectedVehicleDetails.year || "",
+
+                                plate:
+                                    selectedVehicleDetails.plate || "",
+
+                                trim:
+                                    selectedVehicleDetails.trim || "",
+
+                                engine:
+                                    selectedVehicleDetails.engine || "",
+
+                                vin:
+                                    selectedVehicleDetails.vin || ""
+                            }
+                            : null,
 
                     service:
                         selectedService,
@@ -1570,237 +1739,1545 @@ function escapeHTML(value) {
                         Submitting...
                     `;
                 }
+                /*
+                    SHARED WORKFLOW:
+                    Save customer service request into ShiftDynamicsStore.
+                */
+                try {
 
+                    if (
+                        !window.ShiftDynamicsStore ||
+                        typeof window.ShiftDynamicsStore.createBooking !== "function"
+                    ) {
+                        throw new Error(
+                            "ShiftDynamicsStore.createBooking is unavailable."
+                        );
+                    }
 
-                /* -----------------------------------------
-                   FRONTEND DEMO SUBMIT
-                   ----------------------------------------- */
+                    const savedBooking =
+                        window.ShiftDynamicsStore.createBooking({
+                            ...bookingData,
 
-                window.setTimeout(
-                    () => {
+                            status:
+                                "Submitted",
 
-                        const formattedDate =
-                            formatBookingDate(
-                                selectedDate
-                            );
+                            source:
+                                "Customer Dashboard"
+                        });
 
-
-                        const formattedTime =
-                            formatBookingTime(
-                                selectedTime
-                            );
-
-
-                        showBookingSuccess(
-                            `Booking request submitted successfully for ${selectedVehicle} â€” ${selectedService} on ${formattedDate} at ${formattedTime}.`
+                    const formattedDate =
+                        formatBookingDate(
+                            selectedDate
                         );
 
-
-                        /*
-                         * Backend integration later:
-                         *
-                         * fetch("/api/bookings", {
-                         *     method: "POST",
-                         *     headers: {
-                         *         "Content-Type":
-                         *             "application/json"
-                         *     },
-                         *     body:
-                         *         JSON.stringify(
-                         *             bookingData
-                         *         )
-                         * });
-                         */
-
-
-                        console.log(
-                            "Frontend booking:",
-                            bookingData
+                    const formattedTime =
+                        formatBookingTime(
+                            selectedTime
                         );
 
+                    showBookingSuccess(
+                        `Booking request ${savedBooking.bookingId} submitted successfully for ${selectedVehicle} ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ${selectedService} on ${formattedDate} at ${formattedTime}.`
+                    );
 
-                        serviceBookingForm.reset();
-                        if (servicePackageInfo) {
-                            servicePackageInfo.hidden = true;
-}
+                    console.log(
+                        "Shared customer booking:",
+                        savedBooking
+                    );
 
-                        /* Reset minimum values
-                           after form reset */
+                    serviceBookingForm.reset();
 
-                        if (bookingTime) {
+                    if (servicePackageInfo) {
+                        servicePackageInfo.hidden = true;
+                    }
 
-                            bookingTime.min =
-                                workshopOpeningTime;
+                    if (bookingTime) {
+                        bookingTime.min =
+                            workshopOpeningTime;
 
-                            bookingTime.max =
-                                workshopClosingTime;
-                        }
+                        bookingTime.max =
+                            workshopClosingTime;
+                    }
 
+                    updateBookingVehicleOptions();
 
-                        updateBookingVehicleOptions();
+                    if (submitButton) {
+                        submitButton.disabled =
+                            false;
 
+                        submitButton.innerHTML =
+                            originalButtonHTML;
+                    }
 
-                        if (submitButton) {
+                } catch (error) {
 
-                            submitButton.disabled =
-                                false;
+                    console.error(
+                        "Unable to save customer booking to shared workflow store.",
+                        error
+                    );
 
+                    showBookingError(
+                        "Unable to submit booking request. Please try again."
+                    );
 
-                            submitButton.innerHTML =
-                                originalButtonHTML;
-                        }
+                    if (submitButton) {
+                        submitButton.disabled =
+                            false;
 
-                    },
-                    700
-                );
+                        submitButton.innerHTML =
+                            originalButtonHTML;
+                    }
+                }
 
             }
         );
 
     }
-    /* =========================================================
-   DIGITAL ESTIMATE ACTIONS
-========================================================= */
+    /* =====================================================
+   LIVE CUSTOMER ESTIMATES - SHARED WORKFLOW
+   ===================================================== */
 
-        const approveEstimateButton =
-            document.querySelector(".approve-estimate");
+const customerEstimatesContainer =
+    document.getElementById(
+        "customerEstimatesContainer"
+    );
 
-        const requestEstimateChangesButton =
-            document.querySelector(".request-estimate-changes");
+if (customerEstimatesContainer) {
 
-        function getEstimateCard(button) {
-            return button.closest(".sd-estimate-card");
+    function escapeEstimateHtml(value) {
+
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function formatEstimateMoney(value) {
+
+        const amount =
+            Number(value || 0);
+
+        return `LKR ${amount.toLocaleString("en-LK")}`;
+    }
+
+
+    function getCustomerEstimateJobs() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getCustomerProfile !== "function" ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function" ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return [];
         }
 
-        function updateEstimateStatus(card, status, type) {
-            const statusBadge =
-                card.querySelector(".sd-status-badge");
+        const profile =
+            window.ShiftDynamicsStore.getCustomerProfile();
 
-            if (!statusBadge) {
+        if (!profile) {
+            return [];
+        }
+
+        const profileEmail =
+            String(
+                profile.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        const profileName =
+            String(
+                profile.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const bookingIds =
+            new Set(
+                window.ShiftDynamicsStore
+                    .getBookings()
+                    .filter(booking => {
+
+                        const email =
+                            String(
+                                booking.customer?.email || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+                        const name =
+                            String(
+                                booking.customer?.name || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+                        if (
+                            profileEmail &&
+                            email
+                        ) {
+                            return (
+                                email ===
+                                profileEmail
+                            );
+                        }
+
+                        return (
+                            profileName &&
+                            name ===
+                            profileName
+                        );
+                    })
+                    .map(
+                        booking =>
+                            booking.bookingId
+                    )
+                    .filter(Boolean)
+            );
+
+
+        return window.ShiftDynamicsStore
+            .getJobs()
+            .filter(job =>
+                bookingIds.has(
+                    job.bookingId
+                ) &&
+                job.estimate &&
+                job.estimate.status !== "Not Created" &&
+                Number(job.estimate.total || 0) > 0
+            )
+            .sort(
+                (a, b) =>
+                    new Date(
+                        b.estimate?.createdAt ||
+                        b.updatedAt ||
+                        0
+                    ) -
+                    new Date(
+                        a.estimate?.createdAt ||
+                        a.updatedAt ||
+                        0
+                    )
+            );
+    }
+
+
+    function renderCustomerEstimates() {
+
+        const jobs =
+            getCustomerEstimateJobs();
+
+        if (jobs.length === 0) {
+
+            customerEstimatesContainer.innerHTML = `
+                <div class="sd-dashboard-card">
+                    <p class="sd-muted-text">
+                        No service estimates available yet.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        customerEstimatesContainer.innerHTML =
+            jobs.map(job => {
+
+                const estimate =
+                    job.estimate || {};
+
+                const vehicle =
+                    [
+                        job.vehicle?.make,
+                        job.vehicle?.model
+                    ]
+                        .filter(Boolean)
+                        .join(" ") ||
+                    "Vehicle";
+
+                const isPending =
+                    estimate.status ===
+                    "Awaiting Customer Approval";
+
+                const isApproved =
+                    estimate.status ===
+                    "Approved";
+
+                const isChangesRequested =
+                    estimate.status ===
+                    "Changes Requested";
+
+                let badgeText =
+                    estimate.status ||
+                    "Pending Approval";
+
+                let badgeClass =
+                    "pending";
+
+                if (isApproved) {
+                    badgeClass =
+                        "approved";
+                }
+
+                if (isChangesRequested) {
+                    badgeClass =
+                        "changes-requested";
+                }
+
+
+                return `
+                    <article
+                        class="sd-estimate-card"
+                        data-job-card="${escapeEstimateHtml(
+                            job.jobCardNumber
+                        )}"
+                    >
+
+                        <div class="sd-estimate-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    ${escapeEstimateHtml(
+                                        job.jobCardNumber
+                                    )}
+                                </span>
+
+                                <h3>
+                                    ${escapeEstimateHtml(
+                                        vehicle
+                                    )}
+                                </h3>
+
+                                <p>
+                                    ${escapeEstimateHtml(
+                                        estimate.description ||
+                                        job.serviceConcern ||
+                                        "Workshop Estimate"
+                                    )}
+                                </p>
+
+                            </div>
+
+                            <span class="sd-status-badge ${badgeClass}">
+                                ${escapeEstimateHtml(
+                                    badgeText
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-estimate-lines">
+
+                            <div>
+                                <span>Labour</span>
+                                <strong>
+                                    ${formatEstimateMoney(
+                                        estimate.labour
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Parts</span>
+                                <strong>
+                                    ${formatEstimateMoney(
+                                        estimate.parts
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Vendor</span>
+                                <strong>
+                                    ${formatEstimateMoney(
+                                        estimate.vendor
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Other</span>
+                                <strong>
+                                    ${formatEstimateMoney(
+                                        estimate.other
+                                    )}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-estimate-total">
+
+                            <span>Estimated Total</span>
+
+                            <strong>
+                                ${formatEstimateMoney(
+                                    estimate.total
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="sd-estimate-actions">
+
+                            <button
+                                class="sd-secondary-button request-estimate-changes"
+                                type="button"
+                                data-action="request-changes"
+                                ${
+                                    isPending
+                                        ? ""
+                                        : "disabled"
+                                }
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                                ${
+                                    isChangesRequested
+                                        ? "Changes Requested"
+                                        : "Request Changes"
+                                }
+                            </button>
+
+                            <button
+                                class="sd-primary-button approve-estimate"
+                                type="button"
+                                data-action="approve"
+                                ${
+                                    isPending
+                                        ? ""
+                                        : "disabled"
+                                }
+                            >
+                                <i class="bi bi-check2-circle"></i>
+                                ${
+                                    isApproved
+                                        ? "Estimate Approved"
+                                        : "Approve Estimate"
+                                }
+                            </button>
+
+                        </div>
+
+                    </article>
+                `;
+            })
+            .join("");
+    }
+
+
+    customerEstimatesContainer.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "button[data-action]"
+                );
+
+            if (!button) {
                 return;
             }
 
-            statusBadge.textContent = status;
+            const card =
+                button.closest(
+                    ".sd-estimate-card"
+                );
 
-            statusBadge.classList.remove(
-                "pending",
-                "paid",
-                "approved",
-                "changes-requested"
-            );
+            const jobCardNumber =
+                card?.dataset?.jobCard;
 
-            if (type) {
-                statusBadge.classList.add(type);
+            if (!jobCardNumber) {
+                return;
             }
-        }
 
-        if (approveEstimateButton) {
-            approveEstimateButton.addEventListener(
-                "click",
-                function () {
-                    const estimateCard =
-                        getEstimateCard(approveEstimateButton);
+            const jobs =
+                window.ShiftDynamicsStore
+                    .getJobs();
 
-                    if (!estimateCard) {
-                        return;
-                    }
+            const job =
+                jobs.find(
+                    item =>
+                        item.jobCardNumber ===
+                        jobCardNumber
+                );
 
-                    const confirmed = window.confirm(
+            if (!job) {
+                return;
+            }
+
+
+            if (
+                button.dataset.action ===
+                "approve"
+            ) {
+
+                const confirmed =
+                    window.confirm(
                         "Approve this estimate and allow the workshop to proceed?"
                     );
 
-                    if (!confirmed) {
-                        return;
-                    }
-
-                    updateEstimateStatus(
-                        estimateCard,
-                        "Approved",
-                        "approved"
-                    );
-
-                    approveEstimateButton.disabled = true;
-                    approveEstimateButton.innerHTML = `
-                        <i class="bi bi-check2-circle"></i>
-                        Estimate Approved
-                    `;
-
-                    if (requestEstimateChangesButton) {
-                        requestEstimateChangesButton.disabled = true;
-                    }
+                if (!confirmed) {
+                    return;
                 }
-            );
-        }
 
-            if (requestEstimateChangesButton) {
-                requestEstimateChangesButton.addEventListener(
-                    "click",
-                    function () {
-                        const estimateCard =
-                            getEstimateCard(requestEstimateChangesButton);
+                window.ShiftDynamicsStore.updateJob(
+                    job.jobCardNumber,
+                    {
+                        estimate: {
+                            ...(job.estimate || {}),
+                            status:
+                                "Approved",
+                            approvedAt:
+                                new Date().toISOString()
+                        },
 
-                        if (!estimateCard) {
-                            return;
-                        }
-
-                        const reason = window.prompt(
-                            "What changes would you like to request?"
-                        );
-
-                        if (reason === null) {
-                            return;
-                        }
-
-                        const cleanReason = reason.trim();
-
-                        if (!cleanReason) {
-                            window.alert(
-                                "Please enter a reason for requesting changes."
-                            );
-                            return;
-                        }
-
-                        updateEstimateStatus(
-                            estimateCard,
-                            "Changes Requested",
-                            "changes-requested"
-                        );
-
-                        requestEstimateChangesButton.disabled = true;
-                        requestEstimateChangesButton.innerHTML = `
-                            <i class="bi bi-check2-circle"></i>
-                            Changes Requested
-                        `;
-
-                        if (approveEstimateButton) {
-                            approveEstimateButton.disabled = true;
-                        }
-
-                        console.log(
-                            "Estimate change request:",
-                            cleanReason
-                        );
-
-                        /*
-                        Future .NET API integration example:
-
-                        fetch("/api/estimates/request-changes", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                reason: cleanReason
-                            })
-                        });
-                        */
+                        status:
+                            "Estimate Approved"
                     }
                 );
             }
 
 
+            if (
+                button.dataset.action ===
+                "request-changes"
+            ) {
+
+                const reason =
+                    window.prompt(
+                        "What changes would you like to request?"
+                    );
+
+                if (reason === null) {
+                    return;
+                }
+
+                const cleanReason =
+                    reason.trim();
+
+                if (!cleanReason) {
+
+                    window.alert(
+                        "Please enter a reason for requesting changes."
+                    );
+
+                    return;
+                }
+
+                window.ShiftDynamicsStore.updateJob(
+                    job.jobCardNumber,
+                    {
+                        estimate: {
+                            ...(job.estimate || {}),
+                            status:
+                                "Changes Requested",
+                            changeRequestReason:
+                                cleanReason,
+                            changesRequestedAt:
+                                new Date().toISOString()
+                        },
+
+                        status:
+                            "Estimate Changes Requested"
+                    }
+                );
+            }
+        }
+    );
+
+
+    renderCustomerEstimates();
+
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderCustomerEstimates();
+            }
+        );
+    }
+}
+
+    /* =====================================================
+       LIVE CUSTOMER EMERGENCY HISTORY
+       ===================================================== */
+
+    function renderCustomerEmergencyHistory() {
+
+        const tbody =
+            document.querySelector(
+                "#emergency-history tbody"
+            );
+
+        if (!tbody) {
+            return;
+        }
+
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getEmergencyRequests !==
+                "function"
+        ) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        Emergency request history is unavailable.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        const profile =
+            typeof window.ShiftDynamicsStore.getCustomerProfile ===
+                "function"
+                ? window.ShiftDynamicsStore.getCustomerProfile()
+                : null;
+
+
+        const profileEmail =
+            String(
+                profile?.email ||
+                ""
+            )
+                .trim()
+                .toLowerCase();
+
+        const profileName =
+            String(
+                profile?.name ||
+                ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const requests =
+            (
+                window.ShiftDynamicsStore
+                    .getEmergencyRequests() ||
+                []
+            )
+                .filter(request => {
+
+                    const requestEmail =
+                        String(
+                            request.customer?.email ||
+                            ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+                    const requestName =
+                        String(
+                            request.customer?.name ||
+                            ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+
+                    if (
+                        profileEmail &&
+                        requestEmail
+                    ) {
+
+                        return (
+                            profileEmail ===
+                            requestEmail
+                        );
+                    }
+
+
+                    if (
+                        profileName &&
+                        requestName
+                    ) {
+
+                        return (
+                            profileName ===
+                            requestName
+                        );
+                    }
+
+
+                    return false;
+                })
+                .sort(
+                    (a, b) =>
+                        new Date(
+                            b.createdAt ||
+                            0
+                        ) -
+                        new Date(
+                            a.createdAt ||
+                            0
+                        )
+                );
+
+
+        if (requests.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        No emergency assistance requests yet.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        function escapeEmergencyHtml(
+            value
+        ) {
+
+            return String(
+                value ?? ""
+            )
+                .replaceAll(
+                    "&",
+                    "&amp;"
+                )
+                .replaceAll(
+                    "<",
+                    "&lt;"
+                )
+                .replaceAll(
+                    ">",
+                    "&gt;"
+                )
+                .replaceAll(
+                    '"',
+                    "&quot;"
+                )
+                .replaceAll(
+                    "'",
+                    "&#039;"
+                );
+        }
+
+
+        tbody.innerHTML =
+            requests
+                .map(request => {
+
+                    const date =
+                        request.createdAt
+                            ? new Date(
+                                request.createdAt
+                            )
+                            : null;
+
+
+                    const dateText =
+                        date &&
+                        !Number.isNaN(
+                            date.getTime()
+                        )
+                            ? date.toLocaleDateString(
+                                "en-GB",
+                                {
+                                    day:
+                                        "2-digit",
+
+                                    month:
+                                        "short",
+
+                                    year:
+                                        "numeric"
+                                }
+                            )
+                            : "--";
+
+
+                    const status =
+                        request.status ||
+                        "Requested";
+
+
+                    const badgeClass =
+                        String(status)
+                            .toLowerCase() ===
+                            "completed"
+                                ? "paid"
+                                : "pending";
+
+
+                    const location =
+                        request.location ||
+                        request.provider ||
+                        "Current Location";
+
+
+                    return `
+                        <tr>
+                            <td>
+                                ${escapeEmergencyHtml(
+                                    request.requestId
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeEmergencyHtml(
+                                    dateText
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeEmergencyHtml(
+                                    request.service ||
+                                    "Emergency Assistance"
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeEmergencyHtml(
+                                    location
+                                )}
+                            </td>
+
+                            <td>
+                                <span class="sd-status-badge ${badgeClass}">
+                                    ${escapeEmergencyHtml(
+                                        status
+                                    )}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                })
+                .join("");
+
+
+        console.log(
+            "Customer emergency history hydrated:",
+            requests
+        );
+    }
+
+
+    renderCustomerEmergencyHistory();
+
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe ===
+            "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderCustomerEmergencyHistory();
+            }
+        );
+    }
+
+
+    /* =====================================================
+       LIVE CUSTOMER OVERVIEW - SHARED WORKFLOW
+       ===================================================== */
+
+    function renderCustomerOverview() {
+
+        /*
+         * This renderer only runs on customer/dashboard.html.
+         */
+        const statsGrid =
+            document.querySelector(
+                ".sd-stats-grid"
+            );
+
+        const overviewGrid =
+            document.querySelector(
+                ".sd-overview-grid"
+            );
+
+        if (
+            !statsGrid ||
+            !overviewGrid
+        ) {
+            return;
+        }
+
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function" ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return;
+        }
+
+
+        const profile =
+            typeof window.ShiftDynamicsStore.getCustomerProfile === "function"
+                ? window.ShiftDynamicsStore.getCustomerProfile()
+                : null;
+
+
+        const profileEmail =
+            String(
+                profile?.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        const profileName =
+            String(
+                profile?.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const allBookings =
+            window.ShiftDynamicsStore.getBookings() || [];
+
+        const allJobs =
+            window.ShiftDynamicsStore.getJobs() || [];
+
+        const allVehicles =
+            typeof window.ShiftDynamicsStore.getVehicles === "function"
+                ? window.ShiftDynamicsStore.getVehicles() || []
+                : [];
+
+
+        /*
+         * Customer-specific bookings.
+         */
+        const customerBookings =
+            allBookings.filter(booking => {
+
+                const bookingEmail =
+                    String(
+                        booking.customer?.email ||
+                        booking.email ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
+
+                const bookingName =
+                    String(
+                        booking.customer?.name ||
+                        booking.customerName ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
+
+
+                if (
+                    profileEmail &&
+                    bookingEmail
+                ) {
+                    return (
+                        profileEmail ===
+                        bookingEmail
+                    );
+                }
+
+
+                if (
+                    profileName &&
+                    bookingName
+                ) {
+                    return (
+                        profileName ===
+                        bookingName
+                    );
+                }
+
+
+                return false;
+            });
+
+
+        const customerBookingIds =
+            new Set(
+                customerBookings
+                    .map(
+                        booking =>
+                            booking.bookingId
+                    )
+                    .filter(Boolean)
+            );
+
+
+        const customerJobs =
+            allJobs.filter(
+                job =>
+                    customerBookingIds.has(
+                        job.bookingId
+                    )
+            );
+
+
+        /*
+         * Completed jobs must not appear as active work.
+         */
+        const activeJobs =
+            customerJobs.filter(
+                job =>
+                    job.handover?.status !== "Completed" &&
+                    job.status !== "Completed"
+            );
+
+
+        /*
+         * A booking is "upcoming" only while it has not yet
+         * become a workshop Job Card.
+         */
+        const upcomingBookings =
+            customerBookings.filter(
+                booking =>
+                    !customerJobs.some(
+                        job =>
+                            job.bookingId ===
+                            booking.bookingId
+                    )
+            );
+
+
+        /*
+         * Estimates currently waiting for customer action.
+         */
+        const pendingEstimateJobs =
+            customerJobs.filter(job => {
+
+                const status =
+                    String(
+                        job.estimate?.status ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
+
+                return (
+                    status === "awaiting customer approval" ||
+                    status === "pending" ||
+                    status === "pending approval" ||
+                    status === "sent"
+                );
+            });
+
+
+        function setOverviewStat(
+            label,
+            value
+        ) {
+
+            const cards =
+                Array.from(
+                    statsGrid.querySelectorAll(
+                        ".sd-stat-card"
+                    )
+                );
+
+            const card =
+                cards.find(item => {
+
+                    const text =
+                        item.querySelector("span")
+                            ?.textContent
+                            ?.trim();
+
+                    return text === label;
+                });
+
+
+            const strong =
+                card?.querySelector(
+                    "strong"
+                );
+
+            if (strong) {
+                strong.textContent =
+                    String(value);
+            }
+        }
+
+
+        setOverviewStat(
+            "Registered Vehicles",
+            allVehicles.length
+        );
+
+        setOverviewStat(
+            "Upcoming Services",
+            upcomingBookings.length
+        );
+
+        setOverviewStat(
+            "Active Jobs",
+            activeJobs.length
+        );
+
+        setOverviewStat(
+            "Pending Estimates",
+            pendingEstimateJobs.length
+        );
+
+
+        /* =================================================
+           CURRENT SERVICE
+           ================================================= */
+
+        const currentService =
+            overviewGrid.querySelector(
+                ".sd-current-job"
+            );
+
+
+        const activeJob =
+            [...activeJobs]
+                .sort(
+                    (a, b) =>
+                        new Date(
+                            b.updatedAt ||
+                            b.createdAt ||
+                            0
+                        ) -
+                        new Date(
+                            a.updatedAt ||
+                            a.createdAt ||
+                            0
+                        )
+                )[0] || null;
+
+
+        if (currentService) {
+
+            const titleStrong =
+                currentService.querySelector(
+                    ".sd-job-title > div strong"
+                );
+
+            const plateSpan =
+                currentService.querySelector(
+                    ".sd-job-title > div span"
+                );
+
+            const statusBadge =
+                currentService.querySelector(
+                    ".sd-status-badge"
+                );
+
+            const progressBar =
+                currentService.querySelector(
+                    ".sd-progress-bar span"
+                );
+
+            const progressInfo =
+                currentService.querySelector(
+                    ".sd-progress-info"
+                );
+
+            const serviceText =
+                progressInfo?.querySelector(
+                    "span"
+                );
+
+            const progressText =
+                progressInfo?.querySelector(
+                    "strong"
+                );
+
+
+            if (!activeJob) {
+
+                if (titleStrong) {
+                    titleStrong.textContent =
+                        "No Active Service";
+                }
+
+                if (plateSpan) {
+                    plateSpan.textContent =
+                        "Completed services are available in Service History";
+                }
+
+                if (statusBadge) {
+                    statusBadge.textContent =
+                        "No Active Job";
+
+                    statusBadge.className =
+                        "sd-status-badge";
+                }
+
+                if (progressBar) {
+                    progressBar.style.width =
+                        "0%";
+                }
+
+                if (serviceText) {
+                    serviceText.textContent =
+                        "Book a service to start a new workshop job";
+                }
+
+                if (progressText) {
+                    progressText.textContent =
+                        "0%";
+                }
+
+            } else {
+
+                const booking =
+                    customerBookings.find(
+                        item =>
+                            item.bookingId ===
+                            activeJob.bookingId
+                    ) || {};
+
+
+                const vehicle =
+                    activeJob.vehicle ||
+                    booking.vehicleDetails ||
+                    {};
+
+
+                const vehicleName =
+                    [
+                        vehicle.make,
+                        vehicle.model
+                    ]
+                        .filter(Boolean)
+                        .join(" ")
+                    ||
+                    (
+                        typeof booking.vehicle === "string"
+                            ? booking.vehicle
+                            : ""
+                    )
+                    ||
+                    "Vehicle";
+
+
+                const vehiclePlate =
+                    [
+                        vehicle.plate,
+                        vehicle.registration,
+                        vehicle.registrationNumber,
+                        activeJob.vehiclePlate
+                    ]
+                        .find(
+                            value =>
+                                typeof value === "string" &&
+                                value.trim()
+                        )
+                    ||
+                    "--";
+
+
+                const serviceName =
+                    activeJob.serviceConcern ||
+                    activeJob.estimate?.description ||
+                    booking.service ||
+                    booking.serviceType ||
+                    booking.packageName ||
+                    "Workshop Service";
+
+
+                let progress = 20;
+                let liveStatus =
+                    activeJob.status ||
+                    "In Progress";
+
+
+                if (
+                    activeJob.inspection?.status ===
+                    "Completed"
+                ) {
+                    progress = 40;
+                }
+
+
+                if (
+                    activeJob.diagnostic?.finding ||
+                    activeJob.diagnostic?.status ===
+                        "Completed"
+                ) {
+                    progress = 50;
+                }
+
+
+                if (
+                    activeJob.repair?.startedAt
+                ) {
+                    progress = 60;
+                    liveStatus =
+                        "Service In Progress";
+                }
+
+
+                if (
+                    activeJob.repair?.status ===
+                    "Completed"
+                ) {
+                    progress = 75;
+                    liveStatus =
+                        "Service Completed";
+                }
+
+
+                if (
+                    activeJob.invoice?.status ===
+                    "Finalized"
+                ) {
+                    progress = 90;
+                    liveStatus =
+                        "Ready for Handover";
+                }
+
+
+                if (
+                    activeJob.payment?.status ===
+                    "Paid"
+                ) {
+                    progress = 95;
+                    liveStatus =
+                        "Ready for Handover";
+                }
+
+
+                if (titleStrong) {
+                    titleStrong.textContent =
+                        vehicleName;
+                }
+
+                if (plateSpan) {
+                    plateSpan.textContent =
+                        vehiclePlate;
+                }
+
+                if (statusBadge) {
+                    statusBadge.textContent =
+                        liveStatus;
+
+                    statusBadge.className =
+                        "sd-status-badge in-progress";
+                }
+
+                if (progressBar) {
+                    progressBar.style.width =
+                        `${progress}%`;
+                }
+
+                if (serviceText) {
+                    serviceText.textContent =
+                        serviceName;
+                }
+
+                if (progressText) {
+                    progressText.textContent =
+                        `${progress}%`;
+                }
+            }
+        }
+
+
+        /* =================================================
+           UPCOMING BOOKING
+           ================================================= */
+
+        const appointment =
+            overviewGrid.querySelector(
+                ".sd-appointment"
+            );
+
+
+        const upcomingBooking =
+            [...upcomingBookings]
+                .sort(
+                    (a, b) => {
+
+                        const aDate =
+                            new Date(
+                                a.preferredDate ||
+                                a.appointmentDate ||
+                                a.date ||
+                                0
+                            );
+
+                        const bDate =
+                            new Date(
+                                b.preferredDate ||
+                                b.appointmentDate ||
+                                b.date ||
+                                0
+                            );
+
+                        return aDate - bDate;
+                    }
+                )[0] || null;
+
+
+        if (appointment) {
+
+            if (!upcomingBooking) {
+
+                appointment.innerHTML = `
+                    <div>
+                        <strong>
+                            No upcoming booking
+                        </strong>
+
+                        <p>
+                            Book your next workshop service when needed.
+                        </p>
+                    </div>
+                `;
+
+            } else {
+
+                const rawDate =
+                    upcomingBooking.preferredDate ||
+                    upcomingBooking.appointmentDate ||
+                    upcomingBooking.date ||
+                    "";
+
+                const bookingDate =
+                    rawDate
+                        ? new Date(
+                            `${rawDate}T00:00:00`
+                        )
+                        : null;
+
+
+                const month =
+                    bookingDate &&
+                    !Number.isNaN(
+                        bookingDate.getTime()
+                    )
+                        ? bookingDate
+                            .toLocaleString(
+                                "en-US",
+                                {
+                                    month:
+                                        "short"
+                                }
+                            )
+                            .toUpperCase()
+                        : "--";
+
+
+                const day =
+                    bookingDate &&
+                    !Number.isNaN(
+                        bookingDate.getTime()
+                    )
+                        ? String(
+                            bookingDate.getDate()
+                        ).padStart(
+                            2,
+                            "0"
+                        )
+                        : "--";
+
+
+                const service =
+                    upcomingBooking.service ||
+                    upcomingBooking.serviceType ||
+                    upcomingBooking.packageName ||
+                    "Workshop Service";
+
+
+                const time =
+                    upcomingBooking.preferredTime ||
+                    upcomingBooking.time ||
+                    "Time pending";
+
+
+                appointment.innerHTML = `
+                    <div class="sd-date-box">
+                        <span>${month}</span>
+                        <strong>${day}</strong>
+                    </div>
+
+                    <div>
+                        <strong>${service}</strong>
+
+                        <p>
+                            ${time} &bull; Shift Dynamics Workshop
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+
+        console.log(
+            "Customer overview hydrated:",
+            {
+                vehicles:
+                    allVehicles.length,
+
+                upcomingServices:
+                    upcomingBookings.length,
+
+                activeJobs:
+                    activeJobs.length,
+
+                pendingEstimates:
+                    pendingEstimateJobs.length,
+
+                activeJob:
+                    activeJob?.jobCardNumber ||
+                    null,
+
+                upcomingBooking:
+                    upcomingBooking?.bookingId ||
+                    null
+            }
+        );
+    }
+
+
+    /*
+     * Initial overview hydration.
+     */
+    renderCustomerOverview();
+
+
+    /*
+     * Keep Overview live when any shared workflow
+     * object changes.
+     */
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe ===
+            "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderCustomerOverview();
+            }
+        );
+    }
+
+
 /* =====================================================
-   LIVE SERVICE TRACKER
+   LIVE SERVICE TRACKER - SHARED WORKFLOW
    ===================================================== */
 
 const trackerCard =
@@ -1809,106 +3286,597 @@ const trackerCard =
 if (trackerCard) {
 
     const trackerSteps =
-        trackerCard.querySelectorAll(
+        [...trackerCard.querySelectorAll(
             ".sd-tracker-step"
-        );
+        )];
 
     const trackerStatus =
         trackerCard.querySelector(
             ".sd-status-badge"
         );
 
-    let currentTrackerStep = 2;
+    const trackerJobLabel =
+        trackerCard.querySelector(
+            ".sd-panel-label"
+        );
 
-    const trackerStates = [
-        {
-            label: "Vehicle Received",
-            message: "08:45 AM"
-        },
-        {
-            label: "Inspection Completed",
-            message: "09:30 AM"
-        },
-        {
-            label: "Repair / Service Work",
-            message: "Currently in progress"
-        },
-        {
-            label: "Final Quality Check",
-            message: "Pending"
-        },
-        {
-            label: "Ready for Handover",
-            message: "Pending"
+    const trackerVehicle =
+        trackerCard.querySelector(
+            ".sd-tracker-header h3"
+        );
+
+    const trackerService =
+        trackerCard.querySelector(
+            ".sd-tracker-header p"
+        );
+
+
+    function formatTrackerTime(value) {
+
+        if (!value) {
+            return "";
         }
-    ];
 
-    function updateTracker() {
+        const date =
+            new Date(value);
 
-        trackerSteps.forEach(
-            (step, index) => {
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "";
+        }
 
-                step.classList.remove(
-                    "completed",
-                    "current"
-                );
-
-                const marker =
-                    step.querySelector(
-                        ".sd-step-marker"
-                    );
-
-                const statusText =
-                    step.querySelector(
-                        "span"
-                    );
-
-                if (index < currentTrackerStep) {
-
-                    step.classList.add(
-                        "completed"
-                    );
-
-                    if (marker) {
-                        marker.innerHTML =
-                            '<i class="bi bi-check-lg"></i>';
-                    }
-
-                } else if (
-                    index === currentTrackerStep
-                ) {
-
-                    step.classList.add(
-                        "current"
-                    );
-
-                    if (marker) {
-                        marker.innerHTML =
-                            '<i class="bi bi-wrench-adjustable"></i>';
-                    }
-
-                    if (statusText) {
-                        statusText.textContent =
-                            "Currently in progress";
-                    }
-
-                } else {
-
-                    if (statusText) {
-                        statusText.textContent =
-                            "Pending";
-                    }
-
-                }
+        return date.toLocaleTimeString(
+            [],
+            {
+                hour: "2-digit",
+                minute: "2-digit"
             }
         );
+    }
+
+
+    function setTrackerStep(
+        index,
+        state,
+        message
+    ) {
+
+        const step =
+            trackerSteps[index];
+
+        if (!step) {
+            return;
+        }
+
+        step.classList.remove(
+            "completed",
+            "current"
+        );
+
+        const marker =
+            step.querySelector(
+                ".sd-step-marker"
+            );
+
+        const statusText =
+            step.querySelector(
+                "span"
+            );
+
+
+        if (state === "completed") {
+
+            step.classList.add(
+                "completed"
+            );
+
+            if (marker) {
+                marker.innerHTML =
+                    '<i class="bi bi-check-lg"></i>';
+            }
+
+        } else if (state === "current") {
+
+            step.classList.add(
+                "current"
+            );
+
+            if (marker) {
+
+                const icons = [
+                    "bi-car-front-fill",
+                    "bi-clipboard-check",
+                    "bi-wrench-adjustable",
+                    "bi-search",
+                    "bi-key"
+                ];
+
+                marker.innerHTML =
+                    `<i class="bi ${icons[index] || "bi-circle"}"></i>`;
+            }
+
+        } else {
+
+            if (marker) {
+
+                const icons = [
+                    "bi-car-front",
+                    "bi-clipboard",
+                    "bi-wrench-adjustable",
+                    "bi-search",
+                    "bi-key"
+                ];
+
+                marker.innerHTML =
+                    `<i class="bi ${icons[index] || "bi-circle"}"></i>`;
+            }
+        }
+
+
+        if (statusText) {
+            statusText.textContent =
+                message ||
+                (
+                    state === "completed"
+                        ? "Completed"
+                        : state === "current"
+                            ? "Currently in progress"
+                            : "Pending"
+                );
+        }
+    }
+
+
+    function getCurrentCustomerBooking() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getCustomerProfile !== "function" ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function"
+        ) {
+            return null;
+        }
+
+        const profile =
+            window.ShiftDynamicsStore.getCustomerProfile();
+
+        if (!profile) {
+            return null;
+        }
+
+        const email =
+            String(
+                profile.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        const name =
+            String(
+                profile.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const customerBookings =
+            window.ShiftDynamicsStore
+                .getBookings()
+                .filter(booking => {
+
+                    const bookingEmail =
+                        String(
+                            booking.customer?.email || ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+                    const bookingName =
+                        String(
+                            booking.customer?.name || ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+                    if (
+                        email &&
+                        bookingEmail
+                    ) {
+                        return (
+                            bookingEmail ===
+                            email
+                        );
+                    }
+
+                    return (
+                        name &&
+                        bookingName === name
+                    );
+                })
+                .sort(
+                    (a, b) =>
+                        new Date(
+                            b.createdAt || 0
+                        ) -
+                        new Date(
+                            a.createdAt || 0
+                        )
+                );
+
+        const jobs =
+            typeof window.ShiftDynamicsStore.getJobs === "function"
+                ? window.ShiftDynamicsStore.getJobs()
+                : [];
+
+        const activeBooking =
+            customerBookings.find(booking => {
+
+                const job =
+                    jobs.find(
+                        item =>
+                            item.bookingId ===
+                            booking.bookingId
+                    );
+
+                /*
+                 * Booking without a Job Card is still active/upcoming.
+                 */
+                if (!job) {
+                    return true;
+                }
+
+                /*
+                 * Completed handovers belong in Service History,
+                 * not the live Service Tracker.
+                 */
+                return (
+                    job.handover?.status !== "Completed" &&
+                    job.status !== "Completed"
+                );
+            });
+
+        return activeBooking || null;
+    }
+
+
+    function renderLiveServiceTracker() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return;
+        }
+
+
+        const booking =
+            getCurrentCustomerBooking();
+
+        if (!booking) {
+
+            if (trackerJobLabel) {
+                trackerJobLabel.textContent =
+                    "NO ACTIVE BOOKING";
+            }
+
+            if (trackerVehicle) {
+                trackerVehicle.textContent =
+                    "No service currently being tracked";
+            }
+
+            if (trackerService) {
+                trackerService.textContent =
+                    "Submit a service booking to begin tracking.";
+            }
+
+            if (trackerStatus) {
+                trackerStatus.textContent =
+                    "No Active Job";
+
+                trackerStatus.className =
+                    "sd-status-badge";
+            }
+
+            trackerSteps.forEach(
+                (step, index) =>
+                    setTrackerStep(
+                        index,
+                        "pending",
+                        "Pending"
+                    )
+            );
+
+            return;
+        }
+
+
+        const job =
+            window.ShiftDynamicsStore
+                .getJobs()
+                .find(
+                    item =>
+                        item.bookingId ===
+                            booking.bookingId &&
+                        item.handover?.status !==
+                            "Completed" &&
+                        item.status !==
+                            "Completed"
+                ) || null;
+
+
+        const vehicle =
+            job?.vehicle ||
+            booking.vehicleDetails ||
+            {};
+
+        const vehicleName =
+            [
+                vehicle.make,
+                vehicle.model
+            ]
+                .filter(Boolean)
+                .join(" ") ||
+            booking.vehicle ||
+            "Vehicle";
+
+
+        if (trackerJobLabel) {
+
+            trackerJobLabel.textContent =
+                job
+                    ? `JOB CARD ${job.jobCardNumber}`
+                    : `BOOKING ${booking.bookingId}`;
+        }
+
+        if (trackerVehicle) {
+            trackerVehicle.textContent =
+                vehicleName;
+        }
+
+        if (trackerService) {
+            trackerService.textContent =
+                job?.serviceConcern ||
+                booking.service ||
+                "Workshop Service";
+        }
+
+
+        /*
+            No Job Card yet:
+            customer booking exists but workshop intake has
+            not produced the shared Job Card.
+        */
+        if (!job) {
+
+            setTrackerStep(
+                0,
+                "current",
+                "Awaiting workshop intake"
+            );
+
+            for (
+                let index = 1;
+                index < trackerSteps.length;
+                index++
+            ) {
+                setTrackerStep(
+                    index,
+                    "pending",
+                    "Pending"
+                );
+            }
+
+            if (trackerStatus) {
+                trackerStatus.textContent =
+                    booking.status || "Submitted";
+
+                trackerStatus.className =
+                    "sd-status-badge in-progress";
+            }
+
+            return;
+        }
+
+
+        const inspectionComplete =
+            job.inspection?.status ===
+            "Completed";
+
+        const repairStarted =
+            Boolean(
+                job.repair?.startedAt
+            );
+
+        const repairComplete =
+            job.repair?.status ===
+            "Completed";
+
+        const invoiceFinalized =
+            job.invoice?.status ===
+            "Finalized";
+
+        const handoverComplete =
+            job.handover?.status ===
+            "Completed";
+
+
+        /*
+            STEP 0 - Vehicle Received
+        */
+        setTrackerStep(
+            0,
+            "completed",
+            formatTrackerTime(
+                job.createdAt
+            ) || "Received"
+        );
+
+
+        /*
+            STEP 1 - Inspection
+        */
+        if (inspectionComplete) {
+
+            setTrackerStep(
+                1,
+                "completed",
+                formatTrackerTime(
+                    job.inspection?.completedAt
+                ) ||
+                "Inspection completed"
+            );
+
+        } else {
+
+            setTrackerStep(
+                1,
+                "current",
+                "Inspection in progress"
+            );
+
+            setTrackerStep(
+                2,
+                "pending",
+                "Pending"
+            );
+
+            setTrackerStep(
+                3,
+                "pending",
+                "Pending"
+            );
+
+            setTrackerStep(
+                4,
+                "pending",
+                "Pending"
+            );
+        }
+
+
+        if (inspectionComplete) {
+
+            /*
+                STEP 2 - Repair / Service Work
+            */
+            if (repairComplete) {
+
+                setTrackerStep(
+                    2,
+                    "completed",
+                    formatTrackerTime(
+                        job.repair?.completedAt
+                    ) ||
+                    "Service work completed"
+                );
+
+            } else {
+
+                let repairMessage =
+                    "Awaiting workshop service";
+
+                if (repairStarted) {
+                    repairMessage =
+                        "Currently in progress";
+                } else if (
+                    job.assignment?.mechanicName
+                ) {
+                    repairMessage =
+                        `Assigned to ${job.assignment.mechanicName}`;
+                } else if (
+                    job.diagnostic?.finding
+                ) {
+                    repairMessage =
+                        "Diagnosis completed";
+                }
+
+                setTrackerStep(
+                    2,
+                    "current",
+                    repairMessage
+                );
+            }
+
+
+            /*
+                STEP 3 - Final Quality Check
+            */
+            if (invoiceFinalized) {
+
+                setTrackerStep(
+                    3,
+                    "completed",
+                    formatTrackerTime(
+                        job.invoice?.finalizedAt
+                    ) ||
+                    "Final checks completed"
+                );
+
+            } else if (repairComplete) {
+
+                setTrackerStep(
+                    3,
+                    "current",
+                    "Final checks / invoice pending"
+                );
+
+            } else {
+
+                setTrackerStep(
+                    3,
+                    "pending",
+                    "Pending"
+                );
+            }
+
+
+            /*
+                STEP 4 - Ready for Handover
+            */
+            if (handoverComplete) {
+
+                setTrackerStep(
+                    4,
+                    "completed",
+                    formatTrackerTime(
+                        job.handover?.completedAt
+                    ) ||
+                    "Vehicle handed over"
+                );
+
+            } else if (invoiceFinalized) {
+
+                setTrackerStep(
+                    4,
+                    "current",
+                    "Ready for handover"
+                );
+
+            } else {
+
+                setTrackerStep(
+                    4,
+                    "pending",
+                    "Pending"
+                );
+            }
+        }
+
 
         if (trackerStatus) {
 
-            if (
-                currentTrackerStep >=
-                trackerSteps.length - 1
-            ) {
+            if (handoverComplete) {
+
+                trackerStatus.textContent =
+                    "Completed";
+
+                trackerStatus.className =
+                    "sd-status-badge completed";
+
+            } else if (invoiceFinalized) {
 
                 trackerStatus.textContent =
                     "Ready for Handover";
@@ -1919,6 +3887,7 @@ if (trackerCard) {
             } else {
 
                 trackerStatus.textContent =
+                    job.status ||
                     "In Progress";
 
                 trackerStatus.className =
@@ -1927,46 +3896,377 @@ if (trackerCard) {
         }
     }
 
-    updateTracker();
 
-    /*
-     * Frontend demo helper.
-     * Later the .NET backend can call/update
-     * the tracker using real job status data.
-     */
-    window.shiftDynamicsTracker = {
+    renderLiveServiceTracker();
 
-        next() {
 
-            if (
-                currentTrackerStep <
-                trackerSteps.length - 1
-            ) {
-                currentTrackerStep++;
-                updateTracker();
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderLiveServiceTracker();
             }
-        },
+        );
+    }
+}
+/* =====================================================
+   LIVE CUSTOMER SERVICE HISTORY
+   ===================================================== */
 
-        previous() {
+const serviceHistoryContainer =
+    document.getElementById(
+        "serviceHistoryContainer"
+    );
 
-            if (currentTrackerStep > 0) {
-                currentTrackerStep--;
-                updateTracker();
-            }
-        },
+if (serviceHistoryContainer) {
 
-        setStep(index) {
+    function escapeHistoryHtml(value) {
 
-            if (
-                index >= 0 &&
-                index < trackerSteps.length
-            ) {
-                currentTrackerStep = index;
-                updateTracker();
-            }
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function formatHistoryDate(value) {
+
+        if (!value) {
+            return "Date unavailable";
         }
 
-    };
+        const date =
+            new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "Date unavailable";
+        }
+
+        return date.toLocaleDateString(
+            "en-LK",
+            {
+                year: "numeric",
+                month: "short",
+                day: "2-digit"
+            }
+        );
+    }
+
+
+    function renderCustomerServiceHistory() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getCustomerProfile !== "function" ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function" ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+
+            serviceHistoryContainer.innerHTML = `
+                <h3>Service History</h3>
+
+                <p class="sd-muted-text">
+                    Service history is currently unavailable.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        const profile =
+            window.ShiftDynamicsStore
+                .getCustomerProfile();
+
+        if (!profile) {
+
+            serviceHistoryContainer.innerHTML = `
+                <h3>Service History</h3>
+
+                <p class="sd-muted-text">
+                    No customer profile found.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        const profileEmail =
+            String(
+                profile.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        const profileName =
+            String(
+                profile.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const customerBookingIds =
+            new Set(
+                window.ShiftDynamicsStore
+                    .getBookings()
+                    .filter(booking => {
+
+                        const email =
+                            String(
+                                booking.customer?.email || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+                        const name =
+                            String(
+                                booking.customer?.name || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            profileEmail &&
+                            email
+                        ) {
+                            return (
+                                email ===
+                                profileEmail
+                            );
+                        }
+
+                        return (
+                            profileName &&
+                            name === profileName
+                        );
+                    })
+                    .map(
+                        booking =>
+                            booking.bookingId
+                    )
+                    .filter(Boolean)
+            );
+
+
+        const completedJobs =
+            window.ShiftDynamicsStore
+                .getJobs()
+                .filter(job =>
+                    customerBookingIds.has(
+                        job.bookingId
+                    ) &&
+                    (
+                        job.handover?.status === "Completed" ||
+                        job.status === "Completed"
+                    )
+                )
+                .sort(
+                    (a, b) =>
+                        new Date(
+                            b.handover?.completedAt ||
+                            b.repair?.completedAt ||
+                            b.updatedAt ||
+                            0
+                        ) -
+                        new Date(
+                            a.handover?.completedAt ||
+                            a.repair?.completedAt ||
+                            a.updatedAt ||
+                            0
+                        )
+                );
+
+
+        if (completedJobs.length === 0) {
+
+            serviceHistoryContainer.innerHTML = `
+                <h3>Service History</h3>
+
+                <p class="sd-muted-text">
+                    No completed workshop services yet.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        serviceHistoryContainer.innerHTML = `
+            <h3>Service History</h3>
+
+            <div class="sd-history-list">
+
+                ${completedJobs
+                    .map(job => {
+
+                        const vehicle =
+                            [
+                                job.vehicle?.make,
+                                job.vehicle?.model
+                            ]
+                                .filter(Boolean)
+                                .join(" ") ||
+                            "Vehicle";
+
+                        const completedAt =
+                            job.handover?.completedAt ||
+                            job.repair?.completedAt ||
+                            job.updatedAt;
+
+                        const invoiceNumber =
+                            job.invoice?.number ||
+                            "Not available";
+
+                        const total =
+                            Number(
+                                job.invoice?.total ||
+                                job.estimate?.total ||
+                                0
+                            );
+
+                        return `
+                            <article
+                                class="sd-dashboard-card"
+                                style="margin-top: 16px;"
+                            >
+
+                                <div
+                                    style="
+                                        display:flex;
+                                        justify-content:space-between;
+                                        gap:16px;
+                                        align-items:flex-start;
+                                        flex-wrap:wrap;
+                                    "
+                                >
+
+                                    <div>
+                                        <span class="sd-panel-label">
+                                            ${escapeHistoryHtml(
+                                                job.jobCardNumber
+                                            )}
+                                        </span>
+
+                                        <h3>
+                                            ${escapeHistoryHtml(
+                                                vehicle
+                                            )}
+                                        </h3>
+
+                                        <p class="sd-muted-text">
+                                            ${escapeHistoryHtml(
+                                                job.serviceConcern ||
+                                                "Workshop Service"
+                                            )}
+                                        </p>
+                                    </div>
+
+                                    <span class="sd-status-badge completed">
+                                        Completed
+                                    </span>
+
+                                </div>
+
+                                <div
+                                    style="
+                                        display:grid;
+                                        grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+                                        gap:12px;
+                                        margin-top:18px;
+                                    "
+                                >
+
+                                    <div>
+                                        <span class="sd-muted-text">
+                                            Completed
+                                        </span>
+
+                                        <strong style="display:block;">
+                                            ${escapeHistoryHtml(
+                                                formatHistoryDate(
+                                                    completedAt
+                                                )
+                                            )}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <span class="sd-muted-text">
+                                            Invoice
+                                        </span>
+
+                                        <strong style="display:block;">
+                                            ${escapeHistoryHtml(
+                                                invoiceNumber
+                                            )}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <span class="sd-muted-text">
+                                            Total
+                                        </span>
+
+                                        <strong style="display:block;">
+                                            ${
+                                                total > 0
+                                                    ? `LKR ${total.toLocaleString("en-LK")}`
+                                                    : "Not available"
+                                            }
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <span class="sd-muted-text">
+                                            Mechanic
+                                        </span>
+
+                                        <strong style="display:block;">
+                                            ${escapeHistoryHtml(
+                                                job.repair?.mechanicName ||
+                                                job.assignment?.mechanicName ||
+                                                "Not available"
+                                            )}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                            </article>
+                        `;
+                    })
+                    .join("")}
+
+            </div>
+        `;
+    }
+
+
+    renderCustomerServiceHistory();
+
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderCustomerServiceHistory();
+            }
+        );
+    }
 }
 /* =====================================================
    INVOICE MODAL
@@ -2119,7 +4419,7 @@ const modificationData = {
         description:
             "Upgrade exhaust flow and sound with a performance-focused exhaust system.",
         price: "From LKR 85,000",
-        time: "Approx. 3â€“5 hours"
+        time: "Approx. 3ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ5 hours"
     },
 
     wheels: {
@@ -2127,7 +4427,7 @@ const modificationData = {
         description:
             "Choose styling and performance wheel upgrades suited to your vehicle.",
         price: "From LKR 120,000",
-        time: "Approx. 1â€“2 hours"
+        time: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 hours"
     },
 
     tuning: {
@@ -2135,7 +4435,7 @@ const modificationData = {
         description:
             "Vehicle-specific ECU tuning consultation for improved performance and response.",
         price: "From LKR 65,000",
-        time: "Approx. 2â€“4 hours"
+        time: "Approx. 2ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ4 hours"
     },
 
     suspension: {
@@ -2143,7 +4443,7 @@ const modificationData = {
         description:
             "Improve handling, stability and ride height with suspension upgrade options.",
         price: "From LKR 95,000",
-        time: "Approx. 4â€“6 hours"
+        time: "Approx. 4ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ6 hours"
     },
 
     brakes: {
@@ -2151,7 +4451,7 @@ const modificationData = {
         description:
             "Upgrade brake pads, discs and related components for improved braking performance.",
         price: "From LKR 75,000",
-        time: "Approx. 2â€“4 hours"
+        time: "Approx. 2ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ4 hours"
     },
 
     "body-kit": {
@@ -2159,7 +4459,7 @@ const modificationData = {
         description:
             "Exterior styling upgrades including body kits, spoilers and visual enhancements.",
         price: "From LKR 150,000",
-        time: "Approx. 1â€“2 days"
+        time: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 days"
     },
 
     interior: {
@@ -2167,7 +4467,7 @@ const modificationData = {
         description:
             "Customize interior trim, comfort features and styling options.",
         price: "From LKR 60,000",
-        time: "Approx. 4â€“8 hours"
+        time: "Approx. 4ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ8 hours"
     },
 
     audio: {
@@ -2175,7 +4475,7 @@ const modificationData = {
         description:
             "Upgrade speakers, amplifiers and in-car entertainment components.",
         price: "From LKR 70,000",
-        time: "Approx. 3â€“6 hours"
+        time: "Approx. 3ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ6 hours"
     }
 
 };
@@ -2330,6 +4630,348 @@ document.addEventListener(
    ONLINE PAYMENT
    ===================================================== */
 
+/* =====================================================
+   LIVE CUSTOMER INVOICES
+   ===================================================== */
+
+const customerPaymentsBody =
+    document.getElementById(
+        "customerPaymentsBody"
+    );
+
+
+if (customerPaymentsBody) {
+
+    function escapePaymentHtml(value) {
+
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function formatPaymentDate(value) {
+
+        if (!value) {
+            return "Date unavailable";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "Date unavailable";
+        }
+
+
+        return date.toLocaleDateString(
+            "en-LK",
+            {
+                year: "numeric",
+                month: "short",
+                day: "2-digit"
+            }
+        );
+    }
+
+
+    function getCustomerInvoiceJobs() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getCustomerProfile !== "function" ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function" ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return [];
+        }
+
+
+        const profile =
+            window.ShiftDynamicsStore
+                .getCustomerProfile();
+
+
+        if (!profile) {
+            return [];
+        }
+
+
+        const profileEmail =
+            String(
+                profile.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const profileName =
+            String(
+                profile.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const bookingIds =
+            new Set(
+                window.ShiftDynamicsStore
+                    .getBookings()
+                    .filter(booking => {
+
+                        const email =
+                            String(
+                                booking.customer?.email || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        const name =
+                            String(
+                                booking.customer?.name || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            profileEmail &&
+                            email
+                        ) {
+                            return (
+                                email ===
+                                profileEmail
+                            );
+                        }
+
+
+                        return (
+                            profileName &&
+                            name ===
+                            profileName
+                        );
+                    })
+                    .map(
+                        booking =>
+                            booking.bookingId
+                    )
+                    .filter(Boolean)
+            );
+
+
+        return window.ShiftDynamicsStore
+            .getJobs()
+            .filter(job =>
+                bookingIds.has(
+                    job.bookingId
+                ) &&
+                job.invoice &&
+                job.invoice.status === "Finalized" &&
+                job.invoice.number
+            )
+            .sort(
+                (a, b) =>
+                    new Date(
+                        b.invoice?.finalizedAt ||
+                        b.updatedAt ||
+                        0
+                    ) -
+                    new Date(
+                        a.invoice?.finalizedAt ||
+                        a.updatedAt ||
+                        0
+                    )
+            );
+    }
+
+
+    function renderCustomerInvoices() {
+
+        const jobs =
+            getCustomerInvoiceJobs();
+
+
+        if (jobs.length === 0) {
+
+            customerPaymentsBody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        No finalized invoices available yet.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        customerPaymentsBody.innerHTML =
+            jobs.map(job => {
+
+                const invoice =
+                    job.invoice || {};
+
+
+                const vehicle =
+                    [
+                        job.vehicle?.make,
+                        job.vehicle?.model
+                    ]
+                        .filter(Boolean)
+                        .join(" ") ||
+                    "Vehicle";
+
+
+                const paymentStatus =
+                    job.payment?.status ||
+                    "Pending";
+
+
+                const isPaid =
+                    paymentStatus ===
+                    "Paid";
+
+
+                const invoiceNumber =
+                    String(
+                        invoice.number || ""
+                    );
+
+
+                const cleanInvoiceNumber =
+                    invoiceNumber.replace(
+                        /^#/,
+                        ""
+                    );
+
+
+                const amount =
+                    Number(
+                        invoice.total ||
+                        job.estimate?.total ||
+                        0
+                    );
+
+
+                return `
+                    <tr
+                        data-job-card="${escapePaymentHtml(
+                            job.jobCardNumber
+                        )}"
+                    >
+
+                        <td>
+                            ${escapePaymentHtml(
+                                invoiceNumber
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapePaymentHtml(
+                                vehicle
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapePaymentHtml(
+                                formatPaymentDate(
+                                    invoice.finalizedAt ||
+                                    job.updatedAt
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            LKR ${amount.toLocaleString("en-LK")}
+                        </td>
+
+                        <td>
+                            <span
+                                class="sd-status-badge ${
+                                    isPaid
+                                        ? "paid"
+                                        : "pending"
+                                }"
+                            >
+                                ${
+                                    isPaid
+                                        ? "Paid"
+                                        : "Pending"
+                                }
+                            </span>
+                        </td>
+
+                        <td>
+
+                            ${
+                                isPaid
+                                    ? `
+                                        <button
+                                            class="sd-table-action sd-view-invoice"
+                                            type="button"
+                                            data-job-card="${escapePaymentHtml(
+                                                job.jobCardNumber
+                                            )}"
+                                        >
+                                            View
+                                        </button>
+                                    `
+                                    : `
+                                        <button
+                                            class="sd-table-action sd-pay-now"
+                                            type="button"
+                                            data-job-card="${escapePaymentHtml(
+                                                job.jobCardNumber
+                                            )}"
+                                            data-invoice="${escapePaymentHtml(
+                                                cleanInvoiceNumber
+                                            )}"
+                                            data-amount="${amount}"
+                                        >
+                                            Pay Now
+                                        </button>
+                                    `
+                            }
+
+                        </td>
+
+                    </tr>
+                `;
+            })
+            .join("");
+    }
+
+
+    renderCustomerInvoices();
+
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderCustomerInvoices();
+            }
+        );
+    }
+}
+
+
+/* =====================================================
+   EXISTING ONLINE PAYMENT CONTINUES BELOW
+   ===================================================== */
 const paymentModal =
     document.getElementById("paymentModal");
 
@@ -2643,6 +5285,65 @@ if (paymentForm) {
 
                 if (currentPaymentButton) {
 
+                    /*
+                     * Persist successful customer payment
+                     * into the shared workflow Job Card.
+                     */
+                    const jobCardNumber =
+                        currentPaymentButton.dataset.jobCard || "";
+
+                    const invoiceNumber =
+                        currentPaymentButton.dataset.invoice || "";
+
+                    const paidAmount =
+                        Number(
+                            currentPaymentButton.dataset.amount || 0
+                        );
+
+                    if (
+                        jobCardNumber &&
+                        window.ShiftDynamicsStore &&
+                        typeof window.ShiftDynamicsStore.updateJob === "function"
+                    ) {
+
+                        const paymentJobs =
+                            typeof window.ShiftDynamicsStore.getJobs === "function"
+                                ? window.ShiftDynamicsStore.getJobs() || []
+                                : [];
+
+                        const paymentJob =
+                            paymentJobs.find(
+                                job =>
+                                    job.jobCardNumber ===
+                                    jobCardNumber
+                            );
+
+                        window.ShiftDynamicsStore.updateJob(
+                            jobCardNumber,
+                            {
+                                payment: {
+                                    ...(paymentJob?.payment || {}),
+                                    status: "Paid",
+                                    amount: paidAmount,
+                                    invoiceNumber:
+                                        invoiceNumber.startsWith("#")
+                                            ? invoiceNumber
+                                            : `#${invoiceNumber}`,
+                                    method: "Card",
+                                    paidAt:
+                                        new Date().toISOString()
+                                }
+                            }
+                        );
+
+                        console.log(
+                            "Customer payment saved:",
+                            jobCardNumber,
+                            paidAmount
+                        );
+                    }
+
+
                     const tableRow =
                         currentPaymentButton.closest("tr");
 
@@ -2740,7 +5441,7 @@ document.addEventListener(
         );
 
 
-    if (profileForm) {
+        if (profileForm) {
 
         profileForm.addEventListener(
             "submit",
@@ -2748,17 +5449,80 @@ document.addEventListener(
 
                 event.preventDefault();
 
+                /*
+                    CUSTOMER PROFILE -> SHARED STORE
+                */
+                try {
 
-                profileMessage.className =
-                    "sd-form-message success";
+                    if (
+                        !window.ShiftDynamicsStore ||
+                        typeof window.ShiftDynamicsStore.saveCustomerProfile !== "function"
+                    ) {
+                        throw new Error(
+                            "ShiftDynamicsStore.saveCustomerProfile is unavailable."
+                        );
+                    }
 
+                    const name =
+                        document
+                            .getElementById("profileName")
+                            ?.value
+                            ?.trim() || "";
 
-                profileMessage.textContent =
-                    "Profile changes saved in the frontend demo.";
+                    const email =
+                        document
+                            .getElementById("profileEmail")
+                            ?.value
+                            ?.trim() || "";
 
+                    const phone =
+                        document
+                            .getElementById("profilePhone")
+                            ?.value
+                            ?.trim() || "";
+
+                    const savedProfile =
+                        window.ShiftDynamicsStore.saveCustomerProfile({
+                            name,
+                            email,
+                            phone
+                        });
+
+                    profileMessage.className =
+                        "sd-form-message success";
+
+                    profileMessage.textContent =
+                        "Profile changes saved successfully.";
+
+                    console.log(
+                        "Shared customer profile:",
+                        savedProfile
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Unable to save customer profile to shared workflow store.",
+                        error
+                    );
+
+                    profileMessage.className =
+                        "sd-form-message error";
+
+                    profileMessage.textContent =
+                        "Unable to save profile changes.";
+                }
             }
         );
-
     }
 
 });
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,4524 @@
+﻿document.addEventListener("DOMContentLoaded", () => {
+
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    const menuButton =
+        document.getElementById("menuButton");
+
+    const sidebarClose =
+        document.getElementById("sidebarClose");
+
+    const sidebarOverlay =
+        document.getElementById("sidebarOverlay");
+
+    const navItems =
+        document.querySelectorAll(".sd-nav-item");
+
+    const sections =
+        document.querySelectorAll(".sd-dashboard-section");
+
+    const shortcuts =
+        document.querySelectorAll(".sd-section-shortcut");
+
+    const pageTitle =
+        document.getElementById("pageTitle");
+
+    const pageSubtitle =
+        document.getElementById("pageSubtitle");
+
+
+    /* =====================================================
+       SECTION INFORMATION
+       ===================================================== */
+
+    const sectionInfo = {
+
+        overview: {
+            title: "Dashboard Overview",
+            subtitle: "Welcome back to Shift Dynamics."
+        },
+
+        vehicles: {
+            title: "My Vehicles",
+            subtitle: "Manage vehicles connected to your account."
+        },
+
+        booking: {
+            title: "Service Booking",
+            subtitle: "Request your next workshop appointment."
+        },
+
+        estimates: {
+            title: "Digital Estimates",
+            subtitle: "Review and approve service estimates."
+        },
+
+        tracker: {
+            title: "Service Tracker",
+            subtitle: "Follow your vehicle service progress."
+        },
+
+        history: {
+            title: "Service History",
+            subtitle: "View your completed workshop jobs and services."
+        },
+        modifications: {
+            title: "Modification Catalog",
+            subtitle: "Explore vehicle upgrade options."
+        },
+
+        payments: {
+            title: "Payments & Invoices",
+            subtitle: "Manage invoices and payment information."
+        },
+
+        "emergency-history": {
+            title: "Emergency Request History",
+            subtitle: "View your previous towing and mobile mechanic assistance requests."
+        },
+        
+        profile: {
+            title: "Profile Settings",
+            subtitle: "Manage your account information."
+        }
+        
+
+    };
+
+
+    /* =====================================================
+       SIDEBAR MOBILE
+       ===================================================== */
+
+    function openSidebar() {
+
+        sidebar.classList.add("open");
+        sidebarOverlay.classList.add("active");
+
+        document.body.style.overflow =
+            "hidden";
+    }
+
+
+    function closeSidebar() {
+
+        sidebar.classList.remove("open");
+        sidebarOverlay.classList.remove("active");
+
+        document.body.style.overflow =
+            "";
+    }
+
+
+    if (menuButton) {
+
+        menuButton.addEventListener(
+            "click",
+            openSidebar
+        );
+    }
+
+
+    if (sidebarClose) {
+
+        sidebarClose.addEventListener(
+            "click",
+            closeSidebar
+        );
+    }
+
+
+    if (sidebarOverlay) {
+
+        sidebarOverlay.addEventListener(
+            "click",
+            closeSidebar
+        );
+    }
+
+
+    /* =====================================================
+       SECTION NAVIGATION
+       ===================================================== */
+
+    function showSection(sectionId) {
+
+        sections.forEach(section => {
+
+            section.classList.toggle(
+                "active",
+                section.id === sectionId
+            );
+
+        });
+
+
+        navItems.forEach(item => {
+
+            item.classList.toggle(
+                "active",
+                item.dataset.section === sectionId
+            );
+
+        });
+
+
+        const info =
+            sectionInfo[sectionId];
+
+
+        if (info) {
+
+            pageTitle.textContent =
+                info.title;
+
+            pageSubtitle.textContent =
+                info.subtitle;
+        }
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+
+        if (
+            window.innerWidth <= 900
+        ) {
+            closeSidebar();
+        }
+    }
+
+
+    navItems.forEach(item => {
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                showSection(
+                    item.dataset.section
+                );
+
+            }
+        );
+
+    });
+
+
+    shortcuts.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                showSection(
+                    button.dataset.target
+                );
+
+            }
+        );
+
+    });
+
+
+    /* =====================================================
+       VEHICLE MODAL
+       ===================================================== */
+
+    const addVehicleButton =
+        document.getElementById(
+            "addVehicleButton"
+        );
+
+    const vehicleModal =
+        document.getElementById(
+            "vehicleModal"
+        );
+
+    const vehicleModalClose =
+        document.getElementById(
+            "vehicleModalClose"
+        );
+
+    const modalCloseButtons =
+        document.querySelectorAll(
+            "[data-close-modal]"
+        );
+
+
+    function openVehicleModal() {
+
+        vehicleModal.classList.add("open");
+
+        vehicleModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+    }
+
+
+    function closeVehicleModal() {
+
+    vehicleModal.classList.remove(
+        "open"
+    );
+
+    vehicleModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+
+    resetVehicleForm();
+    }
+
+
+    if (addVehicleButton) {
+
+    addVehicleButton.addEventListener(
+        "click",
+        () => {
+
+            resetVehicleForm();
+            openVehicleModal();
+
+        }
+    );
+    }   
+
+
+    if (vehicleModalClose) {
+
+        vehicleModalClose.addEventListener(
+            "click",
+            closeVehicleModal
+        );
+    }
+
+
+    modalCloseButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            closeVehicleModal
+        );
+
+    });
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape" &&
+                vehicleModal.classList.contains(
+                    "open"
+                )
+            ) {
+
+                closeVehicleModal();
+
+            }
+
+        }
+    );
+/* =====================================================
+   VEHICLE MANAGEMENT
+   ===================================================== */
+
+const vehicleForm =
+    document.getElementById("vehicleForm");
+
+const vehicleGrid =
+    document.getElementById("vehicleGrid");
+
+const vehicleSubmitText =
+    document.getElementById("vehicleSubmitText");
+
+
+let editingVehicleCard = null;
+
+
+/* =====================================================
+   VEHICLE FORM SUBMIT
+   ===================================================== */
+
+if (vehicleForm) {
+
+    vehicleForm.addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const make =
+                document
+                    .getElementById("vehicleMake")
+                    .value
+                    .trim();
+
+            const model =
+                document
+                    .getElementById("vehicleModel")
+                    .value
+                    .trim();
+
+            const year =
+                document
+                    .getElementById("vehicleYear")
+                    .value
+                    .trim();
+
+            const plate =
+                document
+                    .getElementById("vehiclePlate")
+                    .value
+                    .trim();
+
+            const trim =
+                document
+                    .getElementById("vehicleTrim")
+                    .value
+                    .trim();
+
+            const engine =
+                document
+                    .getElementById("vehicleEngine")
+                    .value
+                    .trim();
+
+            const vin =
+                document
+                    .getElementById("vehicleVin")
+                    .value
+                    .trim();
+
+
+            /* -----------------------------------------
+               BASIC VALIDATION
+               ----------------------------------------- */
+
+            if (!make || !model || !year || !plate) {
+
+                alert(
+                    "Please enter Make, Model, Year and License Plate."
+                );
+
+                return;
+            }
+
+
+            const numericYear =
+                Number(year);
+
+            const currentYear =
+                new Date().getFullYear();
+
+
+            if (
+                numericYear < 1950 ||
+                numericYear > currentYear + 1
+            ) {
+
+                alert(
+                    "Please enter a valid vehicle year."
+                );
+
+                return;
+            }
+
+
+            /* -----------------------------------------
+               EDIT EXISTING VEHICLE
+               ----------------------------------------- */
+
+            if (editingVehicleCard) {
+
+                const vehiclePatch = {
+                    make,
+                    model,
+                    year,
+                    plate,
+                    trim,
+                    engine,
+                    vin
+                };
+
+                const vehicleId =
+                    editingVehicleCard.dataset.vehicleId;
+
+                let updatedVehicle =
+                    vehiclePatch;
+
+                if (
+                    vehicleId &&
+                    window.ShiftDynamicsStore &&
+                    typeof window.ShiftDynamicsStore.updateVehicle === "function"
+                ) {
+                    updatedVehicle =
+                        window.ShiftDynamicsStore.updateVehicle(
+                            vehicleId,
+                            vehiclePatch
+                        ) || vehiclePatch;
+                }
+
+                updateVehicleCard(
+                    editingVehicleCard,
+                    updatedVehicle
+                );
+
+
+                editingVehicleCard = null;
+
+
+                if (vehicleSubmitText) {
+                    vehicleSubmitText.textContent =
+                        "Add Vehicle";
+                }
+
+
+                vehicleForm.reset();
+
+                closeVehicleModal();
+
+                return;
+            }
+
+
+            /* -----------------------------------------
+               CREATE NEW VEHICLE
+               ----------------------------------------- */
+
+            const vehicleData = {
+                make,
+                model,
+                year,
+                plate,
+                trim,
+                engine,
+                vin
+            };
+
+            let savedVehicle =
+                vehicleData;
+
+            if (
+                window.ShiftDynamicsStore &&
+                typeof window.ShiftDynamicsStore.createVehicle === "function"
+            ) {
+                savedVehicle =
+                    window.ShiftDynamicsStore.createVehicle(
+                        vehicleData
+                    );
+            }
+
+            const card =
+                createVehicleCard(
+                    savedVehicle
+                );
+
+
+            vehicleGrid.appendChild(card);
+
+
+            vehicleForm.reset();
+
+            closeVehicleModal();
+
+        }
+    );
+}
+
+
+/* =====================================================
+   CREATE VEHICLE CARD
+   ===================================================== */
+
+function createVehicleCard(vehicle) {
+
+    const card =
+        document.createElement("article");
+
+
+    card.className =
+        "sd-vehicle-card";
+
+
+    updateVehicleCard(
+        card,
+        vehicle
+    );
+
+
+    return card;
+}
+
+
+
+/* =====================================================
+   RESTORE SHARED CUSTOMER VEHICLES
+   ===================================================== */
+
+function restoreSharedVehicles() {
+
+    if (
+        !vehicleGrid ||
+        !window.ShiftDynamicsStore ||
+        typeof window.ShiftDynamicsStore.getVehicles !== "function"
+    ) {
+        return;
+    }
+
+    const storedVehicles =
+        window.ShiftDynamicsStore.getVehicles();
+
+    if (!storedVehicles.length) {
+        return;
+    }
+
+    vehicleGrid.innerHTML =
+        "";
+
+    storedVehicles.forEach(
+        vehicle => {
+
+            vehicleGrid.appendChild(
+                createVehicleCard(
+                    vehicle
+                )
+            );
+        }
+    );
+}
+
+
+restoreSharedVehicles();
+
+/* =====================================================
+   UPDATE VEHICLE CARD
+   ===================================================== */
+
+function updateVehicleCard(
+    card,
+    vehicle
+) {
+
+    /*
+        CUSTOMER VEHICLES -> SHARED STORE
+    */
+    if (vehicle.vehicleId) {
+        card.dataset.vehicleId =
+            vehicle.vehicleId;
+    }
+card.dataset.make =
+        vehicle.make;
+
+    card.dataset.model =
+        vehicle.model;
+
+    card.dataset.year =
+        vehicle.year;
+
+    card.dataset.plate =
+        vehicle.plate;
+
+    card.dataset.trim =
+        vehicle.trim || "";
+
+    card.dataset.engine =
+        vehicle.engine || "";
+
+    card.dataset.vin =
+        vehicle.vin || "";
+
+
+    card.innerHTML = `
+
+        <div class="sd-vehicle-top">
+
+            <div class="sd-vehicle-icon">
+                <i class="bi bi-car-front-fill"></i>
+            </div>
+
+            <span class="sd-status-badge active">
+                Vehicle
+            </span>
+
+        </div>
+
+
+        <h3>
+            ${escapeHTML(vehicle.make)}
+            ${escapeHTML(vehicle.model)}
+        </h3>
+
+
+        <p>
+            ${escapeHTML(vehicle.year)}
+            ${vehicle.trim
+                ? " ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ " + escapeHTML(vehicle.trim)
+                : ""}
+        </p>
+
+
+        <div class="sd-vehicle-details">
+
+            <div>
+                <span>License Plate</span>
+
+                <strong>
+                    ${escapeHTML(vehicle.plate)}
+                </strong>
+            </div>
+
+
+            <div>
+                <span>Engine</span>
+
+                <strong>
+                    ${escapeHTML(
+                        vehicle.engine ||
+                        "Not specified"
+                    )}
+                </strong>
+            </div>
+
+
+            <div>
+                <span>VIN</span>
+
+                <strong>
+                    ${escapeHTML(
+                        vehicle.vin ||
+                        "Not specified"
+                    )}
+                </strong>
+            </div>
+
+
+            <div>
+                <span>Year</span>
+
+                <strong>
+                    ${escapeHTML(vehicle.year)}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="sd-vehicle-actions">
+
+            <button
+                class="sd-secondary-button sd-edit-vehicle"
+                type="button"
+            >
+                <i class="bi bi-pencil"></i>
+                Edit
+            </button>
+
+
+            <button
+                class="sd-delete-button sd-delete-vehicle"
+                type="button"
+            >
+                <i class="bi bi-trash3"></i>
+                Delete
+            </button>
+
+        </div>
+    `;
+
+}
+
+
+/* =====================================================
+   VEHICLE CARD ACTIONS
+   ===================================================== */
+
+if (vehicleGrid) {
+
+    vehicleGrid.addEventListener(
+        "click",
+        event => {
+
+            const editButton =
+                event.target.closest(
+                    ".sd-edit-vehicle"
+                );
+
+
+            const deleteButton =
+                event.target.closest(
+                    ".sd-delete-vehicle"
+                );
+
+
+            /* -----------------------------------------
+               EDIT
+               ----------------------------------------- */
+
+            if (editButton) {
+
+                const card =
+                    editButton.closest(
+                        ".sd-vehicle-card"
+                    );
+
+
+                startVehicleEdit(card);
+
+                return;
+            }
+
+
+            /* -----------------------------------------
+               DELETE
+               ----------------------------------------- */
+
+            if (deleteButton) {
+
+                const card =
+                    deleteButton.closest(
+                        ".sd-vehicle-card"
+                    );
+
+
+                const vehicleName =
+                    `${card.dataset.make || "Vehicle"} ${card.dataset.model || ""}`;
+
+
+                const confirmed =
+                    window.confirm(
+                        `Delete ${vehicleName.trim()}?`
+                    );
+
+
+                if (!confirmed) {
+                    return;
+                }
+
+                const vehicleId =
+                    card.dataset.vehicleId;
+
+                if (
+                    vehicleId &&
+                    window.ShiftDynamicsStore &&
+                    typeof window.ShiftDynamicsStore.deleteVehicle === "function"
+                ) {
+                    window.ShiftDynamicsStore.deleteVehicle(
+                        vehicleId
+                    );
+                }
+
+                card.remove();
+
+            }
+
+        }
+    );
+}
+
+
+/* =====================================================
+   START VEHICLE EDIT
+   ===================================================== */
+
+function startVehicleEdit(card) {
+
+    editingVehicleCard =
+        card;
+
+
+    document.getElementById(
+        "vehicleMake"
+    ).value =
+        card.dataset.make || "";
+
+
+    document.getElementById(
+        "vehicleModel"
+    ).value =
+        card.dataset.model || "";
+
+
+    document.getElementById(
+        "vehicleYear"
+    ).value =
+        card.dataset.year || "";
+
+
+    document.getElementById(
+        "vehiclePlate"
+    ).value =
+        card.dataset.plate || "";
+
+
+    document.getElementById(
+        "vehicleTrim"
+    ).value =
+        card.dataset.trim || "";
+
+
+    document.getElementById(
+        "vehicleEngine"
+    ).value =
+        card.dataset.engine || "";
+
+
+    document.getElementById(
+        "vehicleVin"
+    ).value =
+        card.dataset.vin || "";
+
+
+    if (vehicleSubmitText) {
+
+        vehicleSubmitText.textContent =
+            "Save Changes";
+    }
+
+
+    openVehicleModal();
+
+}
+
+
+/* =====================================================
+   RESET VEHICLE FORM
+   ===================================================== */
+
+function resetVehicleForm() {
+
+    editingVehicleCard = null;
+
+
+    if (vehicleForm) {
+        vehicleForm.reset();
+    }
+
+
+    if (vehicleSubmitText) {
+
+        vehicleSubmitText.textContent =
+            "Add Vehicle";
+    }
+
+}
+
+
+/* =====================================================
+   ESCAPE USER CONTENT
+   ===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+    /* =====================================================
+       SERVICE BOOKING
+       ===================================================== */
+
+    const serviceBookingForm =
+        document.getElementById("serviceBookingForm");
+
+    const bookingVehicle =
+        document.getElementById("bookingVehicle");
+
+    const serviceType =
+        document.getElementById("serviceType");
+    const servicePackageInfo =
+        document.getElementById(
+            "servicePackageInfo"
+        );
+
+    const servicePackageIcon =
+        document.getElementById(
+            "servicePackageIcon"
+        );
+
+    const servicePackageTitle =
+        document.getElementById(
+            "servicePackageTitle"
+        );
+
+    const servicePackageDescription =
+        document.getElementById(
+            "servicePackageDescription"
+        );
+
+    const servicePackageDuration =
+        document.getElementById(
+            "servicePackageDuration"
+        );
+
+
+    const servicePackages = {
+
+        "General Service": {
+            icon: "bi-wrench-adjustable",
+            duration: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 hours",
+            description:
+                "Routine maintenance package covering essential service checks and general vehicle care."
+        },
+
+        "Vehicle Inspection": {
+            icon: "bi-search",
+            duration: "Approx. 45ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ90 minutes",
+            description:
+                "A detailed vehicle condition inspection covering major safety and mechanical areas."
+        },
+
+        "Engine Diagnostic": {
+            icon: "bi-speedometer2",
+            duration: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 hours",
+            description:
+                "Diagnostic assessment for engine warning lights, performance issues and related faults."
+        },
+
+        "Brake Service": {
+            icon: "bi-disc",
+            duration: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 hours",
+            description:
+                "Brake system inspection and service covering braking components and overall condition."
+        },
+
+        "Modification Consultation": {
+            icon: "bi-tools",
+            duration: "Approx. 30ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ60 minutes",
+            description:
+                "Consultation for vehicle upgrades such as exhausts, rims, tuning and other modifications."
+        }
+
+    };
+
+
+    function updateServicePackageInfo() {
+
+        if (
+            !serviceType ||
+            !servicePackageInfo
+        ) {
+            return;
+        }
+
+
+        const selectedPackage =
+            servicePackages[
+                serviceType.value
+            ];
+
+
+        if (!selectedPackage) {
+
+            servicePackageInfo.hidden =
+                true;
+
+            return;
+        }
+
+
+        servicePackageInfo.hidden =
+            false;
+
+
+        if (servicePackageTitle) {
+
+            servicePackageTitle.textContent =
+                serviceType.value;
+        }
+
+
+        if (servicePackageDescription) {
+
+            servicePackageDescription.textContent =
+                selectedPackage.description;
+        }
+
+
+        if (servicePackageDuration) {
+
+            servicePackageDuration.textContent =
+                selectedPackage.duration;
+        }
+
+
+        if (servicePackageIcon) {
+
+            servicePackageIcon.className =
+                `bi ${selectedPackage.icon}`;
+        }
+    }
+
+
+    if (serviceType) {
+
+        serviceType.addEventListener(
+            "change",
+            updateServicePackageInfo
+        );
+
+    }
+    const bookingDate =
+        document.getElementById("bookingDate");
+
+    const bookingTime =
+        document.getElementById("bookingTime");
+
+    const bookingNotes =
+        document.getElementById("bookingNotes");
+
+    const bookingMessage =
+        document.getElementById("bookingMessage");
+
+
+    /* =====================================================
+       BOOKING SETTINGS
+       ===================================================== */
+
+    const workshopOpeningTime = "08:00";
+    const workshopClosingTime = "17:00";
+
+
+    /* =====================================================
+       SET MINIMUM BOOKING DATE
+       Prevent past date selection
+       ===================================================== */
+
+    if (bookingDate) {
+
+        const today =
+            new Date();
+
+        const year =
+            today.getFullYear();
+
+        const month =
+            String(
+                today.getMonth() + 1
+            ).padStart(2, "0");
+
+        const day =
+            String(
+                today.getDate()
+            ).padStart(2, "0");
+
+
+        bookingDate.min =
+            `${year}-${month}-${day}`;
+    }
+
+
+    /* =====================================================
+       WORKSHOP TIME RANGE
+       ===================================================== */
+
+    if (bookingTime) {
+
+        bookingTime.min =
+            workshopOpeningTime;
+
+        bookingTime.max =
+            workshopClosingTime;
+    }
+
+
+    /* =====================================================
+       UPDATE VEHICLE DROPDOWN
+       Reads vehicles from My Vehicles cards
+       ===================================================== */
+
+    function updateBookingVehicleOptions() {
+
+        if (!bookingVehicle) {
+            return;
+        }
+
+
+        const currentValue =
+            bookingVehicle.value;
+
+
+        bookingVehicle.innerHTML = `
+            <option value="">
+                Select vehicle
+            </option>
+        `;
+
+
+        const vehicleCards =
+            document.querySelectorAll(
+                "#vehicleGrid .sd-vehicle-card"
+            );
+
+
+        vehicleCards.forEach(card => {
+
+            const make =
+                card.dataset.make || "";
+
+            const model =
+                card.dataset.model || "";
+
+            const plate =
+                card.dataset.plate || "";
+
+
+            if (!make || !model) {
+                return;
+            }
+
+
+            const option =
+                document.createElement("option");
+
+
+            option.value =
+                `${make} ${model}`;
+
+
+            option.textContent =
+                plate
+                    ? `${make} ${model} - ${plate}`
+                    : `${make} ${model}`;
+
+
+            bookingVehicle.appendChild(
+                option
+            );
+
+        });
+
+
+        const existingOption =
+            Array.from(
+                bookingVehicle.options
+            ).find(
+                option =>
+                    option.value === currentValue
+            );
+
+
+        if (existingOption) {
+
+            bookingVehicle.value =
+                currentValue;
+        }
+    }
+
+
+    /* =====================================================
+       INITIAL VEHICLE DROPDOWN
+       ===================================================== */
+
+    updateBookingVehicleOptions();
+
+
+    /* =====================================================
+       UPDATE DROPDOWN WHEN VEHICLES CHANGE
+       ===================================================== */
+
+    if (vehicleGrid) {
+
+        const vehicleObserver =
+            new MutationObserver(() => {
+
+                updateBookingVehicleOptions();
+
+            });
+
+
+        vehicleObserver.observe(
+            vehicleGrid,
+            {
+                childList: true,
+                subtree: true
+            }
+        );
+    }
+
+
+    /* =====================================================
+       MESSAGE HELPERS
+       ===================================================== */
+
+    function showBookingError(message) {
+
+        if (!bookingMessage) {
+            return;
+        }
+
+
+        bookingMessage.className =
+            "sd-form-message";
+
+
+        bookingMessage.style.display =
+            "block";
+
+
+        bookingMessage.style.background =
+            "#FEF2F2";
+
+
+        bookingMessage.style.border =
+            "1px solid #FECACA";
+
+
+        bookingMessage.style.color =
+            "#B91C1C";
+
+
+        bookingMessage.textContent =
+            message;
+    }
+
+
+    function showBookingSuccess(message) {
+
+        if (!bookingMessage) {
+            return;
+        }
+
+
+        bookingMessage.removeAttribute(
+            "style"
+        );
+
+
+        bookingMessage.className =
+            "sd-form-message success";
+
+
+        bookingMessage.textContent =
+            message;
+    }
+
+
+    function clearBookingMessage() {
+
+        if (!bookingMessage) {
+            return;
+        }
+
+
+        bookingMessage.removeAttribute(
+            "style"
+        );
+
+
+        bookingMessage.className =
+            "sd-form-message";
+
+
+        bookingMessage.textContent =
+            "";
+    }
+
+
+    /* =====================================================
+       VALIDATE BOOKING DATE
+       ===================================================== */
+
+    function isValidBookingDate(dateValue) {
+
+        if (!dateValue) {
+            return false;
+        }
+
+
+        const selectedDate =
+            new Date(
+                `${dateValue}T00:00:00`
+            );
+
+
+        const today =
+            new Date();
+
+
+        today.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        return selectedDate >= today;
+    }
+
+
+    /* =====================================================
+       VALIDATE WORKSHOP TIME
+       ===================================================== */
+
+    function isValidWorkshopTime(
+        timeValue
+    ) {
+
+        if (!timeValue) {
+            return false;
+        }
+
+
+        return (
+            timeValue >= workshopOpeningTime &&
+            timeValue <= workshopClosingTime
+        );
+    }
+
+
+    /* =====================================================
+       FORMAT BOOKING DATE
+       ===================================================== */
+
+    function formatBookingDate(
+        dateValue
+    ) {
+
+        const date =
+            new Date(
+                `${dateValue}T00:00:00`
+            );
+
+
+        return date.toLocaleDateString(
+            "en-GB",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+    }
+
+
+    /* =====================================================
+       FORMAT BOOKING TIME
+       ===================================================== */
+
+    function formatBookingTime(
+        timeValue
+    ) {
+
+        const [
+            hours,
+            minutes
+        ] =
+            timeValue
+                .split(":")
+                .map(Number);
+
+
+        const date =
+            new Date();
+
+
+        date.setHours(
+            hours,
+            minutes,
+            0,
+            0
+        );
+
+
+        return date.toLocaleTimeString(
+            "en-US",
+            {
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+    }
+
+
+    /* =====================================================
+       SERVICE BOOKING SUBMIT
+       ===================================================== */
+
+    if (serviceBookingForm) {
+
+        serviceBookingForm.addEventListener(
+            "submit",
+            event => {
+
+                event.preventDefault();
+
+                clearBookingMessage();
+
+
+                /* -----------------------------------------
+                   GET VALUES
+                   ----------------------------------------- */
+
+                const selectedVehicle =
+                    bookingVehicle
+                        ? bookingVehicle.value.trim()
+                        : "";
+
+
+                const selectedService =
+                    serviceType
+                        ? serviceType.value.trim()
+                        : "";
+
+
+                const selectedDate =
+                    bookingDate
+                        ? bookingDate.value
+                        : "";
+
+
+                const selectedTime =
+                    bookingTime
+                        ? bookingTime.value
+                        : "";
+
+
+                const notes =
+                    bookingNotes
+                        ? bookingNotes.value.trim()
+                        : "";
+
+
+                /* -----------------------------------------
+                   VEHICLE VALIDATION
+                   ----------------------------------------- */
+
+                if (!selectedVehicle) {
+
+                    showBookingError(
+                        "Please select a vehicle."
+                    );
+
+                    if (bookingVehicle) {
+                        bookingVehicle.focus();
+                    }
+
+                    return;
+                }
+
+
+                /* -----------------------------------------
+                   SERVICE VALIDATION
+                   ----------------------------------------- */
+
+                if (!selectedService) {
+
+                    showBookingError(
+                        "Please select a service type."
+                    );
+
+                    if (serviceType) {
+                        serviceType.focus();
+                    }
+
+                    return;
+                }
+
+
+                /* -----------------------------------------
+                   DATE VALIDATION
+                   ----------------------------------------- */
+
+                if (!selectedDate) {
+
+                    showBookingError(
+                        "Please select your preferred booking date."
+                    );
+
+                    if (bookingDate) {
+                        bookingDate.focus();
+                    }
+
+                    return;
+                }
+
+
+                if (
+                    !isValidBookingDate(
+                        selectedDate
+                    )
+                ) {
+
+                    showBookingError(
+                        "Please select today or a future booking date."
+                    );
+
+                    if (bookingDate) {
+                        bookingDate.focus();
+                    }
+
+                    return;
+                }
+
+
+                /* -----------------------------------------
+                   TIME VALIDATION
+                   ----------------------------------------- */
+
+                if (!selectedTime) {
+
+                    showBookingError(
+                        "Please select your preferred booking time."
+                    );
+
+                    if (bookingTime) {
+                        bookingTime.focus();
+                    }
+
+                    return;
+                }
+
+
+                if (
+                    !isValidWorkshopTime(
+                        selectedTime
+                    )
+                ) {
+
+                    showBookingError(
+                        "Please select a workshop time between 8:00 AM and 5:00 PM."
+                    );
+
+                    if (bookingTime) {
+                        bookingTime.focus();
+                    }
+
+                    return;
+                }
+
+
+                /* -----------------------------------------
+                   CREATE FRONTEND BOOKING DATA
+
+                   Later this object can be sent
+                   to the .NET backend API.
+                   ----------------------------------------- */
+
+                                /*
+                    LIVE CUSTOMER BOOKING CONTEXT
+
+                    Profile and vehicle information come from the
+                    shared frontend store instead of demo HTML data.
+                */
+
+                const customerProfile =
+                    (
+                        window.ShiftDynamicsStore &&
+                        typeof window.ShiftDynamicsStore.getCustomerProfile === "function"
+                    )
+                        ? window.ShiftDynamicsStore.getCustomerProfile()
+                        : null;
+
+                const sharedVehicles =
+                    (
+                        window.ShiftDynamicsStore &&
+                        typeof window.ShiftDynamicsStore.getVehicles === "function"
+                    )
+                        ? window.ShiftDynamicsStore.getVehicles()
+                        : [];
+
+                const selectedVehicleDetails =
+                    sharedVehicles.find(
+                        vehicle =>
+                            `${vehicle.make || ""} ${vehicle.model || ""}`.trim() ===
+                            selectedVehicle
+                    ) || null;
+
+                const bookingData = {
+
+                    customer:
+                        customerProfile
+                            ? {
+                                name:
+                                    customerProfile.name || "",
+
+                                email:
+                                    customerProfile.email || "",
+
+                                phone:
+                                    customerProfile.phone || ""
+                            }
+                            : null,
+
+                    vehicle:
+                        selectedVehicle,
+
+                    vehicleDetails:
+                        selectedVehicleDetails
+                            ? {
+                                vehicleId:
+                                    selectedVehicleDetails.vehicleId || "",
+
+                                make:
+                                    selectedVehicleDetails.make || "",
+
+                                model:
+                                    selectedVehicleDetails.model || "",
+
+                                year:
+                                    selectedVehicleDetails.year || "",
+
+                                plate:
+                                    selectedVehicleDetails.plate || "",
+
+                                trim:
+                                    selectedVehicleDetails.trim || "",
+
+                                engine:
+                                    selectedVehicleDetails.engine || "",
+
+                                vin:
+                                    selectedVehicleDetails.vin || ""
+                            }
+                            : null,
+
+                    service:
+                        selectedService,
+
+                    preferredDate:
+                        selectedDate,
+
+                    preferredTime:
+                        selectedTime,
+
+                    notes:
+                        notes
+                };
+
+
+                /* -----------------------------------------
+                   SUBMIT BUTTON LOADING STATE
+                   ----------------------------------------- */
+
+                const submitButton =
+                    serviceBookingForm.querySelector(
+                        'button[type="submit"]'
+                    );
+
+
+                const originalButtonHTML =
+                    submitButton
+                        ? submitButton.innerHTML
+                        : "";
+
+
+                if (submitButton) {
+
+                    submitButton.disabled =
+                        true;
+
+
+                    submitButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+                        Submitting...
+                    `;
+                }
+                /*
+                    SHARED WORKFLOW:
+                    Save customer service request into ShiftDynamicsStore.
+                */
+                try {
+
+                    if (
+                        !window.ShiftDynamicsStore ||
+                        typeof window.ShiftDynamicsStore.createBooking !== "function"
+                    ) {
+                        throw new Error(
+                            "ShiftDynamicsStore.createBooking is unavailable."
+                        );
+                    }
+
+                    const savedBooking =
+                        window.ShiftDynamicsStore.createBooking({
+                            ...bookingData,
+
+                            status:
+                                "Submitted",
+
+                            source:
+                                "Customer Dashboard"
+                        });
+
+                    const formattedDate =
+                        formatBookingDate(
+                            selectedDate
+                        );
+
+                    const formattedTime =
+                        formatBookingTime(
+                            selectedTime
+                        );
+
+                    showBookingSuccess(
+                        `Booking request ${savedBooking.bookingId} submitted successfully for ${selectedVehicle} ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ${selectedService} on ${formattedDate} at ${formattedTime}.`
+                    );
+
+                    console.log(
+                        "Shared customer booking:",
+                        savedBooking
+                    );
+
+                    serviceBookingForm.reset();
+
+                    if (servicePackageInfo) {
+                        servicePackageInfo.hidden = true;
+                    }
+
+                    if (bookingTime) {
+                        bookingTime.min =
+                            workshopOpeningTime;
+
+                        bookingTime.max =
+                            workshopClosingTime;
+                    }
+
+                    updateBookingVehicleOptions();
+
+                    if (submitButton) {
+                        submitButton.disabled =
+                            false;
+
+                        submitButton.innerHTML =
+                            originalButtonHTML;
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Unable to save customer booking to shared workflow store.",
+                        error
+                    );
+
+                    showBookingError(
+                        "Unable to submit booking request. Please try again."
+                    );
+
+                    if (submitButton) {
+                        submitButton.disabled =
+                            false;
+
+                        submitButton.innerHTML =
+                            originalButtonHTML;
+                    }
+                }
+
+            }
+        );
+
+    }
+    /* =====================================================
+   LIVE CUSTOMER ESTIMATES - SHARED WORKFLOW
+   ===================================================== */
+
+const customerEstimatesContainer =
+    document.getElementById(
+        "customerEstimatesContainer"
+    );
+
+if (customerEstimatesContainer) {
+
+    function escapeEstimateHtml(value) {
+
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function formatEstimateMoney(value) {
+
+        const amount =
+            Number(value || 0);
+
+        return `LKR ${amount.toLocaleString("en-LK")}`;
+    }
+
+
+    function getCustomerEstimateJobs() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getCustomerProfile !== "function" ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function" ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return [];
+        }
+
+        const profile =
+            window.ShiftDynamicsStore.getCustomerProfile();
+
+        if (!profile) {
+            return [];
+        }
+
+        const profileEmail =
+            String(
+                profile.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        const profileName =
+            String(
+                profile.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const bookingIds =
+            new Set(
+                window.ShiftDynamicsStore
+                    .getBookings()
+                    .filter(booking => {
+
+                        const email =
+                            String(
+                                booking.customer?.email || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+                        const name =
+                            String(
+                                booking.customer?.name || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+                        if (
+                            profileEmail &&
+                            email
+                        ) {
+                            return (
+                                email ===
+                                profileEmail
+                            );
+                        }
+
+                        return (
+                            profileName &&
+                            name ===
+                            profileName
+                        );
+                    })
+                    .map(
+                        booking =>
+                            booking.bookingId
+                    )
+                    .filter(Boolean)
+            );
+
+
+        return window.ShiftDynamicsStore
+            .getJobs()
+            .filter(job =>
+                bookingIds.has(
+                    job.bookingId
+                ) &&
+                job.estimate &&
+                job.estimate.status !== "Not Created" &&
+                Number(job.estimate.total || 0) > 0
+            )
+            .sort(
+                (a, b) =>
+                    new Date(
+                        b.estimate?.createdAt ||
+                        b.updatedAt ||
+                        0
+                    ) -
+                    new Date(
+                        a.estimate?.createdAt ||
+                        a.updatedAt ||
+                        0
+                    )
+            );
+    }
+
+
+    function renderCustomerEstimates() {
+
+        const jobs =
+            getCustomerEstimateJobs();
+
+        if (jobs.length === 0) {
+
+            customerEstimatesContainer.innerHTML = `
+                <div class="sd-dashboard-card">
+                    <p class="sd-muted-text">
+                        No service estimates available yet.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        customerEstimatesContainer.innerHTML =
+            jobs.map(job => {
+
+                const estimate =
+                    job.estimate || {};
+
+                const vehicle =
+                    [
+                        job.vehicle?.make,
+                        job.vehicle?.model
+                    ]
+                        .filter(Boolean)
+                        .join(" ") ||
+                    "Vehicle";
+
+                const isPending =
+                    estimate.status ===
+                    "Awaiting Customer Approval";
+
+                const isApproved =
+                    estimate.status ===
+                    "Approved";
+
+                const isChangesRequested =
+                    estimate.status ===
+                    "Changes Requested";
+
+                let badgeText =
+                    estimate.status ||
+                    "Pending Approval";
+
+                let badgeClass =
+                    "pending";
+
+                if (isApproved) {
+                    badgeClass =
+                        "approved";
+                }
+
+                if (isChangesRequested) {
+                    badgeClass =
+                        "changes-requested";
+                }
+
+
+                return `
+                    <article
+                        class="sd-estimate-card"
+                        data-job-card="${escapeEstimateHtml(
+                            job.jobCardNumber
+                        )}"
+                    >
+
+                        <div class="sd-estimate-header">
+
+                            <div>
+
+                                <span class="sd-panel-label">
+                                    ${escapeEstimateHtml(
+                                        job.jobCardNumber
+                                    )}
+                                </span>
+
+                                <h3>
+                                    ${escapeEstimateHtml(
+                                        vehicle
+                                    )}
+                                </h3>
+
+                                <p>
+                                    ${escapeEstimateHtml(
+                                        estimate.description ||
+                                        job.serviceConcern ||
+                                        "Workshop Estimate"
+                                    )}
+                                </p>
+
+                            </div>
+
+                            <span class="sd-status-badge ${badgeClass}">
+                                ${escapeEstimateHtml(
+                                    badgeText
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <div class="sd-estimate-lines">
+
+                            <div>
+                                <span>Labour</span>
+                                <strong>
+                                    ${formatEstimateMoney(
+                                        estimate.labour
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Parts</span>
+                                <strong>
+                                    ${formatEstimateMoney(
+                                        estimate.parts
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Vendor</span>
+                                <strong>
+                                    ${formatEstimateMoney(
+                                        estimate.vendor
+                                    )}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Other</span>
+                                <strong>
+                                    ${formatEstimateMoney(
+                                        estimate.other
+                                    )}
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sd-estimate-total">
+
+                            <span>Estimated Total</span>
+
+                            <strong>
+                                ${formatEstimateMoney(
+                                    estimate.total
+                                )}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="sd-estimate-actions">
+
+                            <button
+                                class="sd-secondary-button request-estimate-changes"
+                                type="button"
+                                data-action="request-changes"
+                                ${
+                                    isPending
+                                        ? ""
+                                        : "disabled"
+                                }
+                            >
+                                <i class="bi bi-pencil-square"></i>
+                                ${
+                                    isChangesRequested
+                                        ? "Changes Requested"
+                                        : "Request Changes"
+                                }
+                            </button>
+
+                            <button
+                                class="sd-primary-button approve-estimate"
+                                type="button"
+                                data-action="approve"
+                                ${
+                                    isPending
+                                        ? ""
+                                        : "disabled"
+                                }
+                            >
+                                <i class="bi bi-check2-circle"></i>
+                                ${
+                                    isApproved
+                                        ? "Estimate Approved"
+                                        : "Approve Estimate"
+                                }
+                            </button>
+
+                        </div>
+
+                    </article>
+                `;
+            })
+            .join("");
+    }
+
+
+    customerEstimatesContainer.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    "button[data-action]"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            const card =
+                button.closest(
+                    ".sd-estimate-card"
+                );
+
+            const jobCardNumber =
+                card?.dataset?.jobCard;
+
+            if (!jobCardNumber) {
+                return;
+            }
+
+            const jobs =
+                window.ShiftDynamicsStore
+                    .getJobs();
+
+            const job =
+                jobs.find(
+                    item =>
+                        item.jobCardNumber ===
+                        jobCardNumber
+                );
+
+            if (!job) {
+                return;
+            }
+
+
+            if (
+                button.dataset.action ===
+                "approve"
+            ) {
+
+                const confirmed =
+                    window.confirm(
+                        "Approve this estimate and allow the workshop to proceed?"
+                    );
+
+                if (!confirmed) {
+                    return;
+                }
+
+                window.ShiftDynamicsStore.updateJob(
+                    job.jobCardNumber,
+                    {
+                        estimate: {
+                            ...(job.estimate || {}),
+                            status:
+                                "Approved",
+                            approvedAt:
+                                new Date().toISOString()
+                        },
+
+                        status:
+                            "Estimate Approved"
+                    }
+                );
+            }
+
+
+            if (
+                button.dataset.action ===
+                "request-changes"
+            ) {
+
+                const reason =
+                    window.prompt(
+                        "What changes would you like to request?"
+                    );
+
+                if (reason === null) {
+                    return;
+                }
+
+                const cleanReason =
+                    reason.trim();
+
+                if (!cleanReason) {
+
+                    window.alert(
+                        "Please enter a reason for requesting changes."
+                    );
+
+                    return;
+                }
+
+                window.ShiftDynamicsStore.updateJob(
+                    job.jobCardNumber,
+                    {
+                        estimate: {
+                            ...(job.estimate || {}),
+                            status:
+                                "Changes Requested",
+                            changeRequestReason:
+                                cleanReason,
+                            changesRequestedAt:
+                                new Date().toISOString()
+                        },
+
+                        status:
+                            "Estimate Changes Requested"
+                    }
+                );
+            }
+        }
+    );
+
+
+    renderCustomerEstimates();
+
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderCustomerEstimates();
+            }
+        );
+    }
+}
+
+/* =====================================================
+   LIVE SERVICE TRACKER - SHARED WORKFLOW
+   ===================================================== */
+
+const trackerCard =
+    document.querySelector(".sd-tracker-card");
+
+if (trackerCard) {
+
+    const trackerSteps =
+        [...trackerCard.querySelectorAll(
+            ".sd-tracker-step"
+        )];
+
+    const trackerStatus =
+        trackerCard.querySelector(
+            ".sd-status-badge"
+        );
+
+    const trackerJobLabel =
+        trackerCard.querySelector(
+            ".sd-panel-label"
+        );
+
+    const trackerVehicle =
+        trackerCard.querySelector(
+            ".sd-tracker-header h3"
+        );
+
+    const trackerService =
+        trackerCard.querySelector(
+            ".sd-tracker-header p"
+        );
+
+
+    function formatTrackerTime(value) {
+
+        if (!value) {
+            return "";
+        }
+
+        const date =
+            new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "";
+        }
+
+        return date.toLocaleTimeString(
+            [],
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+    }
+
+
+    function setTrackerStep(
+        index,
+        state,
+        message
+    ) {
+
+        const step =
+            trackerSteps[index];
+
+        if (!step) {
+            return;
+        }
+
+        step.classList.remove(
+            "completed",
+            "current"
+        );
+
+        const marker =
+            step.querySelector(
+                ".sd-step-marker"
+            );
+
+        const statusText =
+            step.querySelector(
+                "span"
+            );
+
+
+        if (state === "completed") {
+
+            step.classList.add(
+                "completed"
+            );
+
+            if (marker) {
+                marker.innerHTML =
+                    '<i class="bi bi-check-lg"></i>';
+            }
+
+        } else if (state === "current") {
+
+            step.classList.add(
+                "current"
+            );
+
+            if (marker) {
+
+                const icons = [
+                    "bi-car-front-fill",
+                    "bi-clipboard-check",
+                    "bi-wrench-adjustable",
+                    "bi-search",
+                    "bi-key"
+                ];
+
+                marker.innerHTML =
+                    `<i class="bi ${icons[index] || "bi-circle"}"></i>`;
+            }
+
+        } else {
+
+            if (marker) {
+
+                const icons = [
+                    "bi-car-front",
+                    "bi-clipboard",
+                    "bi-wrench-adjustable",
+                    "bi-search",
+                    "bi-key"
+                ];
+
+                marker.innerHTML =
+                    `<i class="bi ${icons[index] || "bi-circle"}"></i>`;
+            }
+        }
+
+
+        if (statusText) {
+            statusText.textContent =
+                message ||
+                (
+                    state === "completed"
+                        ? "Completed"
+                        : state === "current"
+                            ? "Currently in progress"
+                            : "Pending"
+                );
+        }
+    }
+
+
+    function getCurrentCustomerBooking() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getCustomerProfile !== "function" ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function"
+        ) {
+            return null;
+        }
+
+        const profile =
+            window.ShiftDynamicsStore.getCustomerProfile();
+
+        if (!profile) {
+            return null;
+        }
+
+        const email =
+            String(
+                profile.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        const name =
+            String(
+                profile.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const customerBookings =
+            window.ShiftDynamicsStore
+                .getBookings()
+                .filter(booking => {
+
+                    const bookingEmail =
+                        String(
+                            booking.customer?.email || ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+                    const bookingName =
+                        String(
+                            booking.customer?.name || ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+                    if (
+                        email &&
+                        bookingEmail
+                    ) {
+                        return (
+                            bookingEmail ===
+                            email
+                        );
+                    }
+
+                    return (
+                        name &&
+                        bookingName === name
+                    );
+                })
+                .sort(
+                    (a, b) =>
+                        new Date(
+                            b.createdAt || 0
+                        ) -
+                        new Date(
+                            a.createdAt || 0
+                        )
+                );
+
+        return (
+            customerBookings[0] ||
+            null
+        );
+    }
+
+
+    function renderLiveServiceTracker() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return;
+        }
+
+
+        const booking =
+            getCurrentCustomerBooking();
+
+        if (!booking) {
+
+            if (trackerJobLabel) {
+                trackerJobLabel.textContent =
+                    "NO ACTIVE BOOKING";
+            }
+
+            if (trackerVehicle) {
+                trackerVehicle.textContent =
+                    "No service currently being tracked";
+            }
+
+            if (trackerService) {
+                trackerService.textContent =
+                    "Submit a service booking to begin tracking.";
+            }
+
+            if (trackerStatus) {
+                trackerStatus.textContent =
+                    "No Active Job";
+
+                trackerStatus.className =
+                    "sd-status-badge";
+            }
+
+            trackerSteps.forEach(
+                (step, index) =>
+                    setTrackerStep(
+                        index,
+                        "pending",
+                        "Pending"
+                    )
+            );
+
+            return;
+        }
+
+
+        const job =
+            window.ShiftDynamicsStore
+                .getJobs()
+                .find(
+                    item =>
+                        item.bookingId ===
+                        booking.bookingId
+                ) || null;
+
+
+        const vehicle =
+            job?.vehicle ||
+            booking.vehicleDetails ||
+            {};
+
+        const vehicleName =
+            [
+                vehicle.make,
+                vehicle.model
+            ]
+                .filter(Boolean)
+                .join(" ") ||
+            booking.vehicle ||
+            "Vehicle";
+
+
+        if (trackerJobLabel) {
+
+            trackerJobLabel.textContent =
+                job
+                    ? `JOB CARD ${job.jobCardNumber}`
+                    : `BOOKING ${booking.bookingId}`;
+        }
+
+        if (trackerVehicle) {
+            trackerVehicle.textContent =
+                vehicleName;
+        }
+
+        if (trackerService) {
+            trackerService.textContent =
+                job?.serviceConcern ||
+                booking.service ||
+                "Workshop Service";
+        }
+
+
+        /*
+            No Job Card yet:
+            customer booking exists but workshop intake has
+            not produced the shared Job Card.
+        */
+        if (!job) {
+
+            setTrackerStep(
+                0,
+                "current",
+                "Awaiting workshop intake"
+            );
+
+            for (
+                let index = 1;
+                index < trackerSteps.length;
+                index++
+            ) {
+                setTrackerStep(
+                    index,
+                    "pending",
+                    "Pending"
+                );
+            }
+
+            if (trackerStatus) {
+                trackerStatus.textContent =
+                    booking.status || "Submitted";
+
+                trackerStatus.className =
+                    "sd-status-badge in-progress";
+            }
+
+            return;
+        }
+
+
+        const inspectionComplete =
+            job.inspection?.status ===
+            "Completed";
+
+        const repairStarted =
+            Boolean(
+                job.repair?.startedAt
+            );
+
+        const repairComplete =
+            job.repair?.status ===
+            "Completed";
+
+        const invoiceFinalized =
+            job.invoice?.status ===
+            "Finalized";
+
+        const handoverComplete =
+            job.handover?.status ===
+            "Completed";
+
+
+        /*
+            STEP 0 - Vehicle Received
+        */
+        setTrackerStep(
+            0,
+            "completed",
+            formatTrackerTime(
+                job.createdAt
+            ) || "Received"
+        );
+
+
+        /*
+            STEP 1 - Inspection
+        */
+        if (inspectionComplete) {
+
+            setTrackerStep(
+                1,
+                "completed",
+                formatTrackerTime(
+                    job.inspection?.completedAt
+                ) ||
+                "Inspection completed"
+            );
+
+        } else {
+
+            setTrackerStep(
+                1,
+                "current",
+                "Inspection in progress"
+            );
+
+            setTrackerStep(
+                2,
+                "pending",
+                "Pending"
+            );
+
+            setTrackerStep(
+                3,
+                "pending",
+                "Pending"
+            );
+
+            setTrackerStep(
+                4,
+                "pending",
+                "Pending"
+            );
+        }
+
+
+        if (inspectionComplete) {
+
+            /*
+                STEP 2 - Repair / Service Work
+            */
+            if (repairComplete) {
+
+                setTrackerStep(
+                    2,
+                    "completed",
+                    formatTrackerTime(
+                        job.repair?.completedAt
+                    ) ||
+                    "Service work completed"
+                );
+
+            } else {
+
+                let repairMessage =
+                    "Awaiting workshop service";
+
+                if (repairStarted) {
+                    repairMessage =
+                        "Currently in progress";
+                } else if (
+                    job.assignment?.mechanicName
+                ) {
+                    repairMessage =
+                        `Assigned to ${job.assignment.mechanicName}`;
+                } else if (
+                    job.diagnostic?.finding
+                ) {
+                    repairMessage =
+                        "Diagnosis completed";
+                }
+
+                setTrackerStep(
+                    2,
+                    "current",
+                    repairMessage
+                );
+            }
+
+
+            /*
+                STEP 3 - Final Quality Check
+            */
+            if (invoiceFinalized) {
+
+                setTrackerStep(
+                    3,
+                    "completed",
+                    formatTrackerTime(
+                        job.invoice?.finalizedAt
+                    ) ||
+                    "Final checks completed"
+                );
+
+            } else if (repairComplete) {
+
+                setTrackerStep(
+                    3,
+                    "current",
+                    "Final checks / invoice pending"
+                );
+
+            } else {
+
+                setTrackerStep(
+                    3,
+                    "pending",
+                    "Pending"
+                );
+            }
+
+
+            /*
+                STEP 4 - Ready for Handover
+            */
+            if (handoverComplete) {
+
+                setTrackerStep(
+                    4,
+                    "completed",
+                    formatTrackerTime(
+                        job.handover?.completedAt
+                    ) ||
+                    "Vehicle handed over"
+                );
+
+            } else if (invoiceFinalized) {
+
+                setTrackerStep(
+                    4,
+                    "current",
+                    "Ready for handover"
+                );
+
+            } else {
+
+                setTrackerStep(
+                    4,
+                    "pending",
+                    "Pending"
+                );
+            }
+        }
+
+
+        if (trackerStatus) {
+
+            if (handoverComplete) {
+
+                trackerStatus.textContent =
+                    "Completed";
+
+                trackerStatus.className =
+                    "sd-status-badge completed";
+
+            } else if (invoiceFinalized) {
+
+                trackerStatus.textContent =
+                    "Ready for Handover";
+
+                trackerStatus.className =
+                    "sd-status-badge completed";
+
+            } else {
+
+                trackerStatus.textContent =
+                    job.status ||
+                    "In Progress";
+
+                trackerStatus.className =
+                    "sd-status-badge in-progress";
+            }
+        }
+    }
+
+
+    renderLiveServiceTracker();
+
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderLiveServiceTracker();
+            }
+        );
+    }
+}
+/* =====================================================
+   LIVE CUSTOMER SERVICE HISTORY
+   ===================================================== */
+
+const serviceHistoryContainer =
+    document.getElementById(
+        "serviceHistoryContainer"
+    );
+
+if (serviceHistoryContainer) {
+
+    function escapeHistoryHtml(value) {
+
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function formatHistoryDate(value) {
+
+        if (!value) {
+            return "Date unavailable";
+        }
+
+        const date =
+            new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "Date unavailable";
+        }
+
+        return date.toLocaleDateString(
+            "en-LK",
+            {
+                year: "numeric",
+                month: "short",
+                day: "2-digit"
+            }
+        );
+    }
+
+
+    function renderCustomerServiceHistory() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getCustomerProfile !== "function" ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function" ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+
+            serviceHistoryContainer.innerHTML = `
+                <h3>Service History</h3>
+
+                <p class="sd-muted-text">
+                    Service history is currently unavailable.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        const profile =
+            window.ShiftDynamicsStore
+                .getCustomerProfile();
+
+        if (!profile) {
+
+            serviceHistoryContainer.innerHTML = `
+                <h3>Service History</h3>
+
+                <p class="sd-muted-text">
+                    No customer profile found.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        const profileEmail =
+            String(
+                profile.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+        const profileName =
+            String(
+                profile.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const customerBookingIds =
+            new Set(
+                window.ShiftDynamicsStore
+                    .getBookings()
+                    .filter(booking => {
+
+                        const email =
+                            String(
+                                booking.customer?.email || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+                        const name =
+                            String(
+                                booking.customer?.name || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            profileEmail &&
+                            email
+                        ) {
+                            return (
+                                email ===
+                                profileEmail
+                            );
+                        }
+
+                        return (
+                            profileName &&
+                            name === profileName
+                        );
+                    })
+                    .map(
+                        booking =>
+                            booking.bookingId
+                    )
+                    .filter(Boolean)
+            );
+
+
+        const completedJobs =
+            window.ShiftDynamicsStore
+                .getJobs()
+                .filter(job =>
+                    customerBookingIds.has(
+                        job.bookingId
+                    ) &&
+                    (
+                        job.handover?.status === "Completed" ||
+                        job.status === "Completed"
+                    )
+                )
+                .sort(
+                    (a, b) =>
+                        new Date(
+                            b.handover?.completedAt ||
+                            b.repair?.completedAt ||
+                            b.updatedAt ||
+                            0
+                        ) -
+                        new Date(
+                            a.handover?.completedAt ||
+                            a.repair?.completedAt ||
+                            a.updatedAt ||
+                            0
+                        )
+                );
+
+
+        if (completedJobs.length === 0) {
+
+            serviceHistoryContainer.innerHTML = `
+                <h3>Service History</h3>
+
+                <p class="sd-muted-text">
+                    No completed workshop services yet.
+                </p>
+            `;
+
+            return;
+        }
+
+
+        serviceHistoryContainer.innerHTML = `
+            <h3>Service History</h3>
+
+            <div class="sd-history-list">
+
+                ${completedJobs
+                    .map(job => {
+
+                        const vehicle =
+                            [
+                                job.vehicle?.make,
+                                job.vehicle?.model
+                            ]
+                                .filter(Boolean)
+                                .join(" ") ||
+                            "Vehicle";
+
+                        const completedAt =
+                            job.handover?.completedAt ||
+                            job.repair?.completedAt ||
+                            job.updatedAt;
+
+                        const invoiceNumber =
+                            job.invoice?.number ||
+                            "Not available";
+
+                        const total =
+                            Number(
+                                job.invoice?.total ||
+                                job.estimate?.total ||
+                                0
+                            );
+
+                        return `
+                            <article
+                                class="sd-dashboard-card"
+                                style="margin-top: 16px;"
+                            >
+
+                                <div
+                                    style="
+                                        display:flex;
+                                        justify-content:space-between;
+                                        gap:16px;
+                                        align-items:flex-start;
+                                        flex-wrap:wrap;
+                                    "
+                                >
+
+                                    <div>
+                                        <span class="sd-panel-label">
+                                            ${escapeHistoryHtml(
+                                                job.jobCardNumber
+                                            )}
+                                        </span>
+
+                                        <h3>
+                                            ${escapeHistoryHtml(
+                                                vehicle
+                                            )}
+                                        </h3>
+
+                                        <p class="sd-muted-text">
+                                            ${escapeHistoryHtml(
+                                                job.serviceConcern ||
+                                                "Workshop Service"
+                                            )}
+                                        </p>
+                                    </div>
+
+                                    <span class="sd-status-badge completed">
+                                        Completed
+                                    </span>
+
+                                </div>
+
+                                <div
+                                    style="
+                                        display:grid;
+                                        grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+                                        gap:12px;
+                                        margin-top:18px;
+                                    "
+                                >
+
+                                    <div>
+                                        <span class="sd-muted-text">
+                                            Completed
+                                        </span>
+
+                                        <strong style="display:block;">
+                                            ${escapeHistoryHtml(
+                                                formatHistoryDate(
+                                                    completedAt
+                                                )
+                                            )}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <span class="sd-muted-text">
+                                            Invoice
+                                        </span>
+
+                                        <strong style="display:block;">
+                                            ${escapeHistoryHtml(
+                                                invoiceNumber
+                                            )}
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <span class="sd-muted-text">
+                                            Total
+                                        </span>
+
+                                        <strong style="display:block;">
+                                            ${
+                                                total > 0
+                                                    ? `LKR ${total.toLocaleString("en-LK")}`
+                                                    : "Not available"
+                                            }
+                                        </strong>
+                                    </div>
+
+                                    <div>
+                                        <span class="sd-muted-text">
+                                            Mechanic
+                                        </span>
+
+                                        <strong style="display:block;">
+                                            ${escapeHistoryHtml(
+                                                job.repair?.mechanicName ||
+                                                job.assignment?.mechanicName ||
+                                                "Not available"
+                                            )}
+                                        </strong>
+                                    </div>
+
+                                </div>
+
+                            </article>
+                        `;
+                    })
+                    .join("")}
+
+            </div>
+        `;
+    }
+
+
+    renderCustomerServiceHistory();
+
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderCustomerServiceHistory();
+            }
+        );
+    }
+}
+/* =====================================================
+   INVOICE MODAL
+   ===================================================== */
+
+const invoiceModal =
+    document.getElementById("invoiceModal");
+
+const invoiceViewButton =
+    document.querySelector(".sd-view-invoice");
+
+const invoiceModalClose =
+    document.getElementById("invoiceModalClose");
+
+const invoiceCloseButtons =
+    document.querySelectorAll("[data-close-invoice]");
+
+
+function openInvoiceModal() {
+
+    if (!invoiceModal) {
+        return;
+    }
+
+    invoiceModal.classList.add("open");
+
+    invoiceModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+function closeInvoiceModal() {
+
+    if (!invoiceModal) {
+        return;
+    }
+
+    invoiceModal.classList.remove("open");
+
+    invoiceModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+}
+
+
+if (invoiceViewButton) {
+
+    invoiceViewButton.addEventListener(
+        "click",
+        openInvoiceModal
+    );
+}
+
+
+if (invoiceModalClose) {
+
+    invoiceModalClose.addEventListener(
+        "click",
+        closeInvoiceModal
+    );
+}
+
+
+invoiceCloseButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        closeInvoiceModal
+    );
+
+});
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape" &&
+            invoiceModal &&
+            invoiceModal.classList.contains("open")
+        ) {
+            closeInvoiceModal();
+        }
+
+    }
+);    
+
+/* =====================================================
+   MODIFICATION DETAILS MODAL
+   ===================================================== */
+
+const modificationModal =
+    document.getElementById("modificationModal");
+
+const modificationButtons =
+    document.querySelectorAll(
+        ".sd-view-modification"
+    );
+
+const modificationModalClose =
+    document.getElementById(
+        "modificationModalClose"
+    );
+
+const modificationCloseButtons =
+    document.querySelectorAll(
+        "[data-close-modification]"
+    );
+
+const modificationModalTitle =
+    document.getElementById(
+        "modificationModalTitle"
+    );
+
+const modificationModalDescription =
+    document.getElementById(
+        "modificationModalDescription"
+    );
+
+const modificationModalPrice =
+    document.getElementById(
+        "modificationModalPrice"
+    );
+
+const modificationModalTime =
+    document.getElementById(
+        "modificationModalTime"
+    );
+
+const requestModificationButton =
+    document.getElementById(
+        "requestModificationButton"
+    );
+
+
+const modificationData = {
+
+    exhaust: {
+        title: "Performance Exhaust",
+        description:
+            "Upgrade exhaust flow and sound with a performance-focused exhaust system.",
+        price: "From LKR 85,000",
+        time: "Approx. 3ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ5 hours"
+    },
+
+    wheels: {
+        title: "Wheels & Rims",
+        description:
+            "Choose styling and performance wheel upgrades suited to your vehicle.",
+        price: "From LKR 120,000",
+        time: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 hours"
+    },
+
+    tuning: {
+        title: "ECU Tuning",
+        description:
+            "Vehicle-specific ECU tuning consultation for improved performance and response.",
+        price: "From LKR 65,000",
+        time: "Approx. 2ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ4 hours"
+    },
+
+    suspension: {
+        title: "Suspension Upgrades",
+        description:
+            "Improve handling, stability and ride height with suspension upgrade options.",
+        price: "From LKR 95,000",
+        time: "Approx. 4ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ6 hours"
+    },
+
+    brakes: {
+        title: "Brake Upgrades",
+        description:
+            "Upgrade brake pads, discs and related components for improved braking performance.",
+        price: "From LKR 75,000",
+        time: "Approx. 2ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ4 hours"
+    },
+
+    "body-kit": {
+        title: "Body Kits",
+        description:
+            "Exterior styling upgrades including body kits, spoilers and visual enhancements.",
+        price: "From LKR 150,000",
+        time: "Approx. 1ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ2 days"
+    },
+
+    interior: {
+        title: "Interior Customization",
+        description:
+            "Customize interior trim, comfort features and styling options.",
+        price: "From LKR 60,000",
+        time: "Approx. 4ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ8 hours"
+    },
+
+    audio: {
+        title: "Audio Systems",
+        description:
+            "Upgrade speakers, amplifiers and in-car entertainment components.",
+        price: "From LKR 70,000",
+        time: "Approx. 3ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ6 hours"
+    }
+
+};
+
+
+function openModificationModal(type) {
+
+    if (!modificationModal) {
+        return;
+    }
+
+    const item =
+        modificationData[type];
+
+    if (!item) {
+        return;
+    }
+
+    modificationModalTitle.textContent =
+        item.title;
+
+    modificationModalDescription.textContent =
+        item.description;
+
+    modificationModalPrice.textContent =
+        item.price;
+
+    modificationModalTime.textContent =
+        item.time;
+
+    modificationModal.dataset.modification =
+        type;
+
+    modificationModal.classList.add("open");
+
+    modificationModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+function closeModificationModal() {
+
+    if (!modificationModal) {
+        return;
+    }
+
+    modificationModal.classList.remove(
+        "open"
+    );
+
+    modificationModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+}
+
+
+modificationButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            openModificationModal(
+                button.dataset.modification
+            );
+
+        }
+    );
+
+});
+
+
+if (modificationModalClose) {
+
+    modificationModalClose.addEventListener(
+        "click",
+        closeModificationModal
+    );
+}
+
+
+modificationCloseButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        closeModificationModal
+    );
+
+});
+
+
+if (requestModificationButton) {
+
+    requestModificationButton.addEventListener(
+        "click",
+        () => {
+
+            const type =
+                modificationModal.dataset
+                    .modification;
+
+            const item =
+                modificationData[type];
+
+            if (!item) {
+                return;
+            }
+
+            window.alert(
+                `Consultation request submitted for ${item.title}.`
+            );
+
+            closeModificationModal();
+
+            /*
+             * Future .NET API integration:
+             * Send selected modification
+             * consultation request to backend.
+             */
+
+        }
+    );
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape" &&
+            modificationModal &&
+            modificationModal.classList.contains(
+                "open"
+            )
+        ) {
+            closeModificationModal();
+        }
+
+    }
+);
+/* =====================================================
+   ONLINE PAYMENT
+   ===================================================== */
+
+/* =====================================================
+   LIVE CUSTOMER INVOICES
+   ===================================================== */
+
+const customerPaymentsBody =
+    document.getElementById(
+        "customerPaymentsBody"
+    );
+
+
+if (customerPaymentsBody) {
+
+    function escapePaymentHtml(value) {
+
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    function formatPaymentDate(value) {
+
+        if (!value) {
+            return "Date unavailable";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "Date unavailable";
+        }
+
+
+        return date.toLocaleDateString(
+            "en-LK",
+            {
+                year: "numeric",
+                month: "short",
+                day: "2-digit"
+            }
+        );
+    }
+
+
+    function getCustomerInvoiceJobs() {
+
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getCustomerProfile !== "function" ||
+            typeof window.ShiftDynamicsStore.getBookings !== "function" ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return [];
+        }
+
+
+        const profile =
+            window.ShiftDynamicsStore
+                .getCustomerProfile();
+
+
+        if (!profile) {
+            return [];
+        }
+
+
+        const profileEmail =
+            String(
+                profile.email || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const profileName =
+            String(
+                profile.name || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        const bookingIds =
+            new Set(
+                window.ShiftDynamicsStore
+                    .getBookings()
+                    .filter(booking => {
+
+                        const email =
+                            String(
+                                booking.customer?.email || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        const name =
+                            String(
+                                booking.customer?.name || ""
+                            )
+                                .trim()
+                                .toLowerCase();
+
+
+                        if (
+                            profileEmail &&
+                            email
+                        ) {
+                            return (
+                                email ===
+                                profileEmail
+                            );
+                        }
+
+
+                        return (
+                            profileName &&
+                            name ===
+                            profileName
+                        );
+                    })
+                    .map(
+                        booking =>
+                            booking.bookingId
+                    )
+                    .filter(Boolean)
+            );
+
+
+        return window.ShiftDynamicsStore
+            .getJobs()
+            .filter(job =>
+                bookingIds.has(
+                    job.bookingId
+                ) &&
+                job.invoice &&
+                job.invoice.status === "Finalized" &&
+                job.invoice.number
+            )
+            .sort(
+                (a, b) =>
+                    new Date(
+                        b.invoice?.finalizedAt ||
+                        b.updatedAt ||
+                        0
+                    ) -
+                    new Date(
+                        a.invoice?.finalizedAt ||
+                        a.updatedAt ||
+                        0
+                    )
+            );
+    }
+
+
+    function renderCustomerInvoices() {
+
+        const jobs =
+            getCustomerInvoiceJobs();
+
+
+        if (jobs.length === 0) {
+
+            customerPaymentsBody.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        No finalized invoices available yet.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        customerPaymentsBody.innerHTML =
+            jobs.map(job => {
+
+                const invoice =
+                    job.invoice || {};
+
+
+                const vehicle =
+                    [
+                        job.vehicle?.make,
+                        job.vehicle?.model
+                    ]
+                        .filter(Boolean)
+                        .join(" ") ||
+                    "Vehicle";
+
+
+                const paymentStatus =
+                    job.payment?.status ||
+                    "Pending";
+
+
+                const isPaid =
+                    paymentStatus ===
+                    "Paid";
+
+
+                const invoiceNumber =
+                    String(
+                        invoice.number || ""
+                    );
+
+
+                const cleanInvoiceNumber =
+                    invoiceNumber.replace(
+                        /^#/,
+                        ""
+                    );
+
+
+                const amount =
+                    Number(
+                        invoice.total ||
+                        job.estimate?.total ||
+                        0
+                    );
+
+
+                return `
+                    <tr
+                        data-job-card="${escapePaymentHtml(
+                            job.jobCardNumber
+                        )}"
+                    >
+
+                        <td>
+                            ${escapePaymentHtml(
+                                invoiceNumber
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapePaymentHtml(
+                                vehicle
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapePaymentHtml(
+                                formatPaymentDate(
+                                    invoice.finalizedAt ||
+                                    job.updatedAt
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            LKR ${amount.toLocaleString("en-LK")}
+                        </td>
+
+                        <td>
+                            <span
+                                class="sd-status-badge ${
+                                    isPaid
+                                        ? "paid"
+                                        : "pending"
+                                }"
+                            >
+                                ${
+                                    isPaid
+                                        ? "Paid"
+                                        : "Pending"
+                                }
+                            </span>
+                        </td>
+
+                        <td>
+
+                            ${
+                                isPaid
+                                    ? `
+                                        <button
+                                            class="sd-table-action sd-view-invoice"
+                                            type="button"
+                                            data-job-card="${escapePaymentHtml(
+                                                job.jobCardNumber
+                                            )}"
+                                        >
+                                            View
+                                        </button>
+                                    `
+                                    : `
+                                        <button
+                                            class="sd-table-action sd-pay-now"
+                                            type="button"
+                                            data-job-card="${escapePaymentHtml(
+                                                job.jobCardNumber
+                                            )}"
+                                            data-invoice="${escapePaymentHtml(
+                                                cleanInvoiceNumber
+                                            )}"
+                                            data-amount="${amount}"
+                                        >
+                                            Pay Now
+                                        </button>
+                                    `
+                            }
+
+                        </td>
+
+                    </tr>
+                `;
+            })
+            .join("");
+    }
+
+
+    renderCustomerInvoices();
+
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                renderCustomerInvoices();
+            }
+        );
+    }
+}
+
+
+/* =====================================================
+   EXISTING ONLINE PAYMENT CONTINUES BELOW
+   ===================================================== */
+const paymentModal =
+    document.getElementById("paymentModal");
+
+const payNowButtons =
+    document.querySelectorAll(".sd-pay-now");
+
+const paymentModalClose =
+    document.getElementById("paymentModalClose");
+
+const paymentCloseButtons =
+    document.querySelectorAll("[data-close-payment]");
+
+const paymentInvoiceText =
+    document.getElementById("paymentInvoiceText");
+
+const paymentAmount =
+    document.getElementById("paymentAmount");
+
+const paymentForm =
+    document.getElementById("paymentForm");
+
+const completePaymentButton =
+    document.getElementById("completePaymentButton");
+
+const cardHolder =
+    document.getElementById("cardHolder");
+
+const cardNumber =
+    document.getElementById("cardNumber");
+
+const cardExpiry =
+    document.getElementById("cardExpiry");
+
+const cardCvv =
+    document.getElementById("cardCvv");
+
+
+let currentPaymentButton = null;
+
+
+/* =====================================================
+   OPEN PAYMENT MODAL
+   ===================================================== */
+
+function openPaymentModal(button) {
+
+    if (!paymentModal || !button) {
+        return;
+    }
+
+    currentPaymentButton = button;
+
+    const invoice =
+        button.dataset.invoice || "";
+
+    const amount =
+        Number(button.dataset.amount || 0);
+
+    const formattedAmount =
+        amount.toLocaleString("en-LK");
+
+    paymentInvoiceText.textContent =
+        `Invoice #${invoice}`;
+
+    paymentAmount.textContent =
+        `LKR ${formattedAmount}`;
+
+    completePaymentButton.innerHTML =
+        `<i class="bi bi-lock-fill"></i>
+         Pay LKR ${formattedAmount}`;
+
+    paymentForm.reset();
+
+    paymentModal.classList.add("open");
+
+    paymentModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+/* =====================================================
+   CLOSE PAYMENT MODAL
+   ===================================================== */
+
+function closePaymentModal() {
+
+    if (!paymentModal) {
+        return;
+    }
+
+    paymentModal.classList.remove("open");
+
+    paymentModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+
+    currentPaymentButton = null;
+}
+
+
+/* =====================================================
+   PAY NOW BUTTON
+   ===================================================== */
+
+payNowButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            openPaymentModal(button);
+
+        }
+    );
+
+});
+
+
+/* =====================================================
+   CLOSE BUTTONS
+   ===================================================== */
+
+if (paymentModalClose) {
+
+    paymentModalClose.addEventListener(
+        "click",
+        closePaymentModal
+    );
+}
+
+
+paymentCloseButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        closePaymentModal
+    );
+
+});
+
+
+/* =====================================================
+   CARD NUMBER FORMAT
+   ===================================================== */
+
+if (cardNumber) {
+
+    cardNumber.addEventListener(
+        "input",
+        () => {
+
+            let value =
+                cardNumber.value.replace(/\D/g, "");
+
+            value =
+                value.substring(0, 16);
+
+            cardNumber.value =
+                value.replace(
+                    /(\d{4})(?=\d)/g,
+                    "$1 "
+                );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   EXPIRY DATE FORMAT
+   ===================================================== */
+
+if (cardExpiry) {
+
+    cardExpiry.addEventListener(
+        "input",
+        () => {
+
+            let value =
+                cardExpiry.value.replace(/\D/g, "");
+
+            value =
+                value.substring(0, 4);
+
+            if (value.length >= 3) {
+
+                value =
+                    `${value.substring(0, 2)}/${value.substring(2)}`;
+            }
+
+            cardExpiry.value = value;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   CVV NUMBERS ONLY
+   ===================================================== */
+
+if (cardCvv) {
+
+    cardCvv.addEventListener(
+        "input",
+        () => {
+
+            cardCvv.value =
+                cardCvv.value
+                    .replace(/\D/g, "")
+                    .substring(0, 4);
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PAYMENT SUBMIT
+   ===================================================== */
+
+if (paymentForm) {
+
+    paymentForm.addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const holder =
+                cardHolder.value.trim();
+
+            const number =
+                cardNumber.value.replace(/\s/g, "");
+
+            const expiry =
+                cardExpiry.value.trim();
+
+            const cvv =
+                cardCvv.value.trim();
+
+
+            if (holder.length < 2) {
+
+                window.alert(
+                    "Please enter the cardholder name."
+                );
+
+                cardHolder.focus();
+
+                return;
+            }
+
+
+            if (!/^\d{16}$/.test(number)) {
+
+                window.alert(
+                    "Please enter a valid 16-digit card number."
+                );
+
+                cardNumber.focus();
+
+                return;
+            }
+
+
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
+
+                window.alert(
+                    "Please enter a valid expiry date in MM/YY format."
+                );
+
+                cardExpiry.focus();
+
+                return;
+            }
+
+
+            if (!/^\d{3,4}$/.test(cvv)) {
+
+                window.alert(
+                    "Please enter a valid CVV."
+                );
+
+                cardCvv.focus();
+
+                return;
+            }
+
+
+            completePaymentButton.disabled = true;
+
+            completePaymentButton.innerHTML =
+                `<span>Processing...</span>`;
+
+
+            setTimeout(() => {
+
+                if (currentPaymentButton) {
+
+                    /*
+                     * Persist successful customer payment
+                     * into the shared workflow Job Card.
+                     */
+                    const jobCardNumber =
+                        currentPaymentButton.dataset.jobCard || "";
+
+                    const invoiceNumber =
+                        currentPaymentButton.dataset.invoice || "";
+
+                    const paidAmount =
+                        Number(
+                            currentPaymentButton.dataset.amount || 0
+                        );
+
+                    if (
+                        jobCardNumber &&
+                        window.ShiftDynamicsStore &&
+                        typeof window.ShiftDynamicsStore.updateJob === "function"
+                    ) {
+
+                        const paymentJobs =
+                            typeof window.ShiftDynamicsStore.getJobs === "function"
+                                ? window.ShiftDynamicsStore.getJobs() || []
+                                : [];
+
+                        const paymentJob =
+                            paymentJobs.find(
+                                job =>
+                                    job.jobCardNumber ===
+                                    jobCardNumber
+                            );
+
+                        window.ShiftDynamicsStore.updateJob(
+                            jobCardNumber,
+                            {
+                                payment: {
+                                    ...(paymentJob?.payment || {}),
+                                    status: "Paid",
+                                    amount: paidAmount,
+                                    invoiceNumber:
+                                        invoiceNumber.startsWith("#")
+                                            ? invoiceNumber
+                                            : `#${invoiceNumber}`,
+                                    method: "Card",
+                                    paidAt:
+                                        new Date().toISOString()
+                                }
+                            }
+                        );
+
+                        console.log(
+                            "Customer payment saved:",
+                            jobCardNumber,
+                            paidAmount
+                        );
+                    }
+
+
+                    const tableRow =
+                        currentPaymentButton.closest("tr");
+
+                    if (tableRow) {
+
+                        const statusBadge =
+                            tableRow.querySelector(
+                                ".sd-status-badge"
+                            );
+
+                        if (statusBadge) {
+
+                            statusBadge.textContent =
+                                "Paid";
+
+                            statusBadge.classList.remove(
+                                "pending"
+                            );
+
+                            statusBadge.classList.add(
+                                "paid"
+                            );
+                        }
+                    }
+
+
+                    currentPaymentButton.textContent =
+                        "Paid";
+
+                    currentPaymentButton.disabled =
+                        true;
+                }
+
+
+                window.alert(
+                    "Payment completed successfully."
+                );
+
+
+                completePaymentButton.disabled =
+                    false;
+
+                closePaymentModal();
+
+
+                /*
+                 * Future .NET backend integration:
+                 *
+                 * Never process or store raw card
+                 * details in this frontend.
+                 *
+                 * Replace this demo flow with a
+                 * secure payment gateway/API.
+                 */
+
+            }, 900);
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   ESCAPE KEY
+   ===================================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape" &&
+            paymentModal &&
+            paymentModal.classList.contains("open")
+        ) {
+
+            closePaymentModal();
+        }
+
+    }
+);
+    /* =====================================================
+       PROFILE
+       ===================================================== */
+
+    const profileForm =
+        document.getElementById(
+            "profileForm"
+        );
+
+    const profileMessage =
+        document.getElementById(
+            "profileMessage"
+        );
+
+
+        if (profileForm) {
+
+        profileForm.addEventListener(
+            "submit",
+            event => {
+
+                event.preventDefault();
+
+                /*
+                    CUSTOMER PROFILE -> SHARED STORE
+                */
+                try {
+
+                    if (
+                        !window.ShiftDynamicsStore ||
+                        typeof window.ShiftDynamicsStore.saveCustomerProfile !== "function"
+                    ) {
+                        throw new Error(
+                            "ShiftDynamicsStore.saveCustomerProfile is unavailable."
+                        );
+                    }
+
+                    const name =
+                        document
+                            .getElementById("profileName")
+                            ?.value
+                            ?.trim() || "";
+
+                    const email =
+                        document
+                            .getElementById("profileEmail")
+                            ?.value
+                            ?.trim() || "";
+
+                    const phone =
+                        document
+                            .getElementById("profilePhone")
+                            ?.value
+                            ?.trim() || "";
+
+                    const savedProfile =
+                        window.ShiftDynamicsStore.saveCustomerProfile({
+                            name,
+                            email,
+                            phone
+                        });
+
+                    profileMessage.className =
+                        "sd-form-message success";
+
+                    profileMessage.textContent =
+                        "Profile changes saved successfully.";
+
+                    console.log(
+                        "Shared customer profile:",
+                        savedProfile
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Unable to save customer profile to shared workflow store.",
+                        error
+                    );
+
+                    profileMessage.className =
+                        "sd-form-message error";
+
+                    profileMessage.textContent =
+                        "Unable to save profile changes.";
+                }
+            }
+        );
+    }
+
+});
+
+
+

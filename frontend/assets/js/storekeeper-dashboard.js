@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     // Navigation
     const navLinks =
@@ -92,7 +92,7 @@
     });
 
     // Demo Inventory Data
-    const inventory = [
+    let inventory = [
         {
             number: "PT-ENG-001",
             part: "Engine Mount",
@@ -160,7 +160,7 @@
     ];
 
     // Mechanic Requisitions
-    const requisitions = [
+    let requisitions = [
         {
             id: "PR-3024",
             job: "JC-1052",
@@ -197,7 +197,7 @@
     ];
 
     // Vendor Requests
-    const vendorRequests = [
+    let vendorRequests = [
         {
             id: "VR-4018",
             job: "JC-1048",
@@ -219,7 +219,7 @@
     ];
 
     // Stock Movements
-    const stockMovements = [
+    let stockMovements = [
         {
             time: "Today · 09:12 AM",
             part: "Front Brake Pad Set",
