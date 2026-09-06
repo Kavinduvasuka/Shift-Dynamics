@@ -87,5 +87,73 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
     }
+/* =====================================================
+   LOGIN DROPDOWN
+   ===================================================== */
 
+const loginMenu =
+    document.querySelector(".sd-login-menu");
+
+const loginToggle =
+    document.querySelector(".sd-login-toggle");
+
+
+if (loginMenu && loginToggle) {
+
+    loginToggle.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+            const isOpen =
+                loginMenu.classList.toggle("open");
+
+            loginToggle.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
+
+        }
+    );
+
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            if (
+                !loginMenu.contains(event.target)
+            ) {
+
+                loginMenu.classList.remove("open");
+
+                loginToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+            }
+
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Escape") {
+
+                loginMenu.classList.remove("open");
+
+                loginToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+            }
+
+        }
+    );
+
+}
 });

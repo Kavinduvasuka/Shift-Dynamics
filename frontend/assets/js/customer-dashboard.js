@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        ELEMENTS
@@ -63,6 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
             subtitle: "Follow your vehicle service progress."
         },
 
+        history: {
+            title: "Service History",
+            subtitle: "View your completed workshop jobs and services."
+        },
         modifications: {
             title: "Modification Catalog",
             subtitle: "Explore vehicle upgrade options."
@@ -73,10 +77,16 @@ document.addEventListener("DOMContentLoaded", () => {
             subtitle: "Manage invoices and payment information."
         },
 
+        "emergency-history": {
+            title: "Emergency Request History",
+            subtitle: "View your previous towing and mobile mechanic assistance requests."
+        },
+        
         profile: {
             title: "Profile Settings",
             subtitle: "Manage your account information."
         }
+        
 
     };
 
@@ -576,7 +586,7 @@ function updateVehicleCard(
         <p>
             ${escapeHTML(vehicle.year)}
             ${vehicle.trim
-                ? " • " + escapeHTML(vehicle.trim)
+                ? " â€¢ " + escapeHTML(vehicle.trim)
                 : ""}
         </p>
 
@@ -871,35 +881,35 @@ function escapeHTML(value) {
 
         "General Service": {
             icon: "bi-wrench-adjustable",
-            duration: "Approx. 1–2 hours",
+            duration: "Approx. 1â€“2 hours",
             description:
                 "Routine maintenance package covering essential service checks and general vehicle care."
         },
 
         "Vehicle Inspection": {
             icon: "bi-search",
-            duration: "Approx. 45–90 minutes",
+            duration: "Approx. 45â€“90 minutes",
             description:
                 "A detailed vehicle condition inspection covering major safety and mechanical areas."
         },
 
         "Engine Diagnostic": {
             icon: "bi-speedometer2",
-            duration: "Approx. 1–2 hours",
+            duration: "Approx. 1â€“2 hours",
             description:
                 "Diagnostic assessment for engine warning lights, performance issues and related faults."
         },
 
         "Brake Service": {
             icon: "bi-disc",
-            duration: "Approx. 1–2 hours",
+            duration: "Approx. 1â€“2 hours",
             description:
                 "Brake system inspection and service covering braking components and overall condition."
         },
 
         "Modification Consultation": {
             icon: "bi-tools",
-            duration: "Approx. 30–60 minutes",
+            duration: "Approx. 30â€“60 minutes",
             description:
                 "Consultation for vehicle upgrades such as exhausts, rims, tuning and other modifications."
         }
@@ -1582,7 +1592,7 @@ function escapeHTML(value) {
 
 
                         showBookingSuccess(
-                            `Booking request submitted successfully for ${selectedVehicle} — ${selectedService} on ${formattedDate} at ${formattedTime}.`
+                            `Booking request submitted successfully for ${selectedVehicle} â€” ${selectedService} on ${formattedDate} at ${formattedTime}.`
                         );
 
 
@@ -1648,56 +1658,1073 @@ function escapeHTML(value) {
         );
 
     }
-    /* =====================================================
-       ESTIMATE APPROVAL
-       ===================================================== */
+    /* =========================================================
+   DIGITAL ESTIMATE ACTIONS
+========================================================= */
 
-    const approveButtons =
-        document.querySelectorAll(
-            ".approve-estimate"
+        const approveEstimateButton =
+            document.querySelector(".approve-estimate");
+
+        const requestEstimateChangesButton =
+            document.querySelector(".request-estimate-changes");
+
+        function getEstimateCard(button) {
+            return button.closest(".sd-estimate-card");
+        }
+
+        function updateEstimateStatus(card, status, type) {
+            const statusBadge =
+                card.querySelector(".sd-status-badge");
+
+            if (!statusBadge) {
+                return;
+            }
+
+            statusBadge.textContent = status;
+
+            statusBadge.classList.remove(
+                "pending",
+                "paid",
+                "approved",
+                "changes-requested"
+            );
+
+            if (type) {
+                statusBadge.classList.add(type);
+            }
+        }
+
+        if (approveEstimateButton) {
+            approveEstimateButton.addEventListener(
+                "click",
+                function () {
+                    const estimateCard =
+                        getEstimateCard(approveEstimateButton);
+
+                    if (!estimateCard) {
+                        return;
+                    }
+
+                    const confirmed = window.confirm(
+                        "Approve this estimate and allow the workshop to proceed?"
+                    );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    updateEstimateStatus(
+                        estimateCard,
+                        "Approved",
+                        "approved"
+                    );
+
+                    approveEstimateButton.disabled = true;
+                    approveEstimateButton.innerHTML = `
+                        <i class="bi bi-check2-circle"></i>
+                        Estimate Approved
+                    `;
+
+                    if (requestEstimateChangesButton) {
+                        requestEstimateChangesButton.disabled = true;
+                    }
+                }
+            );
+        }
+
+            if (requestEstimateChangesButton) {
+                requestEstimateChangesButton.addEventListener(
+                    "click",
+                    function () {
+                        const estimateCard =
+                            getEstimateCard(requestEstimateChangesButton);
+
+                        if (!estimateCard) {
+                            return;
+                        }
+
+                        const reason = window.prompt(
+                            "What changes would you like to request?"
+                        );
+
+                        if (reason === null) {
+                            return;
+                        }
+
+                        const cleanReason = reason.trim();
+
+                        if (!cleanReason) {
+                            window.alert(
+                                "Please enter a reason for requesting changes."
+                            );
+                            return;
+                        }
+
+                        updateEstimateStatus(
+                            estimateCard,
+                            "Changes Requested",
+                            "changes-requested"
+                        );
+
+                        requestEstimateChangesButton.disabled = true;
+                        requestEstimateChangesButton.innerHTML = `
+                            <i class="bi bi-check2-circle"></i>
+                            Changes Requested
+                        `;
+
+                        if (approveEstimateButton) {
+                            approveEstimateButton.disabled = true;
+                        }
+
+                        console.log(
+                            "Estimate change request:",
+                            cleanReason
+                        );
+
+                        /*
+                        Future .NET API integration example:
+
+                        fetch("/api/estimates/request-changes", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                reason: cleanReason
+                            })
+                        });
+                        */
+                    }
+                );
+            }
+
+
+/* =====================================================
+   LIVE SERVICE TRACKER
+   ===================================================== */
+
+const trackerCard =
+    document.querySelector(".sd-tracker-card");
+
+if (trackerCard) {
+
+    const trackerSteps =
+        trackerCard.querySelectorAll(
+            ".sd-tracker-step"
         );
 
+    const trackerStatus =
+        trackerCard.querySelector(
+            ".sd-status-badge"
+        );
 
-    approveButtons.forEach(button => {
+    let currentTrackerStep = 2;
 
-        button.addEventListener(
-            "click",
-            () => {
+    const trackerStates = [
+        {
+            label: "Vehicle Received",
+            message: "08:45 AM"
+        },
+        {
+            label: "Inspection Completed",
+            message: "09:30 AM"
+        },
+        {
+            label: "Repair / Service Work",
+            message: "Currently in progress"
+        },
+        {
+            label: "Final Quality Check",
+            message: "Pending"
+        },
+        {
+            label: "Ready for Handover",
+            message: "Pending"
+        }
+    ];
 
-                const estimateCard =
-                    button.closest(
-                        ".sd-estimate-card"
+    function updateTracker() {
+
+        trackerSteps.forEach(
+            (step, index) => {
+
+                step.classList.remove(
+                    "completed",
+                    "current"
+                );
+
+                const marker =
+                    step.querySelector(
+                        ".sd-step-marker"
                     );
 
-
-                const status =
-                    estimateCard.querySelector(
-                        ".sd-status-badge"
+                const statusText =
+                    step.querySelector(
+                        "span"
                     );
 
+                if (index < currentTrackerStep) {
 
-                status.className =
-                    "sd-status-badge paid";
+                    step.classList.add(
+                        "completed"
+                    );
 
+                    if (marker) {
+                        marker.innerHTML =
+                            '<i class="bi bi-check-lg"></i>';
+                    }
 
-                status.textContent =
-                    "Approved";
+                } else if (
+                    index === currentTrackerStep
+                ) {
 
+                    step.classList.add(
+                        "current"
+                    );
 
-                button.innerHTML = `
-                    <i class="bi bi-check2-circle"></i>
-                    Estimate Approved
-                `;
+                    if (marker) {
+                        marker.innerHTML =
+                            '<i class="bi bi-wrench-adjustable"></i>';
+                    }
 
+                    if (statusText) {
+                        statusText.textContent =
+                            "Currently in progress";
+                    }
 
-                button.disabled = true;
+                } else {
 
+                    if (statusText) {
+                        statusText.textContent =
+                            "Pending";
+                    }
+
+                }
             }
         );
 
-    });
+        if (trackerStatus) {
+
+            if (
+                currentTrackerStep >=
+                trackerSteps.length - 1
+            ) {
+
+                trackerStatus.textContent =
+                    "Ready for Handover";
+
+                trackerStatus.className =
+                    "sd-status-badge completed";
+
+            } else {
+
+                trackerStatus.textContent =
+                    "In Progress";
+
+                trackerStatus.className =
+                    "sd-status-badge in-progress";
+            }
+        }
+    }
+
+    updateTracker();
+
+    /*
+     * Frontend demo helper.
+     * Later the .NET backend can call/update
+     * the tracker using real job status data.
+     */
+    window.shiftDynamicsTracker = {
+
+        next() {
+
+            if (
+                currentTrackerStep <
+                trackerSteps.length - 1
+            ) {
+                currentTrackerStep++;
+                updateTracker();
+            }
+        },
+
+        previous() {
+
+            if (currentTrackerStep > 0) {
+                currentTrackerStep--;
+                updateTracker();
+            }
+        },
+
+        setStep(index) {
+
+            if (
+                index >= 0 &&
+                index < trackerSteps.length
+            ) {
+                currentTrackerStep = index;
+                updateTracker();
+            }
+        }
+
+    };
+}
+/* =====================================================
+   INVOICE MODAL
+   ===================================================== */
+
+const invoiceModal =
+    document.getElementById("invoiceModal");
+
+const invoiceViewButton =
+    document.querySelector(".sd-view-invoice");
+
+const invoiceModalClose =
+    document.getElementById("invoiceModalClose");
+
+const invoiceCloseButtons =
+    document.querySelectorAll("[data-close-invoice]");
 
 
+function openInvoiceModal() {
+
+    if (!invoiceModal) {
+        return;
+    }
+
+    invoiceModal.classList.add("open");
+
+    invoiceModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+function closeInvoiceModal() {
+
+    if (!invoiceModal) {
+        return;
+    }
+
+    invoiceModal.classList.remove("open");
+
+    invoiceModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+}
+
+
+if (invoiceViewButton) {
+
+    invoiceViewButton.addEventListener(
+        "click",
+        openInvoiceModal
+    );
+}
+
+
+if (invoiceModalClose) {
+
+    invoiceModalClose.addEventListener(
+        "click",
+        closeInvoiceModal
+    );
+}
+
+
+invoiceCloseButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        closeInvoiceModal
+    );
+
+});
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape" &&
+            invoiceModal &&
+            invoiceModal.classList.contains("open")
+        ) {
+            closeInvoiceModal();
+        }
+
+    }
+);    
+
+/* =====================================================
+   MODIFICATION DETAILS MODAL
+   ===================================================== */
+
+const modificationModal =
+    document.getElementById("modificationModal");
+
+const modificationButtons =
+    document.querySelectorAll(
+        ".sd-view-modification"
+    );
+
+const modificationModalClose =
+    document.getElementById(
+        "modificationModalClose"
+    );
+
+const modificationCloseButtons =
+    document.querySelectorAll(
+        "[data-close-modification]"
+    );
+
+const modificationModalTitle =
+    document.getElementById(
+        "modificationModalTitle"
+    );
+
+const modificationModalDescription =
+    document.getElementById(
+        "modificationModalDescription"
+    );
+
+const modificationModalPrice =
+    document.getElementById(
+        "modificationModalPrice"
+    );
+
+const modificationModalTime =
+    document.getElementById(
+        "modificationModalTime"
+    );
+
+const requestModificationButton =
+    document.getElementById(
+        "requestModificationButton"
+    );
+
+
+const modificationData = {
+
+    exhaust: {
+        title: "Performance Exhaust",
+        description:
+            "Upgrade exhaust flow and sound with a performance-focused exhaust system.",
+        price: "From LKR 85,000",
+        time: "Approx. 3â€“5 hours"
+    },
+
+    wheels: {
+        title: "Wheels & Rims",
+        description:
+            "Choose styling and performance wheel upgrades suited to your vehicle.",
+        price: "From LKR 120,000",
+        time: "Approx. 1â€“2 hours"
+    },
+
+    tuning: {
+        title: "ECU Tuning",
+        description:
+            "Vehicle-specific ECU tuning consultation for improved performance and response.",
+        price: "From LKR 65,000",
+        time: "Approx. 2â€“4 hours"
+    },
+
+    suspension: {
+        title: "Suspension Upgrades",
+        description:
+            "Improve handling, stability and ride height with suspension upgrade options.",
+        price: "From LKR 95,000",
+        time: "Approx. 4â€“6 hours"
+    },
+
+    brakes: {
+        title: "Brake Upgrades",
+        description:
+            "Upgrade brake pads, discs and related components for improved braking performance.",
+        price: "From LKR 75,000",
+        time: "Approx. 2â€“4 hours"
+    },
+
+    "body-kit": {
+        title: "Body Kits",
+        description:
+            "Exterior styling upgrades including body kits, spoilers and visual enhancements.",
+        price: "From LKR 150,000",
+        time: "Approx. 1â€“2 days"
+    },
+
+    interior: {
+        title: "Interior Customization",
+        description:
+            "Customize interior trim, comfort features and styling options.",
+        price: "From LKR 60,000",
+        time: "Approx. 4â€“8 hours"
+    },
+
+    audio: {
+        title: "Audio Systems",
+        description:
+            "Upgrade speakers, amplifiers and in-car entertainment components.",
+        price: "From LKR 70,000",
+        time: "Approx. 3â€“6 hours"
+    }
+
+};
+
+
+function openModificationModal(type) {
+
+    if (!modificationModal) {
+        return;
+    }
+
+    const item =
+        modificationData[type];
+
+    if (!item) {
+        return;
+    }
+
+    modificationModalTitle.textContent =
+        item.title;
+
+    modificationModalDescription.textContent =
+        item.description;
+
+    modificationModalPrice.textContent =
+        item.price;
+
+    modificationModalTime.textContent =
+        item.time;
+
+    modificationModal.dataset.modification =
+        type;
+
+    modificationModal.classList.add("open");
+
+    modificationModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+function closeModificationModal() {
+
+    if (!modificationModal) {
+        return;
+    }
+
+    modificationModal.classList.remove(
+        "open"
+    );
+
+    modificationModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+}
+
+
+modificationButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            openModificationModal(
+                button.dataset.modification
+            );
+
+        }
+    );
+
+});
+
+
+if (modificationModalClose) {
+
+    modificationModalClose.addEventListener(
+        "click",
+        closeModificationModal
+    );
+}
+
+
+modificationCloseButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        closeModificationModal
+    );
+
+});
+
+
+if (requestModificationButton) {
+
+    requestModificationButton.addEventListener(
+        "click",
+        () => {
+
+            const type =
+                modificationModal.dataset
+                    .modification;
+
+            const item =
+                modificationData[type];
+
+            if (!item) {
+                return;
+            }
+
+            window.alert(
+                `Consultation request submitted for ${item.title}.`
+            );
+
+            closeModificationModal();
+
+            /*
+             * Future .NET API integration:
+             * Send selected modification
+             * consultation request to backend.
+             */
+
+        }
+    );
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape" &&
+            modificationModal &&
+            modificationModal.classList.contains(
+                "open"
+            )
+        ) {
+            closeModificationModal();
+        }
+
+    }
+);
+/* =====================================================
+   ONLINE PAYMENT
+   ===================================================== */
+
+const paymentModal =
+    document.getElementById("paymentModal");
+
+const payNowButtons =
+    document.querySelectorAll(".sd-pay-now");
+
+const paymentModalClose =
+    document.getElementById("paymentModalClose");
+
+const paymentCloseButtons =
+    document.querySelectorAll("[data-close-payment]");
+
+const paymentInvoiceText =
+    document.getElementById("paymentInvoiceText");
+
+const paymentAmount =
+    document.getElementById("paymentAmount");
+
+const paymentForm =
+    document.getElementById("paymentForm");
+
+const completePaymentButton =
+    document.getElementById("completePaymentButton");
+
+const cardHolder =
+    document.getElementById("cardHolder");
+
+const cardNumber =
+    document.getElementById("cardNumber");
+
+const cardExpiry =
+    document.getElementById("cardExpiry");
+
+const cardCvv =
+    document.getElementById("cardCvv");
+
+
+let currentPaymentButton = null;
+
+
+/* =====================================================
+   OPEN PAYMENT MODAL
+   ===================================================== */
+
+function openPaymentModal(button) {
+
+    if (!paymentModal || !button) {
+        return;
+    }
+
+    currentPaymentButton = button;
+
+    const invoice =
+        button.dataset.invoice || "";
+
+    const amount =
+        Number(button.dataset.amount || 0);
+
+    const formattedAmount =
+        amount.toLocaleString("en-LK");
+
+    paymentInvoiceText.textContent =
+        `Invoice #${invoice}`;
+
+    paymentAmount.textContent =
+        `LKR ${formattedAmount}`;
+
+    completePaymentButton.innerHTML =
+        `<i class="bi bi-lock-fill"></i>
+         Pay LKR ${formattedAmount}`;
+
+    paymentForm.reset();
+
+    paymentModal.classList.add("open");
+
+    paymentModal.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+/* =====================================================
+   CLOSE PAYMENT MODAL
+   ===================================================== */
+
+function closePaymentModal() {
+
+    if (!paymentModal) {
+        return;
+    }
+
+    paymentModal.classList.remove("open");
+
+    paymentModal.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.style.overflow =
+        "";
+
+    currentPaymentButton = null;
+}
+
+
+/* =====================================================
+   PAY NOW BUTTON
+   ===================================================== */
+
+payNowButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            openPaymentModal(button);
+
+        }
+    );
+
+});
+
+
+/* =====================================================
+   CLOSE BUTTONS
+   ===================================================== */
+
+if (paymentModalClose) {
+
+    paymentModalClose.addEventListener(
+        "click",
+        closePaymentModal
+    );
+}
+
+
+paymentCloseButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        closePaymentModal
+    );
+
+});
+
+
+/* =====================================================
+   CARD NUMBER FORMAT
+   ===================================================== */
+
+if (cardNumber) {
+
+    cardNumber.addEventListener(
+        "input",
+        () => {
+
+            let value =
+                cardNumber.value.replace(/\D/g, "");
+
+            value =
+                value.substring(0, 16);
+
+            cardNumber.value =
+                value.replace(
+                    /(\d{4})(?=\d)/g,
+                    "$1 "
+                );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   EXPIRY DATE FORMAT
+   ===================================================== */
+
+if (cardExpiry) {
+
+    cardExpiry.addEventListener(
+        "input",
+        () => {
+
+            let value =
+                cardExpiry.value.replace(/\D/g, "");
+
+            value =
+                value.substring(0, 4);
+
+            if (value.length >= 3) {
+
+                value =
+                    `${value.substring(0, 2)}/${value.substring(2)}`;
+            }
+
+            cardExpiry.value = value;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   CVV NUMBERS ONLY
+   ===================================================== */
+
+if (cardCvv) {
+
+    cardCvv.addEventListener(
+        "input",
+        () => {
+
+            cardCvv.value =
+                cardCvv.value
+                    .replace(/\D/g, "")
+                    .substring(0, 4);
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PAYMENT SUBMIT
+   ===================================================== */
+
+if (paymentForm) {
+
+    paymentForm.addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const holder =
+                cardHolder.value.trim();
+
+            const number =
+                cardNumber.value.replace(/\s/g, "");
+
+            const expiry =
+                cardExpiry.value.trim();
+
+            const cvv =
+                cardCvv.value.trim();
+
+
+            if (holder.length < 2) {
+
+                window.alert(
+                    "Please enter the cardholder name."
+                );
+
+                cardHolder.focus();
+
+                return;
+            }
+
+
+            if (!/^\d{16}$/.test(number)) {
+
+                window.alert(
+                    "Please enter a valid 16-digit card number."
+                );
+
+                cardNumber.focus();
+
+                return;
+            }
+
+
+            if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) {
+
+                window.alert(
+                    "Please enter a valid expiry date in MM/YY format."
+                );
+
+                cardExpiry.focus();
+
+                return;
+            }
+
+
+            if (!/^\d{3,4}$/.test(cvv)) {
+
+                window.alert(
+                    "Please enter a valid CVV."
+                );
+
+                cardCvv.focus();
+
+                return;
+            }
+
+
+            completePaymentButton.disabled = true;
+
+            completePaymentButton.innerHTML =
+                `<span>Processing...</span>`;
+
+
+            setTimeout(() => {
+
+                if (currentPaymentButton) {
+
+                    const tableRow =
+                        currentPaymentButton.closest("tr");
+
+                    if (tableRow) {
+
+                        const statusBadge =
+                            tableRow.querySelector(
+                                ".sd-status-badge"
+                            );
+
+                        if (statusBadge) {
+
+                            statusBadge.textContent =
+                                "Paid";
+
+                            statusBadge.classList.remove(
+                                "pending"
+                            );
+
+                            statusBadge.classList.add(
+                                "paid"
+                            );
+                        }
+                    }
+
+
+                    currentPaymentButton.textContent =
+                        "Paid";
+
+                    currentPaymentButton.disabled =
+                        true;
+                }
+
+
+                window.alert(
+                    "Payment completed successfully."
+                );
+
+
+                completePaymentButton.disabled =
+                    false;
+
+                closePaymentModal();
+
+
+                /*
+                 * Future .NET backend integration:
+                 *
+                 * Never process or store raw card
+                 * details in this frontend.
+                 *
+                 * Replace this demo flow with a
+                 * secure payment gateway/API.
+                 */
+
+            }, 900);
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   ESCAPE KEY
+   ===================================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape" &&
+            paymentModal &&
+            paymentModal.classList.contains("open")
+        ) {
+
+            closePaymentModal();
+        }
+
+    }
+);
     /* =====================================================
        PROFILE
        ===================================================== */

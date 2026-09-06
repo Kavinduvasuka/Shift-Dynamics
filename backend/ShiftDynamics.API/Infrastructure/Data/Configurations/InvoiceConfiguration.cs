@@ -11,6 +11,7 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.ToTable("invoices");
 
         builder.HasKey(x => x.Id);
+        builder.ToTable(t => t.HasCheckConstraint("CK_invoices_non_negative", "\"LaborCost\" >= 0 AND \"PartsCost\" >= 0 AND \"TaxAmount\" >= 0 AND \"DiscountAmount\" >= 0 AND \"Subtotal\" >= 0 AND \"TotalAmount\" >= 0 AND \"AmountPaid\" >= 0 AND \"BalanceDue\" >= 0 AND \"AmountPaid\" <= \"TotalAmount\""));
 
         builder.Property(x => x.InvoiceNumber)
             .IsRequired()

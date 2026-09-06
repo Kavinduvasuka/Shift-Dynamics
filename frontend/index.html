@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -95,14 +95,53 @@
                 About
             </a>
 
-            <a href="login.html"
-               class="sd-nav-login">
+            <div class="sd-login-menu">
+                <a href="contact.html"
+                class="sd-nav-link">
+                    Contact
+                </a>
 
+            <button
+                type="button"
+                class="sd-nav-login sd-login-toggle"
+                aria-expanded="false"
+                aria-controls="sdLoginDropdown"
+            >
                 <i class="bi bi-box-arrow-in-right"></i>
 
                 Login
 
-            </a>
+                <i class="bi bi-chevron-down sd-login-chevron"></i>
+            </button>
+
+
+            <div
+                class="sd-login-dropdown"
+                id="sdLoginDropdown"
+            >
+
+                <a href="login.html">
+                    <i class="bi bi-person"></i>
+
+                    <div>
+                        <strong>Customer Login</strong>
+                        <span>Vehicle owners and customers</span>
+                    </div>
+                </a>
+
+
+                <a href="staff-login.html">
+                    <i class="bi bi-people"></i>
+
+                    <div>
+                        <strong>Staff & Vendor Login</strong>
+                        <span>Workshop staff and spare-parts vendors</span>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
 
         </div>
 
@@ -202,15 +241,15 @@
                 <h1 class="sd-hero-title">
 
                     <span class="title-navy">
-                        Manage Your Garage.
+                        Keep Your Vehicle Moving.
                     </span>
 
                     <span class="title-orange">
-                        Drive Your Business
+                        Drive With Confidence.
                     </span>
 
                     <span class="title-orange">
-                        Forward.
+                        
                     </span>
 
                 </h1>
@@ -465,7 +504,7 @@
 
             <h2 class="sd-section-title">
 
-                Everything Your Workshop Needs
+                Everything You Need for Better Vehicle Care
 
             </h2>
 
@@ -753,8 +792,8 @@
 
                 <h2 class="sd-section-title">
 
-                    Built for Modern
-                    Automotive Operations
+                    Keep Your Vehicle Moving.
+                    Powered by <span style="color: #F97316;">Shift Dynamics.</span>
 
                 </h2>
 
@@ -770,10 +809,10 @@
 
                 <p class="sd-about-text">
 
-                    From customers and vehicles to
-                    appointments, jobs and inventory,
-                    the platform helps workshops organize
-                    their everyday operations.
+                    From booking your service to tracking repairs
+                    and managing your vehicle, Shift Dynamics
+                    makes every step of your automotive care
+                    simple, clear and convenient.
 
                 </p>
 
@@ -889,40 +928,70 @@
      FOOTER
      ===================================================== -->
 
-<footer class="sd-footer">
-
+<footer class="sd-footer sd-shared-footer">
 
     <div class="container">
 
+        <div class="sd-footer-inner">
 
-        <div class="row align-items-center">
+            <div class="sd-shared-footer-brand">
 
+                <img
+                    src="assets/images/shift-dynamics-logo.png.png"
+                    alt="Shift Dynamics"
+                >
 
-            <div class="col-md-6">
+                <div>
 
-                <div class="sd-footer-brand">
+                    <strong>
+                        SHIFT <span>DYNAMICS</span>
+                    </strong>
 
-                    <img
-                        src="assets/images/shift-dynamics-logo.png.png"
-                        alt="Shift Dynamics">
+                    <small>
+                        Smart Garage & Auto Care Management
+                    </small>
 
                 </div>
 
-                <p>
-                    Garage & Auto Care Management System
-                </p>
-
             </div>
 
 
-            <div class="col-md-6 text-md-end">
+            <div class="sd-footer-links">
 
-                <p>
-                    © 2026 Shift Dynamics.
-                    All rights reserved.
-                </p>
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="#features">
+                    Features
+                </a>
+
+                <a href="#about">
+                    About
+                </a>
+
+                <a href="contact.html">
+                    Contact
+                </a>
+
+                <a href="emergency.html">
+                    Emergency
+                </a>
 
             </div>
+
+        </div>
+
+
+        <div class="sd-footer-bottom">
+
+            <span>
+                &copy; 2026 Shift Dynamics.
+            </span>
+
+            <span>
+                Smart Garage & Auto Care Management
+            </span>
 
         </div>
 
@@ -946,3 +1015,11 @@
 </body>
 
 </html>
+
+
+
+
+
+
+
+

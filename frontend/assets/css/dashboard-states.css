@@ -1,0 +1,195 @@
+﻿/* =========================================================
+   SHIFT DYNAMICS - SHARED DASHBOARD STATES
+   Loading / Empty / Error
+========================================================= */
+
+.sd-api-state {
+    width: 100%;
+    min-height: 220px;
+    padding: 38px 24px;
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    text-align: center;
+}
+
+.sd-api-state-inner {
+    width: min(440px, 100%);
+}
+
+.sd-api-state-icon {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 16px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+}
+
+.sd-api-state h3 {
+    margin: 0;
+    color: #0F172A;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.sd-api-state p {
+    margin: 7px auto 0;
+    color: #64748B;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.sd-api-state-loading .sd-api-state-icon {
+    background: #FFF7ED;
+}
+
+.sd-api-spinner {
+    width: 27px;
+    height: 27px;
+    border: 3px solid #FED7AA;
+    border-top-color: #F97316;
+    border-radius: 50%;
+    animation: sdApiSpin .75s linear infinite;
+}
+
+@keyframes sdApiSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Skeleton lines */
+
+.sd-api-skeleton {
+    margin-top: 20px;
+    display: grid;
+    gap: 9px;
+}
+
+.sd-api-skeleton-line {
+    height: 10px;
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            90deg,
+            #F1F5F9 25%,
+            #E2E8F0 50%,
+            #F1F5F9 75%
+        );
+    background-size: 200% 100%;
+    animation: sdApiSkeleton 1.35s infinite;
+}
+
+.sd-api-skeleton-line:nth-child(2) {
+    width: 82%;
+    margin-inline: auto;
+}
+
+.sd-api-skeleton-line:nth-child(3) {
+    width: 60%;
+    margin-inline: auto;
+}
+
+@keyframes sdApiSkeleton {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+
+/* =========================================================
+   EMPTY
+========================================================= */
+
+.sd-api-state-empty .sd-api-state-icon {
+    background: #F8FAFC;
+    color: #64748B;
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.sd-api-state-error {
+    border-color: #FECACA;
+    background:
+        linear-gradient(
+            135deg,
+            #FFFFFF 0%,
+            #FFF7F7 100%
+        );
+}
+
+.sd-api-state-error .sd-api-state-icon {
+    background: #FEF2F2;
+    color: #DC2626;
+}
+
+.sd-api-state-retry {
+    min-height: 40px;
+    margin-top: 17px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 9px;
+    background: #F97316;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition:
+        transform .18s ease,
+        background .18s ease;
+}
+
+.sd-api-state-retry:hover {
+    background: #EA580C;
+    transform: translateY(-1px);
+}
+
+.sd-api-state-retry i {
+    margin-right: 5px;
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .sd-api-spinner,
+    .sd-api-skeleton-line {
+        animation: none;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .sd-api-state {
+        min-height: 190px;
+        padding: 30px 18px;
+    }
+
+}
