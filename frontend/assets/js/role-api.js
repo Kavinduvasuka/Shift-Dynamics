@@ -1,27 +1,138 @@
-(() => {
+﻿(() => {
  const auth=ShiftApi.auth(); const page=location.pathname;
  const text=(selector,value)=>{const e=document.querySelector(selector);if(e)e.textContent=value;};
  const state=(message,error=false)=>{let e=document.querySelector(".sd-api-status");if(!e){e=document.createElement("p");e.className="sd-api-status";document.querySelector(".sd-dashboard-content, main")?.prepend(e);}e.textContent=message;e.hidden=!message;e.style.color=error?"#b42318":"";};
- const live=(title,heads,rows)=>{let host=document.querySelector(".sd-api-live-data");if(!host){host=document.createElement("section");host.className="sd-table-card sd-api-live-data";document.querySelector(".sd-dashboard-content")?.prepend(host);}host.innerHTML=`<div class="sd-panel-header"><h3>${title}</h3></div><div class="sd-table-responsive"><table><thead><tr>${heads.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.length?rows.map(r=>`<tr>${r.map(c=>`<td>${c??"â€”"}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="${heads.length}">No records found.</td></tr>`}</tbody></table></div>`;};
+ const live=(title,heads,rows)=>{let host=document.querySelector(".sd-api-live-data");if(!host){host=document.createElement("section");host.className="sd-table-card sd-api-live-data";document.querySelector(".sd-dashboard-content")?.prepend(host);}host.innerHTML=`<div class="sd-panel-header"><h3>${title}</h3></div><div class="sd-table-responsive"><table><thead><tr>${heads.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.length?rows.map(r=>`<tr>${r.map(c=>`<td>${c??"Ã¢â‚¬â€"}</td>`).join("")}</tr>`).join(""):`<tr><td colspan="${heads.length}">No records found.</td></tr>`}</tbody></table></div>`;};
  const guarded=role=>{if(!auth||auth.role!==role){ShiftApi.clear();location.href=page.includes("dashboard.html")?"../staff-login.html":"staff-login.html";return false;}return true;};
  async function manager(){
     if(!guarded("Manager")) return;
 
-    const [summary, workshop, jobCards, mechanics] = await Promise.all([
+    const [summary, workshop, jobCards, mechanics, pendingVendors, draftInvoices] = await Promise.all([
         ShiftApi.request("/api/manager/summary"),
         ShiftApi.request("/api/manager/workshop"),
         ShiftApi.request("/api/manager/job-cards"),
-        ShiftApi.request("/api/manager/mechanics")
+        ShiftApi.request("/api/manager/mechanics"),
+        ShiftApi.request("/api/vendors/registrations?status=Pending"),
+        ShiftApi.request("/api/invoices?status=Draft")
     ]);
 
     document.body.dataset.apiManager = JSON.stringify({
         summary,
         workshop,
         jobCards,
-        mechanics
+        mechanics,
+        pendingVendors,
+        draftInvoices
     });
 
-    const workOrderStatus = [
+    /* =================================================
+   REAL BILLING APPROVAL DATA
+   ================================================= */
+
+const billingInvoice = draftInvoices?.[0] ?? null;
+
+const billingJob = billingInvoice
+    ? jobCards.find(
+        job => job.workOrderId === billingInvoice.workOrderId
+      )
+    : null;
+
+const setBillingText = (id, value) => {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = value ?? "—";
+    }
+};
+
+const billingMoney = value =>
+    `LKR ${Number(value ?? 0).toLocaleString("en-LK", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    })}`;
+
+if (billingInvoice && billingJob) {
+    setBillingText(
+        "billingInvoiceNumber",
+        `#${billingInvoice.invoiceNumber}`
+    );
+
+    setBillingText(
+        "billingJobCardNumber",
+        `#${billingJob.workOrderNumber}`
+    );
+
+    setBillingText(
+        "billingCustomerName",
+        billingJob.customerName
+    );
+
+    setBillingText(
+        "billingVehicle",
+        billingJob.vehicle
+    );
+
+    setBillingText(
+        "billingLicensePlate",
+        billingJob.registrationNumber
+    );
+
+    setBillingText(
+        "billingService",
+        billingJob.serviceName
+    );
+
+    /*
+     * Billing amounts are bound to the existing card
+     * without changing its visual structure.
+     */
+    const billingTextNodes = Array.from(
+        document.querySelectorAll("body *")
+    ).filter(
+        element => element.children.length === 0
+    );
+
+    const replaceBillingAmount = (label, amount) => {
+        const labelNode = billingTextNodes.find(
+            element => element.textContent.trim() === label
+        );
+
+        if (!labelNode) return;
+
+        const row = labelNode.closest("div");
+        if (!row) return;
+
+        const amountNode = Array.from(row.querySelectorAll("*"))
+            .find(
+                element =>
+                    element.children.length === 0 &&
+                    /^LKR\s/.test(element.textContent.trim())
+            );
+
+        if (amountNode) {
+            amountNode.textContent = billingMoney(amount);
+        }
+    };
+
+    replaceBillingAmount(
+        "Workshop Labour",
+        billingInvoice.laborCost
+    );
+
+    replaceBillingAmount(
+        "Brake Fluid & Workshop Materials",
+        billingInvoice.partsCost
+    );
+
+    const totalNode = billingTextNodes.find(
+        element => element.textContent.trim() === "LKR 54,500"
+    );
+
+    if (totalNode) {
+        totalNode.textContent =
+            billingMoney(billingInvoice.totalAmount);
+    }
+}
+const workOrderStatus = [
         "Open",
         "Assigned",
         "InProgress",
@@ -47,7 +158,7 @@
             ? (values[value] ?? String(value))
             : String(value ?? "");
 
-    /* Existing statistic cards — values only. */
+    /* Existing statistic cards â€” values only. */
     const cards = document.querySelectorAll(".sd-stat-card");
 
     const stats = [
@@ -64,7 +175,7 @@
         }
     });
 
-    /* Existing Workshop Bay Load list — data only. */
+    /* Existing Workshop Bay Load list â€” data only. */
     const bayItems = document.querySelectorAll(".sd-bay-list .sd-bay-item");
 
     workshop.forEach((bay, index) => {
@@ -85,7 +196,7 @@
 
         if(detail){
             detail.textContent = bay.job
-                ? `${bay.job.vehicle} · ${bay.job.registrationNumber}`
+                ? `${bay.job.vehicle} Â· ${bay.job.registrationNumber}`
                 : currentBayStatus === "Maintenance"
                     ? "Maintenance"
                     : "Available";
@@ -145,7 +256,7 @@
                     <td><strong>#${job.workOrderNumber}</strong></td>
                     <td>${job.vehicle}</td>
                     <td>${job.serviceName}</td>
-                    <td>—</td>
+                    <td>â€”</td>
                     <td>
                         <span class="sd-status sd-status-progress job-status">
                             ${status}
@@ -161,7 +272,7 @@
         }).join("");
     }
 
-    /* Existing assignment dropdowns — real backend data. */
+    /* Existing assignment dropdowns â€” real backend data. */
     const mechanicSelect = document.getElementById("mechanicSelect");
     const baySelect = document.getElementById("baySelect");
 
@@ -197,3 +308,6 @@
     }
   });
 })();
+
+
+

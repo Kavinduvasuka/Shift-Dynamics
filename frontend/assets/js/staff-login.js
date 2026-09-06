@@ -155,109 +155,66 @@
 
 
             const loginData = {
-
-                email:
-                    emailInput.value
-                        .trim()
-                        .toLowerCase()
-
-                /*
-                    IMPORTANT:
-
-                    We do NOT ask the user to select
-                    Advisor / Manager / Mechanic /
-                    Storekeeper / Vendor here.
-
-                    Future C# .NET backend:
-
-                    1. Validate email + password
-                    2. Read account role
-                    3. Return authenticated role
-                    4. Frontend redirects to the
-                       correct dashboard.
-
-                    Never trust a frontend-selected
-                    role for authorization.
-                */
+                email: emailInput.value.trim().toLowerCase(),
+                password: passwordInput.value
             };
 
-
             loginButton.disabled = true;
+            loginButtonText.textContent = "Signing In...";
 
-            loginButtonText.textContent =
-                "Signing In...";
+            try {
+                const data = await ShiftApi.request("/api/auth/login", {
+                    method: "POST",
+                    body: JSON.stringify(loginData)
+                });
 
+                if (!data?.accessToken) {
+                    throw new Error("Authentication succeeded but no access token was returned.");
+                }
 
-            /*
-                FRONTEND DEMO ONLY.
+                if (!data?.role) {
+                    throw new Error("Authentication succeeded but no user role was returned.");
+                }
 
-                Real authentication will replace
-                this timeout with a .NET API call.
-            */
+                ShiftApi.save(data);
 
-            /* =====================================================
-   FRONTEND DEMO ROLE REDIRECT
-   ===================================================== */
+                const roleRoutes = {
+                    ServiceAdvisor: "advisor/dashboard.html",
+                    Manager: "manager/dashboard.html",
+                    Mechanic: "mechanic/dashboard.html",
+                    Storekeeper: "storekeeper/dashboard.html",
+                    Vendor: "vendor/dashboard.html"
+                };
 
-const email =
-    emailInput.value.trim().toLowerCase();
+                const redirectPage = roleRoutes[data.role];
 
-let redirectPage = "";
+                if (!redirectPage) {
+                    ShiftApi.clear();
+                    throw new Error(`The ${data.role} role does not have a configured staff dashboard.`);
+                }
 
+                loginMessage.textContent = "Login successful. Redirecting...";
+                loginMessage.className = "sd-login-message success";
 
-if (email === "advisor@shiftdynamics.com") {
+                setTimeout(() => {
+                    window.location.href = redirectPage;
+                }, 500);
 
-    redirectPage = "advisor/dashboard.html";
+            } catch (error) {
+                console.error("Staff login failed:", error);
 
-} else if (email === "manager@shiftdynamics.com") {
+                loginMessage.textContent =
+                    error?.message || "Invalid email or password.";
 
-    redirectPage = "manager/dashboard.html";
+                loginMessage.className =
+                    "sd-login-message error";
 
-} else if (email === "mechanic@shiftdynamics.com") {
-
-    redirectPage = "mechanic/dashboard.html";
-
-} else if (email === "storekeeper@shiftdynamics.com") {
-
-    redirectPage = "storekeeper/dashboard.html";
-
-} else if (email === "vendor@example.com") {
-
-    redirectPage = "vendor/dashboard.html";
-
-}
-
-
-if (redirectPage) {
-
-    loginMessage.textContent =
-        "Login successful. Redirecting...";
-
-    loginMessage.className =
-        "sd-login-message success";
-
-
-    setTimeout(() => {
-
-        window.location.href = redirectPage;
-
-    }, 800);
-
-} else {
-
-    loginMessage.textContent =
-        "Account not found for this portal.";
-
-    loginMessage.className =
-        "sd-login-message error";
-
-
-    loginButton.disabled = false;
-
-    loginButtonText.textContent =
-        "Sign In";
-}
+                loginButton.disabled = false;
+                loginButtonText.textContent = "Sign In";
+            }
         }
     );
 
 });
+
+

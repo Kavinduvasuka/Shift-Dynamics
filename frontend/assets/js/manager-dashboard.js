@@ -1,4 +1,4 @@
-document.addEventListener(
+﻿document.addEventListener(
     "DOMContentLoaded",
     () => {
 
@@ -333,7 +333,7 @@ document.addEventListener(
 
 
             selectedJobVehicle.textContent =
-                `${selectedJob.vehicle} · ${selectedJob.plate}`;
+                `${selectedJob.vehicle} Â· ${selectedJob.plate}`;
 
 
             mechanicSelect.disabled = false;
@@ -722,7 +722,7 @@ document.addEventListener(
                         LKR ${formatLKR(
                             selectedVendorQuote.price
                         )}
-                        · Delivery:
+                        Â· Delivery:
                         ${escapeHTML(
                             selectedVendorQuote.delivery
                         )}
@@ -854,7 +854,7 @@ document.addEventListener(
                             LKR ${formatLKR(
                                 selectedVendorQuote.price
                             )}
-                            · ${escapeHTML(
+                            Â· ${escapeHTML(
                                 selectedVendorQuote.delivery
                             )}
                             delivery
@@ -1043,12 +1043,12 @@ document.addEventListener(
 
         approveBillingButton?.addEventListener(
             "click",
-            () => {
+            async () => {
 
                 if (billingApproved) {
 
                     billingMessage.textContent =
-                        "Invoice #INV-1062 has already been approved.";
+                        "This invoice has already been approved.";
 
                     billingMessage.className =
                         "sd-form-message error";
@@ -1069,31 +1069,118 @@ document.addEventListener(
                 }
 
 
-                billingApproved = true;
+                /*
+                 * Get the real Draft invoice loaded by role-api.js.
+                 */
+                let draftInvoices = [];
+
+                try {
+
+                    const managerData =
+                        JSON.parse(
+                            document.body.dataset.apiManager || "{}"
+                        );
+
+                    draftInvoices =
+                        managerData.draftInvoices || [];
+
+                } catch {
+
+                    draftInvoices = [];
+                }
 
 
-                billingStatus.textContent =
-                    "Billing Approved";
-
-                billingStatus.className =
-                    "sd-status sd-status-ready";
+                const invoice =
+                    draftInvoices[0];
 
 
-                confirmBilling.disabled = true;
-                approveBillingButton.disabled = true;
-                billingApprovalNote.disabled = true;
+                if (!invoice?.id) {
 
+                    billingMessage.textContent =
+                        "No draft invoice is available for approval.";
+
+                    billingMessage.className =
+                        "sd-form-message error";
+
+                    return;
+                }
+
+
+                approveBillingButton.disabled =
+                    true;
 
                 billingMessage.textContent =
-                    "Invoice #INV-1062 approved. It is ready for the customer payment process.";
+                    "Approving invoice...";
 
                 billingMessage.className =
-                    "sd-form-message success";
+                    "sd-form-message";
+
+
+                try {
+
+                    await ShiftApi.request(
+                        `/api/invoices/${invoice.id}/approve`,
+                        {
+                            method: "POST"
+                        }
+                    );
+
+
+                    billingApproved =
+                        true;
+
+
+                    /*
+                     * Preserve the existing dashboard UI feedback.
+                     */
+                    billingStatus.textContent =
+                        "Billing Approved";
+
+                    billingStatus.className =
+                        "sd-status sd-status-ready";
+
+
+                    confirmBilling.disabled =
+                        true;
+
+                    approveBillingButton.disabled =
+                        true;
+
+                    billingApprovalNote.disabled =
+                        true;
+
+
+                    billingMessage.textContent =
+                        `Invoice #${invoice.invoiceNumber} approved. It is ready for the customer payment process.`;
+
+                    billingMessage.className =
+                        "sd-form-message success";
+
+
+                    /*
+                     * Reload Manager data from the backend.
+                     */
+                    window.dispatchEvent(
+                        new CustomEvent(
+                            "shift:manager-refresh"
+                        )
+                    );
+
+                } catch (error) {
+
+                    approveBillingButton.disabled =
+                        false;
+
+                    billingMessage.textContent =
+                        error?.message ||
+                        "Unable to approve the invoice.";
+
+                    billingMessage.className =
+                        "sd-form-message error";
+                }
             }
         );
-
-
-        /* =================================================
+/* =================================================
            MANAGER BUSINESS ANALYTICS
            Frontend demo data only.
 
@@ -4171,3 +4258,4 @@ document.addEventListener("DOMContentLoaded", () => {
     renderVendorRegistrations();
 
 });
+
