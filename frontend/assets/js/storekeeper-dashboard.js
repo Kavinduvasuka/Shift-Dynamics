@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebarOverlay.classList.remove("show");
     });
 
-    // Demo Inventory Data
+    // Initial inventory catalogue. It is migrated to the shared store once.
     let inventory = [
         {
             number: "PT-ENG-001",
@@ -159,92 +159,68 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     ];
 
-    // Mechanic Requisitions
-    let requisitions = [
-        {
-            id: "PR-3024",
-            job: "JC-1052",
-            mechanic: "Nimal Perera",
-            vehicle: "Nissan X-Trail",
-            partNumber: "PT-ENG-001",
-            part: "Engine Mount",
-            quantity: 1,
-            urgency: "Urgent",
-            status: "pending"
-        },
-        {
-            id: "PR-3025",
-            job: "JC-1058",
-            mechanic: "Kasun Silva",
-            vehicle: "Honda Vezel",
-            partNumber: "PT-ELC-004",
-            part: "12V Car Battery",
-            quantity: 1,
-            urgency: "Normal",
-            status: "pending"
-        },
-        {
-            id: "PR-3026",
-            job: "JC-1057",
-            mechanic: "Dilan Jayasinghe",
-            vehicle: "Toyota Aqua",
-            partNumber: "PT-FLT-005",
-            part: "Engine Oil Filter",
-            quantity: 2,
-            urgency: "Normal",
-            status: "pending"
-        }
-    ];
+    let requisitions = [];
+    let vendorRequests = [];
+    let stockMovements = [];
 
-    // Vendor Requests
-    let vendorRequests = [
-        {
-            id: "VR-4018",
-            job: "JC-1048",
-            part: "Headlamp Assembly",
-            partNumber: "PT-BDY-007",
-            quantity: 1,
-            vehicle: "Toyota Corolla",
-            status: "Awaiting Quotes"
-        },
-        {
-            id: "VR-4019",
-            job: "JC-1050",
-            part: "17-inch Alloy Wheel",
-            partNumber: "PT-WHL-008",
-            quantity: 2,
-            vehicle: "Honda Vezel",
-            status: "Awaiting Quotes"
-        }
-    ];
+    const workflowStore =
+        window.ShiftDynamicsStore;
 
-    // Stock Movements
-    let stockMovements = [
-        {
-            time: "Today · 09:12 AM",
-            part: "Front Brake Pad Set",
-            reference: "JC-1051",
-            movement: "Released",
-            quantity: "-1",
-            user: "Store Keeper"
-        },
-        {
-            time: "Today · 08:45 AM",
-            part: "Engine Oil Filter",
-            reference: "STK-8821",
-            movement: "Stock In",
-            quantity: "+10",
-            user: "Store Keeper"
-        },
-        {
-            time: "31 Aug · 04:20 PM",
-            part: "Radiator Hose",
-            reference: "JC-1047",
-            movement: "Released",
-            quantity: "-1",
-            user: "Store Keeper"
+    function syncStorekeeperData() {
+        if (!workflowStore) {
+            inventory = [];
+            requisitions = [];
+            vendorRequests = [];
+            stockMovements = [];
+            return;
         }
-    ];
+
+        if (typeof workflowStore.getInventory === "function") {
+            const savedInventory = workflowStore.getInventory();
+
+            if (savedInventory.length) {
+                inventory = savedInventory;
+            } else if (typeof workflowStore.saveInventory === "function") {
+                inventory = workflowStore.saveInventory(inventory);
+            }
+        }
+
+        requisitions =
+            typeof workflowStore.getPartRequests === "function"
+                ? workflowStore.getPartRequests().map(request => ({
+                    ...request,
+                    id: request.requestId,
+                    job: request.jobCardNumber,
+                    partNumber:
+                        request.inventoryNumber || request.partNumber
+                }))
+                : [];
+
+        vendorRequests =
+            typeof workflowStore.getVendorRequests === "function"
+                ? workflowStore.getVendorRequests().map(request => ({
+                    ...request,
+                    id: request.vendorRequestId,
+                    job: request.jobCardNumber,
+                    sourceRequest: request.sourceRequestId
+                }))
+                : [];
+
+        stockMovements =
+            typeof workflowStore.getStockMovements === "function"
+                ? workflowStore.getStockMovements().map(movement => ({
+                    ...movement,
+                    time:
+                        movement.time ||
+                        new Date(movement.createdAt).toLocaleString(),
+                    reference:
+                        movement.reference ||
+                        movement.jobCardNumber ||
+                        "",
+                    user: movement.user || "Store Keeper"
+                }))
+                : [];
+    }
 
     // Security Helper
     function escapeHTML(value) {
@@ -585,7 +561,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         request.status = "released";
 
-        stockMovements.unshift({
+        workflowStore.saveInventory(inventory);
+
+        workflowStore.updatePartRequest(
+            request.id,
+            {
+                status: "released",
+                releasedAt: new Date().toISOString()
+            }
+        );
+
+        workflowStore.createStockMovement({
             time: "Just now",
             part: request.part,
             reference: request.job,
@@ -593,6 +579,8 @@ document.addEventListener("DOMContentLoaded", () => {
             quantity: `-${request.quantity}`,
             user: "Store Keeper"
         });
+
+        syncStorekeeperData();
 
         renderRequisitions();
         renderInventory();
@@ -616,6 +604,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         request.status = "vendor";
 
+        workflowStore.updatePartRequest(
+            request.id,
+            {
+                status: "vendor",
+                vendorRequestedAt: new Date().toISOString()
+            }
+        );
+
         const exists =
             vendorRequests.some(
                 item =>
@@ -624,14 +620,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!exists) {
 
-            vendorRequests.unshift({
-                id:
-                    `VR-${4020 + vendorRequests.length}`,
-
-                sourceRequest:
+            workflowStore.createVendorRequest({
+                sourceRequestId:
                     request.id,
 
-                job:
+                jobCardNumber:
                     request.job,
 
                 part:
@@ -650,6 +643,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Awaiting Quotes"
             });
         }
+
+        syncStorekeeperData();
 
         renderRequisitions();
         renderVendorRequests();
@@ -772,10 +767,80 @@ document.addEventListener("DOMContentLoaded", () => {
             `).join("");
     }
 
-    // Initial Render
+    function renderOverview() {
+        const pending = requisitions.filter(
+            request => request.status === "pending"
+        );
+
+        const lowStock = inventory.filter(
+            item => item.quantity <= 2
+        );
+
+        const setCount = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = String(value).padStart(2, "0");
+            }
+        };
+
+        setCount("pendingRequisitionCount", pending.length);
+        setCount("inventoryItemCount", inventory.length);
+        setCount("lowStockCount", lowStock.length);
+        setCount("vendorRequestCount", vendorRequests.length);
+
+        const body = document.getElementById("overviewRequisitionBody");
+        if (!body) {
+            return;
+        }
+
+        if (!pending.length) {
+            body.innerHTML = `
+                <tr>
+                    <td colspan="5" class="sd-live-empty">
+                        No pending parts requisitions.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        body.innerHTML = pending.slice(0, 5).map(request => `
+            <tr>
+                <td><strong>#${escapeHTML(request.id)}</strong></td>
+                <td>#${escapeHTML(request.job)}</td>
+                <td>${escapeHTML(request.part)}</td>
+                <td>${escapeHTML(request.quantity)}</td>
+                <td>
+                    <span class="sd-badge ${
+                        request.urgency === "Urgent" ? "high" : "normal"
+                    }">
+                        ${escapeHTML(request.urgency)}
+                    </span>
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    // Initial shared-store render
+    syncStorekeeperData();
+    renderOverview();
     renderInventory();
     renderRequisitions();
     renderVendorRequests();
     renderMovements();
+
+    if (
+        workflowStore &&
+        typeof workflowStore.subscribe === "function"
+    ) {
+        workflowStore.subscribe(() => {
+            syncStorekeeperData();
+            renderOverview();
+            renderInventory();
+            renderRequisitions();
+            renderVendorRequests();
+            renderMovements();
+        });
+    }
 
 });

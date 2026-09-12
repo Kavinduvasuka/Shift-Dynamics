@@ -205,7 +205,7 @@
 
                             <div>
                                 <span>Pending Requisitions</span>
-                                <strong>03</strong>
+                                <strong id="pendingRequisitionCount">00</strong>
                                 <small>Requires review</small>
                             </div>
                         </article>
@@ -217,7 +217,7 @@
 
                             <div>
                                 <span>Inventory Items</span>
-                                <strong>248</strong>
+                                <strong id="inventoryItemCount">00</strong>
                                 <small>Active stock records</small>
                             </div>
                         </article>
@@ -229,7 +229,7 @@
 
                             <div>
                                 <span>Low Stock</span>
-                                <strong>08</strong>
+                                <strong id="lowStockCount">00</strong>
                                 <small>Needs attention</small>
                             </div>
                         </article>
@@ -241,7 +241,7 @@
 
                             <div>
                                 <span>Vendor Requests</span>
-                                <strong>04</strong>
+                                <strong id="vendorRequestCount">00</strong>
                                 <small>Awaiting quotations</small>
                             </div>
                         </article>
@@ -285,49 +285,7 @@
                                         </tr>
                                     </thead>
 
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <strong>#PR-3024</strong>
-                                            </td>
-                                            <td>#JC-1052</td>
-                                            <td>Engine Mount</td>
-                                            <td>1</td>
-                                            <td>
-                                                <span class="sd-badge high">
-                                                    Urgent
-                                                </span>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <strong>#PR-3025</strong>
-                                            </td>
-                                            <td>#JC-1058</td>
-                                            <td>12V Car Battery</td>
-                                            <td>1</td>
-                                            <td>
-                                                <span class="sd-badge normal">
-                                                    Normal
-                                                </span>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <strong>#PR-3026</strong>
-                                            </td>
-                                            <td>#JC-1057</td>
-                                            <td>Engine Oil Filter</td>
-                                            <td>2</td>
-                                            <td>
-                                                <span class="sd-badge normal">
-                                                    Normal
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody id="overviewRequisitionBody"></tbody>
 
                                 </table>
                             </div>
@@ -640,6 +598,7 @@
     </div>
 
     <!-- JavaScript -->
+    <script src="../assets/js/shift-dynamics-store.js"></script>
     <script src="../assets/js/storekeeper-dashboard.js"></script>
     <script src="../assets/js/dashboard-states.js"></script>
 

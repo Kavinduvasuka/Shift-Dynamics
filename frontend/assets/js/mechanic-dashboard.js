@@ -2299,14 +2299,118 @@ if (!reason) {
 
             }
 
-requestCount += 1;
+            const displayedJobNumber =
+                document
+                    .querySelector(".sd-parts-job")
+                    ?.textContent
+                    ?.match(/JC-[A-Z0-9-]+/i)
+                    ?.[0] || "";
+
+            const workflowStore =
+                window.ShiftDynamicsStore;
+
+            const sharedJob =
+                displayedJobNumber &&
+                workflowStore &&
+                typeof workflowStore.getJob === "function"
+                    ? workflowStore.getJob(displayedJobNumber)
+                    : null;
+
+            if (!sharedJob?.jobCardNumber) {
+                partRequestMessage.textContent =
+                    "Open an active Job Card before requesting a part.";
+                partRequestMessage.className =
+                    "sd-job-message error";
+                return;
+            }
+
+            if (
+                typeof workflowStore.createPartRequest !==
+                "function"
+            ) {
+                partRequestMessage.textContent =
+                    "Shared Storekeeper workflow is unavailable.";
+                partRequestMessage.className =
+                    "sd-job-message error";
+                return;
+            }
+
+            const vehicleData =
+                sharedJob.vehicle || {};
+
+            const vehicleName =
+                [
+                    vehicleData.make,
+                    vehicleData.model
+                ]
+                    .filter(Boolean)
+                    .join(" ") ||
+                sharedJob.vehicleName ||
+                "Vehicle";
+
+            const savedPartRequest =
+                workflowStore.createPartRequest({
+                    jobCardNumber:
+                        sharedJob.jobCardNumber,
+                    bookingId:
+                        sharedJob.bookingId || null,
+                    mechanic:
+                        sharedJob.assignment?.mechanicName ||
+                        sharedJob.mechanicName ||
+                        "Assigned Mechanic",
+                    vehicle:
+                        vehicleName,
+                    plate:
+                        vehicleData.licensePlate ||
+                        vehicleData.registrationNumber ||
+                        sharedJob.plate ||
+                        "",
+                    inventoryNumber:
+                        currentSelectedPart.id,
+                    partNumber:
+                        currentSelectedPart.partNumber,
+                    part:
+                        currentSelectedPart.name,
+                    category:
+                        currentSelectedPart.category,
+                    quantity,
+                    urgency,
+                    reason,
+                    status: "pending"
+                });
+
+            if (!savedPartRequest) {
+                partRequestMessage.textContent =
+                    "Unable to create the parts request.";
+                partRequestMessage.className =
+                    "sd-job-message error";
+                return;
+            }
+
+            const job = {
+                id: sharedJob.jobCardNumber,
+                vehicle: vehicleName,
+                plate:
+                    vehicleData.licensePlate ||
+                    vehicleData.registrationNumber ||
+                    sharedJob.plate ||
+                    "",
+                service:
+                    sharedJob.serviceConcern ||
+                    sharedJob.service ||
+                    "Workshop Service",
+                completed: "Pending",
+                duration: "Not recorded"
+            };
+
+            requestCount += 1;
 
 if (requestCount === 1) {
                 partsRequestList.innerHTML = "";
             }
 
 const requestNumber =
-                `PR-${3021 + requestCount}`;
+                savedPartRequest.requestId;
 
 const row =
                 document.createElement("article");

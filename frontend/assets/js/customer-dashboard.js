@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        ELEMENTS
@@ -616,6 +616,23 @@ function updateVehicleCard(
     card,
     vehicle
 ) {
+    // VEHICLE TRIM ENCODING GUARD V1
+    const rawTrim =
+        String(
+            vehicle?.trim || ""
+        ).trim();
+
+    const hasEncodingDamage =
+        /[\u00c2\u00c3\u00e2\ufffd]/.test(
+            rawTrim
+        );
+
+    vehicle = {
+        ...vehicle,
+        trim: hasEncodingDamage
+            ? ""
+            : rawTrim
+    };
 
     /*
         CUSTOMER VEHICLES -> SHARED STORE
@@ -669,9 +686,7 @@ card.dataset.make =
 
         <p>
             ${escapeHTML(vehicle.year)}
-            ${vehicle.trim
-                ? " ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ " + escapeHTML(vehicle.trim)
-                : ""}
+            ${vehicle.trim ? " | " + escapeHTML(vehicle.trim) : ""} /* VEHICLE TRIM SEPARATOR REPAIR V1 */
         </p>
 
 

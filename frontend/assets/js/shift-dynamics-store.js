@@ -29,7 +29,11 @@ window.ShiftDynamicsStore = (() => {
             bookings: [],
             customerProfile: null,
             vehicles: [],
-            emergencyRequests: []
+            emergencyRequests: [],
+            inventory: [],
+            partRequests: [],
+            vendorRequests: [],
+            stockMovements: []
         };
     }
 
@@ -84,6 +88,26 @@ window.ShiftDynamicsStore = (() => {
                 emergencyRequests:
                     Array.isArray(parsed.emergencyRequests)
                         ? parsed.emergencyRequests
+                        : [],
+
+                inventory:
+                    Array.isArray(parsed.inventory)
+                        ? parsed.inventory
+                        : [],
+
+                partRequests:
+                    Array.isArray(parsed.partRequests)
+                        ? parsed.partRequests
+                        : [],
+
+                vendorRequests:
+                    Array.isArray(parsed.vendorRequests)
+                        ? parsed.vendorRequests
+                        : [],
+
+                stockMovements:
+                    Array.isArray(parsed.stockMovements)
+                        ? parsed.stockMovements
                         : []
             };
 
@@ -127,6 +151,26 @@ window.ShiftDynamicsStore = (() => {
             emergencyRequests:
                 Array.isArray(state?.emergencyRequests)
                     ? state.emergencyRequests
+                    : [],
+
+            inventory:
+                Array.isArray(state?.inventory)
+                    ? state.inventory
+                    : [],
+
+            partRequests:
+                Array.isArray(state?.partRequests)
+                    ? state.partRequests
+                    : [],
+
+            vendorRequests:
+                Array.isArray(state?.vendorRequests)
+                    ? state.vendorRequests
+                    : [],
+
+            stockMovements:
+                Array.isArray(state?.stockMovements)
+                    ? state.stockMovements
                     : []
         };
 
@@ -820,6 +864,139 @@ window.ShiftDynamicsStore = (() => {
     }
 
 
+    /* =====================================================
+       SHARED STOREKEEPER WORKFLOW
+       ===================================================== */
+
+    function copyList(value) {
+        return JSON.parse(JSON.stringify(Array.isArray(value) ? value : []));
+    }
+
+    function getInventory() {
+        return copyList(readState().inventory);
+    }
+
+    function saveInventory(items) {
+        const state = readState();
+        state.inventory = copyList(items);
+        writeState(state);
+        return copyList(state.inventory);
+    }
+
+    function getPartRequests() {
+        return copyList(readState().partRequests);
+    }
+
+    function createPartRequest(request) {
+        if (!request || typeof request !== "object") {
+            throw new Error("Part request data is required.");
+        }
+
+        const state = readState();
+        const now = new Date().toISOString();
+        const requestId =
+            request.requestId || `PR-${Date.now().toString().slice(-8)}`;
+
+        if (state.partRequests.some(item => item.requestId === requestId)) {
+            return null;
+        }
+
+        const created = {
+            ...request,
+            requestId,
+            status: request.status || "pending",
+            createdAt: request.createdAt || now,
+            updatedAt: now
+        };
+
+        state.partRequests.unshift(created);
+        writeState(state);
+        return { ...created };
+    }
+
+    function updatePartRequest(requestId, patch) {
+        const state = readState();
+        const index = state.partRequests.findIndex(
+            item => item.requestId === requestId
+        );
+
+        if (index < 0) {
+            return null;
+        }
+
+        const current = state.partRequests[index];
+        const updated = {
+            ...current,
+            ...(patch || {}),
+            requestId: current.requestId,
+            updatedAt: new Date().toISOString()
+        };
+
+        state.partRequests[index] = updated;
+        writeState(state);
+        return { ...updated };
+    }
+
+    function getVendorRequests() {
+        return copyList(readState().vendorRequests);
+    }
+
+    function createVendorRequest(request) {
+        if (!request || typeof request !== "object") {
+            throw new Error("Vendor request data is required.");
+        }
+
+        const state = readState();
+        const existing = state.vendorRequests.find(
+            item =>
+                request.sourceRequestId &&
+                item.sourceRequestId === request.sourceRequestId
+        );
+
+        if (existing) {
+            return { ...existing };
+        }
+
+        const now = new Date().toISOString();
+        const created = {
+            ...request,
+            vendorRequestId:
+                request.vendorRequestId ||
+                `VR-${Date.now().toString().slice(-8)}`,
+            status: request.status || "Awaiting Quotes",
+            createdAt: request.createdAt || now,
+            updatedAt: now
+        };
+
+        state.vendorRequests.unshift(created);
+        writeState(state);
+        return { ...created };
+    }
+
+    function getStockMovements() {
+        return copyList(readState().stockMovements);
+    }
+
+    function createStockMovement(movement) {
+        if (!movement || typeof movement !== "object") {
+            throw new Error("Stock movement data is required.");
+        }
+
+        const state = readState();
+        const created = {
+            ...movement,
+            movementId:
+                movement.movementId ||
+                `SM-${Date.now().toString().slice(-8)}`,
+            createdAt: movement.createdAt || new Date().toISOString()
+        };
+
+        state.stockMovements.unshift(created);
+        writeState(state);
+        return { ...created };
+    }
+
+
     function subscribe(callback) {
 
         if (
@@ -903,6 +1080,19 @@ window.ShiftDynamicsStore = (() => {
         getEmergencyRequest,
         createEmergencyRequest,
         updateEmergencyRequest,
+
+        getInventory,
+        saveInventory,
+
+        getPartRequests,
+        createPartRequest,
+        updatePartRequest,
+
+        getVendorRequests,
+        createVendorRequest,
+
+        getStockMovements,
+        createStockMovement,
 
 subscribe
     };
