@@ -72,88 +72,158 @@
         sidebarOverlay.classList.remove("show");
     });
 
-    // Demo Data
-    const vendorRequests = [
-        {
-            id: "VR-4021",
-            job: "JC-1052",
-            vehicle: "Nissan X-Trail",
-            year: "2019",
-            vin: "JN1TANT32Z0014521",
-            part: "Engine Mount",
-            partNumber: "PT-ENG-001",
-            specification: "Engine Mount · X-Trail T32",
-            quantity: 1,
-            urgency: "Urgent",
-            status: "pending"
-        },
-        {
-            id: "VR-4022",
-            job: "JC-1048",
-            vehicle: "Toyota Corolla",
-            year: "2020",
-            vin: "JTDBR32E202104882",
-            part: "Headlamp Assembly",
-            partNumber: "PT-BDY-007",
-            specification: "Right Side Headlamp Assembly",
-            quantity: 1,
-            urgency: "Normal",
-            status: "pending"
-        },
-        {
-            id: "VR-4023",
-            job: "JC-1050",
-            vehicle: "Honda Vezel",
-            year: "2021",
-            vin: "RU312011452",
-            part: "17-inch Alloy Wheel",
-            partNumber: "PT-WHL-008",
-            specification: "17 inch · 5x114.3",
-            quantity: 2,
-            urgency: "Normal",
-            status: "pending"
-        }
-    ];
+    // Shared Storekeeper -> Vendor workflow
+    const workflowStore = window.ShiftDynamicsStore;
 
-    const submittedQuotes = [
-        {
-            quoteId: "QT-5108",
-            requestId: "VR-4018",
-            part: "Front Brake Kit",
-            price: 28500,
-            delivery: "1 Day",
-            warranty: "6 Months",
-            stock: "In Stock",
-            status: "Pending Review"
-        }
-    ];
+    let vendorRequests = [];
+    let submittedQuotes = [];
+    let quoteHistory = [];
 
-    const quoteHistory = [
-        {
-            quoteId: "QT-5105",
-            requestId: "VR-4012",
-            part: "Car Battery",
-            price: 32000,
-            delivery: "Same Day",
-            status: "Accepted"
-        },
-        {
-            quoteId: "QT-5104",
-            requestId: "VR-4010",
-            part: "Shock Absorber",
-            price: 41500,
-            delivery: "2 Days",
-            status: "Not Selected"
-        },
-        {
-            quoteId: "QT-5101",
-            requestId: "VR-4005",
-            part: "Oil Filter Set",
-            price: 9800,
-            delivery: "1 Day",
-            status: "Accepted"
+    function normalizeIdentifier(value) {
+        return String(value || "")
+            .trim()
+            .replace(/^#+/, "")
+            .toUpperCase();
+    }
+
+    function formatIdentifier(value) {
+        const normalized = normalizeIdentifier(value);
+        return normalized ? `#${normalized}` : "-";
+    }
+
+    function getRequestDisplayStatus(status) {
+        const normalized = String(status || "").toLowerCase();
+
+        if (
+            normalized === "awaiting quotes" ||
+            normalized === "pending"
+        ) {
+            return "pending";
         }
-    ];
+
+        if (normalized === "part not available") {
+            return "not-available";
+        }
+
+        return "quoted";
+    }
+
+    function syncVendorData() {
+        if (!workflowStore) {
+            vendorRequests = [];
+            submittedQuotes = [];
+            quoteHistory = [];
+            return;
+        }
+
+        const sharedRequests =
+            typeof workflowStore.getVendorRequests === "function"
+                ? workflowStore.getVendorRequests()
+                : [];
+
+        const partRequests =
+            typeof workflowStore.getPartRequests === "function"
+                ? workflowStore.getPartRequests()
+                : [];
+
+        const jobs =
+            typeof workflowStore.getJobs === "function"
+                ? workflowStore.getJobs()
+                : [];
+
+        vendorRequests = sharedRequests.map(request => {
+            const sourceRequest = partRequests.find(
+                item => item.requestId === request.sourceRequestId
+            );
+
+            const jobNumber =
+                request.jobCardNumber ||
+                sourceRequest?.jobCardNumber ||
+                "";
+
+            const job = jobs.find(item =>
+                normalizeIdentifier(item.jobCardNumber) ===
+                    normalizeIdentifier(jobNumber) ||
+                normalizeIdentifier(item.id) ===
+                    normalizeIdentifier(jobNumber)
+            );
+
+            const vehicle = job?.vehicle || {};
+
+            return {
+                ...request,
+                id: request.vendorRequestId,
+                job: jobNumber,
+                vehicle:
+                    request.vehicle ||
+                    sourceRequest?.vehicle ||
+                    [vehicle.make, vehicle.model]
+                        .filter(Boolean)
+                        .join(" ") ||
+                    "Vehicle",
+                year:
+                    request.year ||
+                    sourceRequest?.year ||
+                    vehicle.year ||
+                    "-",
+                vin:
+                    request.vin ||
+                    sourceRequest?.vin ||
+                    vehicle.vin ||
+                    "-",
+                part:
+                    request.part ||
+                    sourceRequest?.part ||
+                    "Requested Part",
+                partNumber:
+                    request.partNumber ||
+                    sourceRequest?.partNumber ||
+                    "-",
+                specification:
+                    request.specification ||
+                    sourceRequest?.reason ||
+                    "No additional specification provided.",
+                quantity: Number(
+                    request.quantity ||
+                    sourceRequest?.quantity ||
+                    0
+                ),
+                urgency:
+                    request.urgency ||
+                    sourceRequest?.urgency ||
+                    "Normal",
+                status: getRequestDisplayStatus(request.status)
+            };
+        });
+
+        submittedQuotes =
+            typeof workflowStore.getVendorQuotes === "function"
+                ? workflowStore.getVendorQuotes().map(quote => ({
+                    ...quote,
+                    requestId: quote.vendorRequestId
+                }))
+                : [];
+
+        const unavailableItems = vendorRequests
+            .filter(request => request.status === "not-available")
+            .map(request => ({
+                quoteId: "-",
+                requestId: request.id,
+                part: request.part,
+                price: 0,
+                delivery: "-",
+                status: "Part Not Available",
+                createdAt: request.respondedAt || request.updatedAt
+            }));
+
+        quoteHistory = [
+            ...submittedQuotes,
+            ...unavailableItems
+        ].sort((a, b) =>
+            new Date(b.updatedAt || b.createdAt || 0) -
+            new Date(a.updatedAt || a.createdAt || 0)
+        );
+    }
 
     // Helpers
     function escapeHTML(value) {
@@ -212,7 +282,7 @@
                             </h3>
 
                             <p>
-                                Job Card #${escapeHTML(request.job)}
+                                Job Card ${escapeHTML(formatIdentifier(request.job))}
                             </p>
                         </div>
 
@@ -329,19 +399,24 @@
                         return;
                     }
 
-                    request.status = "not-available";
+                    if (
+                        !workflowStore ||
+                        typeof workflowStore.updateVendorRequest !==
+                            "function"
+                    ) {
+                        return;
+                    }
 
-                    quoteHistory.unshift({
-                        quoteId: "-",
-                        requestId: request.id,
-                        part: request.part,
-                        price: 0,
-                        delivery: "-",
-                        status: "Part Not Available"
-                    });
+                    workflowStore.updateVendorRequest(
+                        request.id,
+                        {
+                            status: "Part Not Available",
+                            respondedAt: new Date().toISOString()
+                        }
+                    );
 
-                    renderVendorRequests();
-                    renderQuoteHistory();
+                    syncVendorData();
+                    renderAllVendorViews();
                 });
             });
     }
@@ -529,35 +604,31 @@
                     return;
                 }
 
-                existingQuote.price = price;
-
-                existingQuote.delivery =
-                    quoteDelivery.value;
-
-                existingQuote.warranty =
-                    quoteWarranty.value;
-
-                existingQuote.stock =
-                    quoteStock.value;
-
-                existingQuote.note =
-                    quoteNote.value.trim();
-
-                const historyItem =
-                    quoteHistory.find(
-                        item =>
-                            item.quoteId === editingQuoteId
-                    );
-
-                if (historyItem) {
-                    historyItem.price = price;
-
-                    historyItem.delivery =
-                        quoteDelivery.value;
+                if (
+                    !workflowStore ||
+                    typeof workflowStore.updateVendorQuote !==
+                        "function"
+                ) {
+                    quoteFormMessage.textContent =
+                        "Shared quotation workflow is unavailable.";
+                    quoteFormMessage.className =
+                        "sd-form-message error";
+                    return;
                 }
 
-                renderSubmittedQuotes();
-                renderQuoteHistory();
+                workflowStore.updateVendorQuote(
+                    editingQuoteId,
+                    {
+                        price,
+                        delivery: quoteDelivery.value,
+                        warranty: quoteWarranty.value,
+                        stock: quoteStock.value,
+                        note: quoteNote.value.trim()
+                    }
+                );
+
+                syncVendorData();
+                renderAllVendorViews();
 
                 closeQuoteModal();
                 openSection("quotes");
@@ -565,35 +636,47 @@
                 return;
             }
 
-            const quoteId =
-                `QT-${5110 + submittedQuotes.length}`;
+            if (
+                !workflowStore ||
+                typeof workflowStore.createVendorQuote !== "function" ||
+                typeof workflowStore.updateVendorRequest !== "function"
+            ) {
+                quoteFormMessage.textContent =
+                    "Shared quotation workflow is unavailable.";
+                quoteFormMessage.className =
+                    "sd-form-message error";
+                return;
+            }
 
-            submittedQuotes.unshift({
-                quoteId,
-                requestId: request.id,
-                part: request.part,
-                price,
-                delivery: quoteDelivery.value,
-                warranty: quoteWarranty.value,
-                stock: quoteStock.value,
-                note: quoteNote.value.trim(),
-                status: "Pending Review"
-            });
+            const savedQuote =
+                workflowStore.createVendorQuote({
+                    vendorRequestId: request.id,
+                    sourceRequestId: request.sourceRequestId || null,
+                    jobCardNumber: request.job,
+                    part: request.part,
+                    partNumber: request.partNumber,
+                    quantity: request.quantity,
+                    vehicle: request.vehicle,
+                    price,
+                    delivery: quoteDelivery.value,
+                    warranty: quoteWarranty.value,
+                    stock: quoteStock.value,
+                    note: quoteNote.value.trim(),
+                    vendorName: "AutoParts Lanka",
+                    status: "Pending Review"
+                });
 
-            quoteHistory.unshift({
-                quoteId,
-                requestId: request.id,
-                part: request.part,
-                price,
-                delivery: quoteDelivery.value,
-                status: "Pending Review"
-            });
+            workflowStore.updateVendorRequest(
+                request.id,
+                {
+                    status: "Quote Submitted",
+                    quoteId: savedQuote.quoteId,
+                    quotedAt: new Date().toISOString()
+                }
+            );
 
-            request.status = "quoted";
-
-            renderVendorRequests();
-            renderSubmittedQuotes();
-            renderQuoteHistory();
+            syncVendorData();
+            renderAllVendorViews();
 
             closeQuoteModal();
             openSection("quotes");
@@ -605,7 +688,11 @@
         document.getElementById("submittedQuoteList");
 
     function renderSubmittedQuotes() {
-        if (!submittedQuotes.length) {
+        const activeQuotes = submittedQuotes.filter(
+            quote => quote.status === "Pending Review"
+        );
+
+        if (!activeQuotes.length) {
             submittedQuoteList.innerHTML = `
                 <article class="sd-panel">
                     No submitted quotations yet.
@@ -616,7 +703,7 @@
         }
 
         submittedQuoteList.innerHTML =
-            submittedQuotes.map(quote => `
+            activeQuotes.map(quote => `
                 <article class="sd-quote-card">
 
                     <div class="sd-card-top">
@@ -782,9 +869,133 @@
             `).join("");
     }
 
+    function renderOverview() {
+        const pendingRequests = vendorRequests.filter(
+            request => request.status === "pending"
+        );
+
+        const acceptedQuotes = submittedQuotes.filter(
+            quote => quote.status === "Accepted"
+        );
+
+        const pendingQuotes = submittedQuotes.filter(
+            quote => quote.status === "Pending Review"
+        );
+
+        const notSelectedQuotes = submittedQuotes.filter(
+            quote => quote.status === "Not Selected"
+        );
+
+        const setCount = (id, value, pad = true) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = pad
+                    ? String(value).padStart(2, "0")
+                    : String(value);
+            }
+        };
+
+        setCount("incomingRequestNavCount", pendingRequests.length, false);
+        setCount("newRequestCount", pendingRequests.length);
+        setCount("submittedQuoteCount", submittedQuotes.length);
+        setCount("acceptedQuoteCount", acceptedQuotes.length);
+        setCount("performanceSubmittedCount", submittedQuotes.length);
+        setCount("performanceAcceptedCount", acceptedQuotes.length);
+        setCount("performancePendingCount", pendingQuotes.length);
+        setCount("performanceNotSelectedCount", notSelectedQuotes.length);
+
+        const responseTimes = submittedQuotes
+            .map(quote => {
+                const request = vendorRequests.find(
+                    item => item.id === quote.vendorRequestId
+                );
+
+                const requestedAt = new Date(request?.createdAt || 0);
+                const quotedAt = new Date(quote.createdAt || 0);
+                const difference = quotedAt - requestedAt;
+
+                return difference >= 0 && Number.isFinite(difference)
+                    ? difference
+                    : null;
+            })
+            .filter(value => value !== null);
+
+        const averageResponseTime =
+            document.getElementById("averageResponseTime");
+
+        if (averageResponseTime) {
+            if (!responseTimes.length) {
+                averageResponseTime.textContent = "--";
+            } else {
+                const averageMinutes = Math.max(
+                    1,
+                    Math.round(
+                        responseTimes.reduce((sum, value) => sum + value, 0) /
+                        responseTimes.length /
+                        60000
+                    )
+                );
+
+                averageResponseTime.textContent = `${averageMinutes}m`;
+            }
+        }
+
+        const latestBody =
+            document.getElementById("latestVendorRequestBody");
+
+        if (!latestBody) {
+            return;
+        }
+
+        if (!pendingRequests.length) {
+            latestBody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        No incoming vendor requests.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        latestBody.innerHTML = pendingRequests.slice(0, 5).map(request => `
+            <tr>
+                <td>
+                    <strong>${escapeHTML(formatIdentifier(request.id))}</strong>
+                </td>
+                <td>${escapeHTML(request.vehicle)}</td>
+                <td>${escapeHTML(request.part)}</td>
+                <td>${escapeHTML(request.quantity)}</td>
+                <td>
+                    <span class="sd-badge ${
+                        request.urgency === "Urgent" ? "urgent" : "normal"
+                    }">
+                        ${escapeHTML(request.urgency)}
+                    </span>
+                </td>
+            </tr>
+        `).join("");
+    }
+
+    function renderAllVendorViews() {
+        renderOverview();
+        renderVendorRequests();
+        renderSubmittedQuotes();
+        renderQuoteHistory();
+    }
+
     // Initial Render
-    renderVendorRequests();
-    renderSubmittedQuotes();
-    renderQuoteHistory();
+    syncVendorData();
+    renderAllVendorViews();
+
+    if (
+        workflowStore &&
+        typeof workflowStore.subscribe === "function"
+    ) {
+        workflowStore.subscribe(() => {
+            syncVendorData();
+            renderAllVendorViews();
+        });
+    }
 
 });

@@ -2309,11 +2309,44 @@ if (!reason) {
             const workflowStore =
                 window.ShiftDynamicsStore;
 
-            const sharedJob =
-                displayedJobNumber &&
+            // STOREKEEPER JOB NUMBER MATCH FIX V2
+            const normalizeJobNumber = value =>
+                String(value || "")
+                    .trim()
+                    .replace(/^#/, "")
+                    .toUpperCase();
+
+            const normalizedJobNumber =
+                normalizeJobNumber(
+                    displayedJobNumber
+                );
+
+            const sharedJobs =
                 workflowStore &&
-                typeof workflowStore.getJob === "function"
-                    ? workflowStore.getJob(displayedJobNumber)
+                typeof workflowStore.getJobs === "function"
+                    ? workflowStore.getJobs()
+                    : [];
+
+            const sharedJob =
+                normalizedJobNumber
+                    ? sharedJobs.find(job => {
+                        const jobCardNumber =
+                            normalizeJobNumber(
+                                job?.jobCardNumber
+                            );
+
+                        const jobId =
+                            normalizeJobNumber(
+                                job?.id
+                            );
+
+                        return (
+                            jobCardNumber ===
+                                normalizedJobNumber ||
+                            jobId ===
+                                normalizedJobNumber
+                        );
+                    }) || null
                     : null;
 
             if (!sharedJob?.jobCardNumber) {

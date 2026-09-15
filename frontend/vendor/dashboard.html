@@ -65,7 +65,7 @@
 
                     <i class="bi bi-inbox-fill"></i>
                     <span>Incoming Requests</span>
-                    <span class="sd-nav-count">3</span>
+                    <span class="sd-nav-count" id="incomingRequestNavCount">0</span>
                 </button>
 
                 <button
@@ -192,7 +192,7 @@
 
                             <div>
                                 <span>New Requests</span>
-                                <strong>03</strong>
+                                <strong id="newRequestCount">00</strong>
                                 <small>Awaiting response</small>
                             </div>
                         </article>
@@ -204,7 +204,7 @@
 
                             <div>
                                 <span>Quotes Submitted</span>
-                                <strong>08</strong>
+                                <strong id="submittedQuoteCount">00</strong>
                                 <small>This month</small>
                             </div>
                         </article>
@@ -216,7 +216,7 @@
 
                             <div>
                                 <span>Accepted Quotes</span>
-                                <strong>05</strong>
+                                <strong id="acceptedQuoteCount">00</strong>
                                 <small>This month</small>
                             </div>
                         </article>
@@ -228,7 +228,7 @@
 
                             <div>
                                 <span>Avg. Response</span>
-                                <strong>28m</strong>
+                                <strong id="averageResponseTime">--</strong>
                                 <small>Current average</small>
                             </div>
                         </article>
@@ -274,43 +274,7 @@
                                         </tr>
                                     </thead>
 
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>#VR-4021</strong></td>
-                                            <td>Nissan X-Trail</td>
-                                            <td>Engine Mount</td>
-                                            <td>1</td>
-                                            <td>
-                                                <span class="sd-badge urgent">
-                                                    Urgent
-                                                </span>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><strong>#VR-4022</strong></td>
-                                            <td>Toyota Corolla</td>
-                                            <td>Headlamp Assembly</td>
-                                            <td>1</td>
-                                            <td>
-                                                <span class="sd-badge normal">
-                                                    Normal
-                                                </span>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><strong>#VR-4023</strong></td>
-                                            <td>Honda Vezel</td>
-                                            <td>17-inch Alloy Wheel</td>
-                                            <td>2</td>
-                                            <td>
-                                                <span class="sd-badge normal">
-                                                    Normal
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody id="latestVendorRequestBody"></tbody>
 
                                 </table>
                             </div>
@@ -333,22 +297,22 @@
                             <div class="sd-performance-list">
                                 <div>
                                     <span>Submitted Quotes</span>
-                                    <strong>08</strong>
+                                    <strong id="performanceSubmittedCount">00</strong>
                                 </div>
 
                                 <div>
                                     <span>Accepted</span>
-                                    <strong>05</strong>
+                                    <strong id="performanceAcceptedCount">00</strong>
                                 </div>
 
                                 <div>
                                     <span>Pending Decision</span>
-                                    <strong>02</strong>
+                                    <strong id="performancePendingCount">00</strong>
                                 </div>
 
                                 <div>
                                     <span>Not Selected</span>
-                                    <strong>01</strong>
+                                    <strong id="performanceNotSelectedCount">00</strong>
                                 </div>
                             </div>
 
@@ -616,6 +580,7 @@
     </div>
 
     <!-- JavaScript -->
+    <script src="../assets/js/shift-dynamics-store.js"></script>
     <script src="../assets/js/vendor-dashboard.js"></script>
     <script src="../assets/js/dashboard-states.js"></script>
 

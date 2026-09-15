@@ -65,7 +65,7 @@
 
                     <i class="bi bi-clipboard-check"></i>
                     <span>Pending Requisitions</span>
-                    <span class="sd-nav-count">3</span>
+                    <span class="sd-nav-count" id="pendingNavCount">0</span>
                 </button>
 
                 <button
@@ -310,22 +310,22 @@
                                 <div class="sd-health-row">
                                     <div>
                                         <span>Healthy Stock</span>
-                                        <strong>214 Items</strong>
+                                        <strong id="healthyStockSummaryCount">00 Items</strong>
                                     </div>
 
-                                    <span class="sd-health-value">
-                                        86%
+                                    <span class="sd-health-value" id="healthyStockPercentage">
+                                        0%
                                     </span>
                                 </div>
 
                                 <div class="sd-progress">
-                                    <span style="width: 86%"></span>
+                                    <span id="inventoryHealthProgress" style="width: 0%"></span>
                                 </div>
 
                                 <div class="sd-health-row">
                                     <div>
                                         <span>Low Stock</span>
-                                        <strong>08 Items</strong>
+                                        <strong id="lowStockSummaryCount">00 Items</strong>
                                     </div>
 
                                     <span class="sd-health-value warning">
@@ -336,7 +336,7 @@
                                 <div class="sd-health-row">
                                     <div>
                                         <span>Out of Stock</span>
-                                        <strong>04 Items</strong>
+                                        <strong id="outOfStockSummaryCount">00 Items</strong>
                                     </div>
 
                                     <span class="sd-health-value danger">

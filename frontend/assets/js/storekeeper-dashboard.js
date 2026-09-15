@@ -161,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let requisitions = [];
     let vendorRequests = [];
+    let vendorQuotes = [];
     let stockMovements = [];
 
     const workflowStore =
@@ -171,6 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
             inventory = [];
             requisitions = [];
             vendorRequests = [];
+            vendorQuotes = [];
             stockMovements = [];
             return;
         }
@@ -206,6 +208,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 }))
                 : [];
 
+        vendorQuotes =
+            typeof workflowStore.getVendorQuotes === "function"
+                ? workflowStore.getVendorQuotes()
+                : [];
+
         stockMovements =
             typeof workflowStore.getStockMovements === "function"
                 ? workflowStore.getStockMovements().map(movement => ({
@@ -231,6 +238,15 @@ document.addEventListener("DOMContentLoaded", () => {
             .replaceAll(">", "&gt;")
             .replaceAll('"', "&quot;")
             .replaceAll("'", "&#039;");
+    }
+
+    // Keep stored identifiers consistent when some records already include "#".
+    function formatIdentifier(value) {
+        const normalized = String(value || "")
+            .trim()
+            .replace(/^#+/, "");
+
+        return normalized ? `#${normalized}` : "-";
     }
 
     // Inventory
@@ -347,8 +363,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderRequisitions() {
 
+        const pendingRequests =
+            requisitions.filter(
+                request => request.status === "pending"
+            );
+
+        if (!pendingRequests.length) {
+            requisitionList.innerHTML = `
+                <div class="sd-live-empty">
+                    No pending parts requisitions.
+                </div>
+            `;
+            return;
+        }
+
         requisitionList.innerHTML =
-            requisitions.map(request => {
+            pendingRequests.map(request => {
 
                 const inventoryItem =
                     inventory.find(
@@ -395,7 +425,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <div class="sd-data-box">
                                 <span>Job Card</span>
                                 <strong>
-                                    #${escapeHTML(request.job)}
+                                    ${escapeHTML(formatIdentifier(request.job))}
                                 </strong>
                             </div>
 
@@ -656,8 +686,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderVendorRequests() {
 
+        if (!vendorRequests.length) {
+            vendorRequestList.innerHTML = `
+                <div class="sd-live-empty">
+                    No vendor requests available.
+                </div>
+            `;
+            return;
+        }
+
         vendorRequestList.innerHTML =
-            vendorRequests.map(request => `
+            vendorRequests.map(request => {
+                const quote = vendorQuotes.find(
+                    item =>
+                        item.vendorRequestId === request.id ||
+                        item.quoteId === request.quoteId
+                );
+
+                const canReview =
+                    quote?.status === "Pending Review";
+
+                return `
                 <article class="sd-vendor-card">
 
                     <div class="sd-card-top">
@@ -687,7 +736,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="sd-data-box">
                             <span>Job Card</span>
                             <strong>
-                                #${escapeHTML(request.job)}
+                                ${escapeHTML(formatIdentifier(request.job))}
                             </strong>
                         </div>
 
@@ -721,8 +770,166 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     </div>
 
+                    ${quote ? `
+                        <div class="sd-card-data" style="margin-top: 12px;">
+                            <div class="sd-data-box">
+                                <span>Quotation</span>
+                                <strong>${escapeHTML(quote.quoteId)}</strong>
+                            </div>
+
+                            <div class="sd-data-box">
+                                <span>Unit Price</span>
+                                <strong>${escapeHTML(
+                                    new Intl.NumberFormat(
+                                        "en-LK",
+                                        {
+                                            style: "currency",
+                                            currency: "LKR",
+                                            maximumFractionDigits: 0
+                                        }
+                                    ).format(quote.price)
+                                )}</strong>
+                            </div>
+
+                            <div class="sd-data-box">
+                                <span>Delivery</span>
+                                <strong>${escapeHTML(quote.delivery)}</strong>
+                            </div>
+
+                            <div class="sd-data-box">
+                                <span>Warranty</span>
+                                <strong>${escapeHTML(quote.warranty)}</strong>
+                            </div>
+
+                            <div class="sd-data-box">
+                                <span>Availability</span>
+                                <strong>${escapeHTML(quote.stock)}</strong>
+                            </div>
+                        </div>
+
+                        ${quote.note ? `
+                            <div class="sd-data-box" style="margin-top: 12px;">
+                                <span>Vendor Note</span>
+                                <strong>${escapeHTML(quote.note)}</strong>
+                            </div>
+                        ` : ""}
+
+                        ${canReview ? `
+                            <div class="sd-card-actions">
+                                <button
+                                    type="button"
+                                    class="sd-primary-btn"
+                                    data-accept-quote="${escapeHTML(quote.quoteId)}"
+                                >
+                                    <i class="bi bi-check-circle"></i>
+                                    Accept Quote
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="sd-danger-btn"
+                                    data-reject-quote="${escapeHTML(quote.quoteId)}"
+                                >
+                                    <i class="bi bi-x-circle"></i>
+                                    Reject Quote
+                                </button>
+                            </div>
+                        ` : ""}
+                    ` : `
+                        <p class="sd-card-message warning">
+                            Waiting for an external vendor quotation.
+                        </p>
+                    `}
+
                 </article>
-            `).join("");
+                `;
+            }).join("");
+
+        attachVendorQuoteEvents();
+    }
+
+    function attachVendorQuoteEvents() {
+        document
+            .querySelectorAll("[data-accept-quote]")
+            .forEach(button => {
+                button.addEventListener("click", () => {
+                    reviewVendorQuote(
+                        button.dataset.acceptQuote,
+                        "Accepted"
+                    );
+                });
+            });
+
+        document
+            .querySelectorAll("[data-reject-quote]")
+            .forEach(button => {
+                button.addEventListener("click", () => {
+                    reviewVendorQuote(
+                        button.dataset.rejectQuote,
+                        "Not Selected"
+                    );
+                });
+            });
+    }
+
+    function reviewVendorQuote(quoteId, decision) {
+        const quote = vendorQuotes.find(
+            item => item.quoteId === quoteId
+        );
+
+        if (
+            !quote ||
+            quote.status !== "Pending Review" ||
+            typeof workflowStore.updateVendorQuote !== "function" ||
+            typeof workflowStore.updateVendorRequest !== "function"
+        ) {
+            return;
+        }
+
+        const request = vendorRequests.find(
+            item => item.id === quote.vendorRequestId
+        );
+
+        workflowStore.updateVendorQuote(
+            quoteId,
+            {
+                status: decision,
+                reviewedAt: new Date().toISOString(),
+                reviewedBy: "Store Keeper"
+            }
+        );
+
+        workflowStore.updateVendorRequest(
+            quote.vendorRequestId,
+            {
+                status:
+                    decision === "Accepted"
+                        ? "Quote Accepted"
+                        : "Quote Rejected",
+                reviewedAt: new Date().toISOString()
+            }
+        );
+
+        if (
+            request?.sourceRequest &&
+            typeof workflowStore.updatePartRequest === "function"
+        ) {
+            workflowStore.updatePartRequest(
+                request.sourceRequest,
+                {
+                    status:
+                        decision === "Accepted"
+                            ? "vendor-approved"
+                            : "vendor-rejected",
+                    vendorQuoteId: quoteId,
+                    vendorDecision: decision
+                }
+            );
+        }
+
+        syncStorekeeperData();
+        renderOverview();
+        renderVendorRequests();
     }
 
     // Stock Movements
@@ -746,7 +953,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </td>
 
                     <td>
-                        #${escapeHTML(item.reference)}
+                        ${escapeHTML(formatIdentifier(item.reference))}
                     </td>
 
                     <td>
@@ -772,9 +979,25 @@ document.addEventListener("DOMContentLoaded", () => {
             request => request.status === "pending"
         );
 
-        const lowStock = inventory.filter(
-            item => item.quantity <= 2
+        const healthyStock = inventory.filter(
+            item => Number(item.quantity) > 2
         );
+
+        const lowStock = inventory.filter(
+            item =>
+                Number(item.quantity) > 0 &&
+                Number(item.quantity) <= 2
+        );
+
+        const outOfStock = inventory.filter(
+            item => Number(item.quantity) <= 0
+        );
+
+        const healthPercentage = inventory.length
+            ? Math.round(
+                (healthyStock.length / inventory.length) * 100
+            )
+            : 0;
 
         const setCount = (id, value) => {
             const element = document.getElementById(id);
@@ -787,6 +1010,35 @@ document.addEventListener("DOMContentLoaded", () => {
         setCount("inventoryItemCount", inventory.length);
         setCount("lowStockCount", lowStock.length);
         setCount("vendorRequestCount", vendorRequests.length);
+
+        const setText = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        };
+
+        setText("pendingNavCount", String(pending.length));
+        setText(
+            "healthyStockSummaryCount",
+            `${String(healthyStock.length).padStart(2, "0")} Items`
+        );
+        setText(
+            "lowStockSummaryCount",
+            `${String(lowStock.length).padStart(2, "0")} Items`
+        );
+        setText(
+            "outOfStockSummaryCount",
+            `${String(outOfStock.length).padStart(2, "0")} Items`
+        );
+        setText("healthyStockPercentage", `${healthPercentage}%`);
+
+        const healthProgress =
+            document.getElementById("inventoryHealthProgress");
+
+        if (healthProgress) {
+            healthProgress.style.width = `${healthPercentage}%`;
+        }
 
         const body = document.getElementById("overviewRequisitionBody");
         if (!body) {
@@ -807,7 +1059,7 @@ document.addEventListener("DOMContentLoaded", () => {
         body.innerHTML = pending.slice(0, 5).map(request => `
             <tr>
                 <td><strong>#${escapeHTML(request.id)}</strong></td>
-                <td>#${escapeHTML(request.job)}</td>
+                <td>${escapeHTML(formatIdentifier(request.job))}</td>
                 <td>${escapeHTML(request.part)}</td>
                 <td>${escapeHTML(request.quantity)}</td>
                 <td>

@@ -33,6 +33,7 @@ window.ShiftDynamicsStore = (() => {
             inventory: [],
             partRequests: [],
             vendorRequests: [],
+            vendorQuotes: [],
             stockMovements: []
         };
     }
@@ -105,6 +106,11 @@ window.ShiftDynamicsStore = (() => {
                         ? parsed.vendorRequests
                         : [],
 
+                vendorQuotes:
+                    Array.isArray(parsed.vendorQuotes)
+                        ? parsed.vendorQuotes
+                        : [],
+
                 stockMovements:
                     Array.isArray(parsed.stockMovements)
                         ? parsed.stockMovements
@@ -166,6 +172,11 @@ window.ShiftDynamicsStore = (() => {
             vendorRequests:
                 Array.isArray(state?.vendorRequests)
                     ? state.vendorRequests
+                    : [],
+
+            vendorQuotes:
+                Array.isArray(state?.vendorQuotes)
+                    ? state.vendorQuotes
                     : [],
 
             stockMovements:
@@ -973,6 +984,91 @@ window.ShiftDynamicsStore = (() => {
         return { ...created };
     }
 
+    function updateVendorRequest(vendorRequestId, patch) {
+        const state = readState();
+        const index = state.vendorRequests.findIndex(
+            item => item.vendorRequestId === vendorRequestId
+        );
+
+        if (index < 0) {
+            return null;
+        }
+
+        const current = state.vendorRequests[index];
+        const updated = {
+            ...current,
+            ...(patch || {}),
+            vendorRequestId: current.vendorRequestId,
+            updatedAt: new Date().toISOString()
+        };
+
+        state.vendorRequests[index] = updated;
+        writeState(state);
+        return { ...updated };
+    }
+
+    function getVendorQuotes() {
+        return copyList(readState().vendorQuotes);
+    }
+
+    function createVendorQuote(quote) {
+        if (!quote || typeof quote !== "object") {
+            throw new Error("Vendor quotation data is required.");
+        }
+
+        if (!quote.vendorRequestId) {
+            throw new Error("vendorRequestId is required.");
+        }
+
+        const state = readState();
+        const existing = state.vendorQuotes.find(
+            item => item.vendorRequestId === quote.vendorRequestId
+        );
+
+        if (existing) {
+            return { ...existing };
+        }
+
+        const now = new Date().toISOString();
+        const created = {
+            ...quote,
+            quoteId:
+                quote.quoteId ||
+                `QT-${Date.now().toString().slice(-8)}`,
+            status: quote.status || "Pending Review",
+            createdAt: quote.createdAt || now,
+            updatedAt: now
+        };
+
+        state.vendorQuotes.unshift(created);
+        writeState(state);
+        return { ...created };
+    }
+
+    function updateVendorQuote(quoteId, patch) {
+        const state = readState();
+        const index = state.vendorQuotes.findIndex(
+            item => item.quoteId === quoteId
+        );
+
+        if (index < 0) {
+            return null;
+        }
+
+        const current = state.vendorQuotes[index];
+        const updated = {
+            ...current,
+            ...(patch || {}),
+            quoteId: current.quoteId,
+            vendorRequestId: current.vendorRequestId,
+            updatedAt: new Date().toISOString()
+        };
+
+        state.vendorQuotes[index] = updated;
+        writeState(state);
+        return { ...updated };
+    }
+
     function getStockMovements() {
         return copyList(readState().stockMovements);
     }
@@ -1090,6 +1186,11 @@ window.ShiftDynamicsStore = (() => {
 
         getVendorRequests,
         createVendorRequest,
+        updateVendorRequest,
+
+        getVendorQuotes,
+        createVendorQuote,
+        updateVendorQuote,
 
         getStockMovements,
         createStockMovement,
