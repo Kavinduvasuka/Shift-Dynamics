@@ -34,6 +34,7 @@ window.ShiftDynamicsStore = (() => {
             partRequests: [],
             vendorRequests: [],
             vendorQuotes: [],
+            purchaseOrders: [],
             stockMovements: []
         };
     }
@@ -111,6 +112,11 @@ window.ShiftDynamicsStore = (() => {
                         ? parsed.vendorQuotes
                         : [],
 
+                purchaseOrders:
+                    Array.isArray(parsed.purchaseOrders)
+                        ? parsed.purchaseOrders
+                        : [],
+
                 stockMovements:
                     Array.isArray(parsed.stockMovements)
                         ? parsed.stockMovements
@@ -177,6 +183,11 @@ window.ShiftDynamicsStore = (() => {
             vendorQuotes:
                 Array.isArray(state?.vendorQuotes)
                     ? state.vendorQuotes
+                    : [],
+
+            purchaseOrders:
+                Array.isArray(state?.purchaseOrders)
+                    ? state.purchaseOrders
                     : [],
 
             stockMovements:
@@ -1069,6 +1080,68 @@ window.ShiftDynamicsStore = (() => {
         return { ...updated };
     }
 
+    function getPurchaseOrders() {
+        return copyList(readState().purchaseOrders);
+    }
+
+    function createPurchaseOrder(order) {
+        if (!order || typeof order !== "object") {
+            throw new Error("Purchase order data is required.");
+        }
+
+        if (!order.quoteId) {
+            throw new Error("quoteId is required.");
+        }
+
+        const state = readState();
+        const existing = state.purchaseOrders.find(
+            item => item.quoteId === order.quoteId
+        );
+
+        if (existing) {
+            return { ...existing };
+        }
+
+        const now = new Date().toISOString();
+        const created = {
+            ...order,
+            purchaseOrderId:
+                order.purchaseOrderId ||
+                `PO-${Date.now().toString().slice(-8)}`,
+            status: order.status || "Pending Approval",
+            createdAt: order.createdAt || now,
+            updatedAt: now
+        };
+
+        state.purchaseOrders.unshift(created);
+        writeState(state);
+        return { ...created };
+    }
+
+    function updatePurchaseOrder(purchaseOrderId, patch) {
+        const state = readState();
+        const index = state.purchaseOrders.findIndex(
+            item => item.purchaseOrderId === purchaseOrderId
+        );
+
+        if (index < 0) {
+            return null;
+        }
+
+        const current = state.purchaseOrders[index];
+        const updated = {
+            ...current,
+            ...(patch || {}),
+            purchaseOrderId: current.purchaseOrderId,
+            quoteId: current.quoteId,
+            updatedAt: new Date().toISOString()
+        };
+
+        state.purchaseOrders[index] = updated;
+        writeState(state);
+        return { ...updated };
+    }
+
     function getStockMovements() {
         return copyList(readState().stockMovements);
     }
@@ -1191,6 +1264,10 @@ window.ShiftDynamicsStore = (() => {
         getVendorQuotes,
         createVendorQuote,
         updateVendorQuote,
+
+        getPurchaseOrders,
+        createPurchaseOrder,
+        updatePurchaseOrder,
 
         getStockMovements,
         createStockMovement,

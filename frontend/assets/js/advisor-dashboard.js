@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     /* =====================================================
        FRONTEND DEMO STATE
@@ -1472,6 +1472,233 @@
         });
 
 
+
+    /* =====================================================
+       LIVE ADVISOR JOB CARDS V1
+       ===================================================== */
+
+    function getAdvisorJobStatus(job) {
+        const handoverStatus =
+            String(job?.handover?.status || "").toLowerCase();
+
+        const jobStatus =
+            String(job?.status || "").toLowerCase();
+
+        if (
+            handoverStatus === "completed" ||
+            jobStatus === "completed"
+        ) {
+            return "Completed";
+        }
+
+        if (job?.invoice?.status === "Finalized") {
+            return "Invoice Finalized";
+        }
+
+        if (job?.estimate?.status === "Approved") {
+            return "Estimate Approved";
+        }
+
+        if (job?.diagnostic) {
+            return "Diagnosis Recorded";
+        }
+
+        if (job?.assignment?.mechanicName) {
+            return job?.status || "Assigned";
+        }
+
+        return job?.status || "Awaiting Assignment";
+    }
+
+    function getAdvisorStatusClass(status) {
+        const value =
+            String(status || "").toLowerCase();
+
+        if (
+            value.includes("completed") ||
+            value.includes("ready") ||
+            value.includes("approved") ||
+            value.includes("finalized")
+        ) {
+            return "sd-status sd-status-ready";
+        }
+
+        if (
+            value.includes("progress") ||
+            value.includes("assigned") ||
+            value.includes("diagnosis")
+        ) {
+            return "sd-status sd-status-progress";
+        }
+
+        return "sd-status sd-status-waiting";
+    }
+
+    function renderLiveAdvisorJobCards() {
+        if (
+            !jobCardTable ||
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return;
+        }
+
+        const diagnosticJob =
+            document.getElementById("diagnosticJob");
+
+        const jobs =
+            window.ShiftDynamicsStore
+                .getJobs()
+                .slice()
+                .sort(
+                    (first, second) =>
+                        new Date(
+                            second.updatedAt ||
+                            second.createdAt ||
+                            0
+                        ) -
+                        new Date(
+                            first.updatedAt ||
+                            first.createdAt ||
+                            0
+                        )
+                );
+
+        jobCardTable.innerHTML = "";
+
+        if (diagnosticJob) {
+            diagnosticJob.innerHTML = "";
+        }
+
+        if (!jobs.length) {
+            jobCardTable.innerHTML = `
+                <tr>
+                    <td colspan="6">
+                        No live Job Cards available.
+                    </td>
+                </tr>
+            `;
+
+            if (diagnosticJob) {
+                diagnosticJob.innerHTML =
+                    '<option value="">No Job Cards available</option>';
+            }
+
+            updateAdvisorOverview();
+            return;
+        }
+
+        jobs.forEach(job => {
+            const vehicle =
+                [
+                    job.vehicle?.make,
+                    job.vehicle?.model
+                ]
+                    .filter(Boolean)
+                    .join(" ") ||
+                "Vehicle";
+
+            const plate =
+                job.vehicle?.plate ||
+                "Plate pending";
+
+            const service =
+                job.serviceConcern ||
+                job.service ||
+                "Workshop Service";
+
+            const status =
+                getAdvisorJobStatus(job);
+
+            const row =
+                document.createElement("tr");
+
+            row.dataset.liveJob = "true";
+            row.dataset.jobCard =
+                job.jobCardNumber;
+
+            row.innerHTML = `
+                <td>
+                    <strong>
+                        ${escapeHTML(job.jobCardNumber)}
+                    </strong>
+                </td>
+
+                <td>
+                    ${escapeHTML(vehicle)}
+                    <small>${escapeHTML(plate)}</small>
+                </td>
+
+                <td>
+                    ${escapeHTML(service)}
+                </td>
+
+                <td>
+                    Service Advisor
+                </td>
+
+                <td>
+                    <span class="${getAdvisorStatusClass(status)}">
+                        ${escapeHTML(status)}
+                    </span>
+                </td>
+
+                <td>
+                    <button
+                        type="button"
+                        class="sd-table-button"
+                        data-live-advisor-job="${escapeHTML(job.jobCardNumber)}"
+                    >
+                        View
+                    </button>
+                </td>
+            `;
+
+            jobCardTable.appendChild(row);
+
+            if (diagnosticJob) {
+                const option =
+                    document.createElement("option");
+
+                option.value =
+                    job.jobCardNumber;
+
+                option.textContent =
+                    `${job.jobCardNumber} - ${vehicle}`;
+
+                diagnosticJob.appendChild(option);
+            }
+        });
+
+        jobCardTable
+            .querySelectorAll("[data-live-advisor-job]")
+            .forEach(button => {
+                button.addEventListener("click", () => {
+                    const jobCardNumber =
+                        button.dataset.liveAdvisorJob;
+
+                    if (diagnosticJob) {
+                        diagnosticJob.value =
+                            jobCardNumber;
+                    }
+
+                    showSection("diagnostics");
+                });
+            });
+
+        updateAdvisorOverview();
+    }
+
+    renderLiveAdvisorJobCards();
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe === "function"
+    ) {
+        window.ShiftDynamicsStore.subscribe(
+            renderLiveAdvisorJobCards
+        );
+    }
 
     /* =====================================================
        DIAGNOSTIC NOTES
@@ -3855,6 +4082,390 @@ if (
     );
 
 
+
+    /* =====================================================
+       LIVE ADVISOR SELECTED JOB CONTEXT V2
+       ===================================================== */
+
+    function advisorJobIdentifier(jobCardNumber) {
+        return String(jobCardNumber || "")
+            .replace(/^#/, "")
+            .replace(/^JC-/, "");
+    }
+
+    function advisorVehicleName(job) {
+        return (
+            [
+                job?.vehicle?.make,
+                job?.vehicle?.model
+            ]
+                .filter(Boolean)
+                .join(" ") ||
+            "Vehicle"
+        );
+    }
+
+    function hydrateAdvisorSelectedJob(
+        requestedJobCard = null
+    ) {
+        if (
+            !window.ShiftDynamicsStore ||
+            typeof window.ShiftDynamicsStore.getJobs !== "function"
+        ) {
+            return;
+        }
+
+        const jobs =
+            window.ShiftDynamicsStore
+                .getJobs()
+                .slice()
+                .sort(
+                    (first, second) =>
+                        new Date(
+                            second?.updatedAt ||
+                            second?.createdAt ||
+                            0
+                        ) -
+                        new Date(
+                            first?.updatedAt ||
+                            first?.createdAt ||
+                            0
+                        )
+                );
+
+        const job =
+            jobs.find(
+                item =>
+                    item.jobCardNumber ===
+                    requestedJobCard
+            ) ||
+            jobs[0] ||
+            null;
+
+        if (!job) {
+            currentDiagnostic = null;
+            currentEstimate = null;
+
+            renderLatestDiagnostic(null);
+            return;
+        }
+
+        const diagnosticSelector =
+            document.getElementById(
+                "diagnosticJob"
+            );
+
+        if (diagnosticSelector) {
+            diagnosticSelector.value =
+                job.jobCardNumber;
+        }
+
+        const vehicleName =
+            advisorVehicleName(job);
+
+        const plate =
+            job.vehicle?.plate ||
+            "--";
+
+        const service =
+            job.serviceConcern ||
+            job.service ||
+            "Workshop Service";
+
+        const diagnosticFinding =
+            job.diagnostic?.finding ||
+            job.repair?.diagnosticFinding ||
+            "";
+
+        const diagnosticPriorityValue =
+            job.diagnostic?.priority ||
+            job.priority ||
+            "Normal";
+
+        currentDiagnostic = {
+            jobCard:
+                job.jobCardNumber,
+
+            jobLabel:
+                `${job.jobCardNumber} - ${vehicleName}`,
+
+            priority:
+                diagnosticPriorityValue,
+
+            finding:
+                diagnosticFinding
+        };
+
+        const diagnosticPriorityElement =
+            document.getElementById(
+                "diagnosticPriority"
+            );
+
+        const diagnosticNotesElement =
+            document.getElementById(
+                "diagnosticNotes"
+            );
+
+        if (diagnosticPriorityElement) {
+            diagnosticPriorityElement.value =
+                diagnosticPriorityValue;
+        }
+
+        if (diagnosticNotesElement) {
+            diagnosticNotesElement.value =
+                diagnosticFinding;
+        }
+
+        renderLatestDiagnostic({
+            jobCard:
+                job.jobCardNumber,
+
+            vehicle:
+                vehicleName,
+
+            reportedIssue:
+                job.customer?.concern ||
+                service ||
+                "--",
+
+            finding:
+                diagnosticFinding ||
+                "--",
+
+            recommendation:
+                job.diagnostic?.recommendation ||
+                "Not separately recorded"
+        });
+
+        const estimate =
+            job.estimate || {};
+
+        const labour =
+            Number(estimate.labour || 0);
+
+        const parts =
+            Number(estimate.parts || 0);
+
+        const vendor =
+            Number(estimate.vendor || 0);
+
+        const other =
+            Number(estimate.other || 0);
+
+        const total =
+            Number(
+                estimate.total ||
+                labour +
+                parts +
+                vendor +
+                other
+            );
+
+        currentEstimate = {
+            ...estimate,
+
+            jobCard:
+                job.jobCardNumber,
+
+            description:
+                estimate.description ||
+                diagnosticFinding ||
+                service,
+
+            labour,
+            parts,
+            vendor,
+            other,
+            total,
+
+            status:
+                estimate.status ||
+                "Draft"
+        };
+
+        if (estimateLabour) {
+            estimateLabour.value =
+                String(labour);
+        }
+
+        if (estimateParts) {
+            estimateParts.value =
+                String(parts);
+        }
+
+        if (estimateVendor) {
+            estimateVendor.value =
+                String(vendor);
+        }
+
+        if (estimateOther) {
+            estimateOther.value =
+                String(other);
+        }
+
+        const estimateDescription =
+            document.getElementById(
+                "estimateDescription"
+            );
+
+        if (estimateDescription) {
+            estimateDescription.value =
+                currentEstimate.description;
+        }
+
+        updateEstimate();
+
+        const estimateNumber =
+            document.querySelector(
+                "#estimates .sd-total-card .sd-eyebrow"
+            );
+
+        if (estimateNumber) {
+            estimateNumber.textContent =
+                `Estimate #EST-${advisorJobIdentifier(
+                    job.jobCardNumber
+                )}`;
+        }
+
+        populateInvoiceFromEstimate();
+
+        const invoiceHeader =
+            document.querySelector(
+                "#invoice .sd-invoice-header"
+            );
+
+        const invoiceNumber =
+            invoiceHeader?.querySelector("h3");
+
+        const invoiceVehicle =
+            invoiceHeader
+                ?.querySelector(
+                    "div:last-child span"
+                );
+
+        const invoicePlate =
+            invoiceHeader
+                ?.querySelector(
+                    "div:last-child strong"
+                );
+
+        if (invoiceNumber) {
+            invoiceNumber.textContent =
+                job.invoice?.number ||
+                `#INV-${advisorJobIdentifier(
+                    job.jobCardNumber
+                )}`;
+        }
+
+        if (invoiceVehicle) {
+            invoiceVehicle.textContent =
+                vehicleName;
+        }
+
+        if (invoicePlate) {
+            invoicePlate.textContent =
+                plate;
+        }
+
+        invoiceFinalized =
+            job.invoice?.status ===
+            "Finalized";
+
+        syncAdvisorInvoiceFromSharedJob(job);
+
+        if (
+            typeof prepareFinalHandover ===
+            "function"
+        ) {
+            prepareFinalHandover();
+        }
+
+        if (
+            typeof updateHandoverState ===
+            "function"
+        ) {
+            updateHandoverState();
+        }
+    }
+
+    const liveDiagnosticSelector =
+        document.getElementById(
+            "diagnosticJob"
+        );
+
+    liveDiagnosticSelector?.addEventListener(
+        "change",
+        () => {
+            hydrateAdvisorSelectedJob(
+                liveDiagnosticSelector.value
+            );
+        }
+    );
+
+    jobCardTable?.addEventListener(
+        "click",
+        event => {
+            const button =
+                event.target.closest(
+                    "[data-live-advisor-job]"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            hydrateAdvisorSelectedJob(
+                button.dataset.liveAdvisorJob
+            );
+        }
+    );
+
+    setTimeout(
+        () => {
+            const jobs =
+                window.ShiftDynamicsStore
+                    ?.getJobs?.()
+                    ?.slice()
+                    ?.sort(
+                        (first, second) =>
+                            new Date(
+                                second?.updatedAt ||
+                                second?.createdAt ||
+                                0
+                            ) -
+                            new Date(
+                                first?.updatedAt ||
+                                first?.createdAt ||
+                                0
+                            )
+                    ) || [];
+
+            hydrateAdvisorSelectedJob(
+                jobs[0]?.jobCardNumber ||
+                null
+            );
+        },
+        0
+    );
+
+    if (
+        window.ShiftDynamicsStore &&
+        typeof window.ShiftDynamicsStore.subscribe ===
+            "function"
+    ) {
+        window.ShiftDynamicsStore.subscribe(
+            () => {
+                const selected =
+                    document.getElementById(
+                        "diagnosticJob"
+                    )?.value;
+
+                hydrateAdvisorSelectedJob(
+                    selected || null
+                );
+            }
+        );
+    }
 
     /* =====================================================
        INITIAL STATE

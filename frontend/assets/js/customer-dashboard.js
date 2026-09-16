@@ -33,6 +33,77 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =====================================================
+       CUSTOMER IDENTITY LINK - SHARED PAGE SCOPE
+
+       These helpers must live at DOMContentLoaded scope so
+       every standalone customer page (Estimates, Tracker,
+       History and Payments) can use them.
+       ===================================================== */
+
+    function normalizeCustomerIdentity(value) {
+        return String(value || "")
+            .trim()
+            .toLowerCase();
+    }
+
+
+    function matchesCustomerProfile(record, profile) {
+        if (!record || !profile) {
+            return false;
+        }
+
+        const recordEmail = normalizeCustomerIdentity(
+            record.email || record.customerEmail
+        );
+
+        const profileEmail = normalizeCustomerIdentity(
+            profile.email
+        );
+
+        if (recordEmail && profileEmail) {
+            return recordEmail === profileEmail;
+        }
+
+        const recordName = normalizeCustomerIdentity(
+            record.name || record.customerName
+        );
+
+        const profileName = normalizeCustomerIdentity(
+            profile.name
+        );
+
+        return Boolean(
+            recordName &&
+            profileName &&
+            recordName === profileName
+        );
+    }
+
+
+    function isCustomerJob(job, profile, bookingIds) {
+        if (!job || !profile) {
+            return false;
+        }
+
+        if (
+            bookingIds instanceof Set &&
+            job.bookingId &&
+            bookingIds.has(job.bookingId)
+        ) {
+            return true;
+        }
+
+        return matchesCustomerProfile(
+            job.customer || {
+                email: job.customerEmail,
+                name: job.customerName
+            },
+            profile
+        );
+    }
+
+
+    /* =====================================================
        SECTION INFORMATION
        ===================================================== */
 
@@ -1958,8 +2029,10 @@ if (customerEstimatesContainer) {
         return window.ShiftDynamicsStore
             .getJobs()
             .filter(job =>
-                bookingIds.has(
-                    job.bookingId
+                isCustomerJob(
+                    job,
+                    profile,
+                    bookingIds
                 ) &&
                 job.estimate &&
                 job.estimate.status !== "Not Created" &&
@@ -2742,8 +2815,10 @@ if (customerEstimatesContainer) {
         const customerJobs =
             allJobs.filter(
                 job =>
-                    customerBookingIds.has(
-                        job.bookingId
+                    isCustomerJob(
+                        job,
+                        profile,
+                        customerBookingIds
                     )
             );
 
@@ -3570,7 +3645,39 @@ if (trackerCard) {
         const booking =
             getCurrentCustomerBooking();
 
-        if (!booking) {
+        const profile =
+            typeof window.ShiftDynamicsStore.getCustomerProfile === "function"
+                ? window.ShiftDynamicsStore.getCustomerProfile()
+                : null;
+
+        const allJobs =
+            window.ShiftDynamicsStore.getJobs() || [];
+
+        const bookingJob = booking
+            ? allJobs.find(
+                item =>
+                    item.bookingId === booking.bookingId &&
+                    item.handover?.status !== "Completed" &&
+                    item.status !== "Completed"
+            ) || null
+            : null;
+
+        const directAdvisorJob = allJobs
+            .filter(job =>
+                !job.bookingId &&
+                isCustomerJob(job, profile, null) &&
+                job.handover?.status !== "Completed" &&
+                job.status !== "Completed"
+            )
+            .sort(
+                (a, b) =>
+                    new Date(b.updatedAt || b.createdAt || 0) -
+                    new Date(a.updatedAt || a.createdAt || 0)
+            )[0] || null;
+
+        const job = bookingJob || directAdvisorJob;
+
+        if (!booking && !job) {
 
             if (trackerJobLabel) {
                 trackerJobLabel.textContent =
@@ -3608,23 +3715,9 @@ if (trackerCard) {
         }
 
 
-        const job =
-            window.ShiftDynamicsStore
-                .getJobs()
-                .find(
-                    item =>
-                        item.bookingId ===
-                            booking.bookingId &&
-                        item.handover?.status !==
-                            "Completed" &&
-                        item.status !==
-                            "Completed"
-                ) || null;
-
-
         const vehicle =
             job?.vehicle ||
-            booking.vehicleDetails ||
+            booking?.vehicleDetails ||
             {};
 
         const vehicleName =
@@ -3634,7 +3727,7 @@ if (trackerCard) {
             ]
                 .filter(Boolean)
                 .join(" ") ||
-            booking.vehicle ||
+            booking?.vehicle ||
             "Vehicle";
 
 
@@ -3643,7 +3736,7 @@ if (trackerCard) {
             trackerJobLabel.textContent =
                 job
                     ? `JOB CARD ${job.jobCardNumber}`
-                    : `BOOKING ${booking.bookingId}`;
+                    : `BOOKING ${booking?.bookingId || "--"}`;
         }
 
         if (trackerVehicle) {
@@ -3654,7 +3747,7 @@ if (trackerCard) {
         if (trackerService) {
             trackerService.textContent =
                 job?.serviceConcern ||
-                booking.service ||
+                booking?.service ||
                 "Workshop Service";
         }
 
@@ -4078,8 +4171,10 @@ if (serviceHistoryContainer) {
             window.ShiftDynamicsStore
                 .getJobs()
                 .filter(job =>
-                    customerBookingIds.has(
-                        job.bookingId
+                    isCustomerJob(
+                        job,
+                        profile,
+                        customerBookingIds
                     ) &&
                     (
                         job.handover?.status === "Completed" ||
@@ -4787,8 +4882,10 @@ if (customerPaymentsBody) {
         return window.ShiftDynamicsStore
             .getJobs()
             .filter(job =>
-                bookingIds.has(
-                    job.bookingId
+                isCustomerJob(
+                    job,
+                    profile,
+                    bookingIds
                 ) &&
                 job.invoice &&
                 job.invoice.status === "Finalized" &&
