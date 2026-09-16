@@ -40,11 +40,11 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrWhiteSpace(connectionString))
 {
-    connectionString = "Host=localhost;Port=5432;Database=shift_dynamics;Username=postgres;Password=postgres";
+    connectionString = "Server=localhost;Port=3306;Database=shift_dynamics;User=root;Password=";
 }
 
 builder.Services.AddDbContext<ShiftDynamicsDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 0))));
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSection["Key"];
@@ -135,4 +135,3 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
-
