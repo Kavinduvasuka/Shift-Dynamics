@@ -1,47 +1,49 @@
-# Shift Dynamics – Database Migration Workflow
+# Shift Dynamics - Database Migration Workflow
 
 ## Prerequisites
 
 - .NET 10 SDK
-- PostgreSQL running locally (or reachable via connection string)
-- Connection string configured via:
-  - `appsettings.Development.json` (local only – do not commit real secrets), or
-  - User Secrets: `dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=...;..."` , or
-  - Environment variable: `ConnectionStrings__DefaultConnection`
+- MySQL 8.x running locally (or reachable via connection string)
+- Pomelo.EntityFrameworkCore.MySql
+- Connection string configured via appsettings.Development.json, User Secrets, or the ConnectionStrings__DefaultConnection environment variable.
 
-## Common commands (run from `backend/ShiftDynamics.API`)
+Example MySQL connection string:
 
-```bash
-# Add a new migration after changing entities / configurations
-dotnet ef migrations add <MigrationName> --output-dir Infrastructure/Data/Migrations
+    Server=localhost;Port=3306;Database=shift_dynamics;User=root;Password=...
 
-# Apply all pending migrations to the database
-dotnet ef database update
+## Common commands
 
-# Generate SQL script (useful for staging/production review)
-dotnet ef migrations script --output migration.sql
+Run from backend/ShiftDynamics.API:
 
-# Remove the last migration (only if not applied)
-dotnet ef migrations remove
-
-# Drop the database (development only)
-dotnet ef database drop --force
-```
+    dotnet ef migrations add <MigrationName> --output-dir Infrastructure/Data/Migrations
+    dotnet ef database update
+    dotnet ef migrations script --output migration.sql
+    dotnet ef migrations remove
+    dotnet ef database drop --force
 
 ## Conventions
 
-1. Migration names should be descriptive: `AddJobCards`, `AddInventoryItems`, etc.
+1. Migration names should be descriptive.
 2. Never edit already-applied migration files. Create a new migration instead.
-3. Keep entity configurations in `Infrastructure/Data/Configurations`.
+3. Keep entity configurations in Infrastructure/Data/Configurations.
 4. Prefer Fluent API configuration over DataAnnotations on domain entities.
+5. Keep MySQL-specific provider configuration in Program.cs.
+6. Do not commit production database credentials.
 
 ## Initial setup for a new developer
 
-```bash
-cd backend/ShiftDynamics.API
-dotnet restore
-dotnet ef database update
-dotnet run
-```
+    cd backend/ShiftDynamics.API
+    dotnet restore
+    dotnet ef database update
+    dotnet run
 
-Swagger UI will be available at: `https://localhost:7249/swagger` (or the http port shown in the console).
+Swagger UI will be available at https://localhost:7249/swagger, or the HTTP/HTTPS port shown in the console.
+
+## Database Provider
+
+- Database: MySQL 8.x
+- EF Core: 9.0.9
+- Provider: Pomelo.EntityFrameworkCore.MySql 9.0.0
+- Target Framework: .NET 10
+
+The current baseline migration is InitialMySqlSchema.
