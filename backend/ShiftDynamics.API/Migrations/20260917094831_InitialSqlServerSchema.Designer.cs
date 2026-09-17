@@ -12,7 +12,7 @@ using ShiftDynamics.API.Infrastructure.Data;
 namespace ShiftDynamics.API.Migrations
 {
     [DbContext(typeof(ShiftDynamicsDbContext))]
-    [Migration("20260917072752_InitialSqlServerSchema")]
+    [Migration("20260917094831_InitialSqlServerSchema")]
     partial class InitialSqlServerSchema
     {
         /// <inheritdoc />
@@ -1296,7 +1296,7 @@ namespace ShiftDynamics.API.Migrations
                     b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
                         .WithMany()
                         .HasForeignKey("WorkOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Estimate");

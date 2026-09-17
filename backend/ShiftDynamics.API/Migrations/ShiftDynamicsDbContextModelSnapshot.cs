@@ -1293,7 +1293,7 @@ namespace ShiftDynamics.API.Migrations
                     b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
                         .WithMany()
                         .HasForeignKey("WorkOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Estimate");
