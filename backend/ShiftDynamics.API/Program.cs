@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -38,13 +38,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 if (string.IsNullOrWhiteSpace(connectionString))
 {
-    connectionString = "Server=localhost;Port=3306;Database=shift_dynamics;User=root;Password=";
+    throw new InvalidOperationException(
+        "Database connection string 'DefaultConnection' is not configured.");
 }
 
 builder.Services.AddDbContext<ShiftDynamicsDbContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 0))));
+    options.UseSqlServer(connectionString));
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSection["Key"];
@@ -135,3 +137,4 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
