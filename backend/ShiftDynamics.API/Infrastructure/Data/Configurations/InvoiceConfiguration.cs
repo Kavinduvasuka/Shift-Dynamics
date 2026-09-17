@@ -37,7 +37,7 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.HasOne(x => x.WorkOrder)
             .WithMany()
             .HasForeignKey(x => x.WorkOrderId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.Estimate)
             .WithMany()

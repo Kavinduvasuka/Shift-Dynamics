@@ -657,8 +657,7 @@ namespace ShiftDynamics.API.Migrations
                         name: "FK_invoices_work_orders_WorkOrderId",
                         column: x => x.WorkOrderId,
                         principalTable: "work_orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
