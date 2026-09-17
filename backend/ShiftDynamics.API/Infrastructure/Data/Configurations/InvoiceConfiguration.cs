@@ -34,10 +34,10 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
 
         builder.HasIndex(x => x.WorkOrderId);
 
-        builder.HasOne(x => x.WorkOrder)
+        builder.HasOne(i => i.WorkOrder)
             .WithMany()
-            .HasForeignKey(x => x.WorkOrderId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasForeignKey(i => i.WorkOrderId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.HasOne(x => x.Estimate)
             .WithMany()
