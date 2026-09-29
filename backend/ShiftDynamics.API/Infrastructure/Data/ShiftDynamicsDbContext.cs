@@ -34,6 +34,9 @@ public class ShiftDynamicsDbContext : DbContext
     public DbSet<VendorRegistration> VendorRegistrations => Set<VendorRegistration>();
     public DbSet<VendorProfile> VendorProfiles => Set<VendorProfile>();
     public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<DiagnosticFinding> DiagnosticFindings => Set<DiagnosticFinding>();
+    public DbSet<RepairAction> RepairActions => Set<RepairAction>();
+    public DbSet<MechanicRecommendation> MechanicRecommendations => Set<MechanicRecommendation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,3 +44,4 @@ public class ShiftDynamicsDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShiftDynamicsDbContext).Assembly);
     }
 }
+
