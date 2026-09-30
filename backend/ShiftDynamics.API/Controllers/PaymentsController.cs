@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
@@ -29,8 +29,14 @@ public class PaymentsController : ControllerBase
             .FirstOrDefaultAsync(i => i.Id == request.InvoiceId && i.WorkOrder.CustomerId == customerId)
             ?? throw new NotFoundException("Invoice not found.");
 
-        if (invoice.Status is InvoiceStatus.Paid or InvoiceStatus.Cancelled)
-            throw new ConflictException("Invoice cannot accept payments in its current status.");
+        if (invoice.Status is not (
+            InvoiceStatus.Issued or
+            InvoiceStatus.PartiallyPaid or
+            InvoiceStatus.Overdue))
+        {
+            throw new ConflictException(
+                "Invoice cannot accept payments in its current status.");
+        }
 
         if (request.Amount <= 0 || request.Amount > invoice.BalanceDue)
             throw new ValidationException($"Payment amount must be between 0.01 and {invoice.BalanceDue}.");
@@ -165,3 +171,4 @@ public class PaymentsController : ControllerBase
         }));
     }
 }
+

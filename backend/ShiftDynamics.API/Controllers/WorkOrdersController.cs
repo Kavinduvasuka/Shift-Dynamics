@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
-using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
 
@@ -21,6 +20,8 @@ public class WorkOrdersController : ControllerBase
     public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetAll(
         [FromQuery] WorkOrderStatus? status)
     {
+        var role = User.GetRole();
+
         var query = _db.WorkOrders
             .AsNoTracking()
             .Include(w => w.Customer)
@@ -28,8 +29,25 @@ public class WorkOrdersController : ControllerBase
             .Include(w => w.Service)
             .AsQueryable();
 
-        if (User.IsInRole(SystemRole.Customer.ToString()))
-            query = query.Where(w => w.CustomerId == User.RequireCustomerId());
+        if (role == SystemRole.Customer.ToString())
+        {
+            query = query.Where(
+                w => w.CustomerId == User.RequireCustomerId());
+        }
+        else if (role == SystemRole.Mechanic.ToString())
+        {
+            var staffId = User.RequireStaffId();
+
+            query = query.Where(
+                w => w.AssignedStaffId == staffId);
+        }
+        else if (role is not (
+            "ServiceAdvisor" or
+            "Manager" or
+            "Admin"))
+        {
+            throw new ForbiddenException();
+        }
 
         if (status.HasValue)
             query = query.Where(w => w.Status == status.Value);
@@ -42,7 +60,8 @@ public class WorkOrdersController : ControllerBase
                 w.WorkOrderNumber,
                 w.Status,
                 w.CustomerId,
-                CustomerName = w.Customer.FirstName + " " + w.Customer.LastName,
+                CustomerName =
+                    w.Customer.FirstName + " " + w.Customer.LastName,
                 w.VehicleId,
                 VehicleReg = w.Vehicle.RegistrationNumber,
                 w.ServiceId,
@@ -61,17 +80,38 @@ public class WorkOrdersController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ApiResponse<object>>> GetById(Guid id)
     {
-        var customerId = User.IsInRole(SystemRole.Customer.ToString()) ? User.RequireCustomerId() : (Guid?)null;
-        var w = await _db.WorkOrders
+        var role = User.GetRole();
+
+        var query = _db.WorkOrders
             .AsNoTracking()
             .Include(x => x.Customer)
             .Include(x => x.Vehicle)
             .Include(x => x.Service)
             .Include(x => x.AssignedStaff)
-            .FirstOrDefaultAsync(x => x.Id == id && (!customerId.HasValue || x.CustomerId == customerId.Value))
+            .Where(x => x.Id == id);
+
+        if (role == SystemRole.Customer.ToString())
+        {
+            query = query.Where(
+                x => x.CustomerId == User.RequireCustomerId());
+        }
+        else if (role == SystemRole.Mechanic.ToString())
+        {
+            query = query.Where(
+                x => x.AssignedStaffId == User.RequireStaffId());
+        }
+        else if (role is not (
+            "ServiceAdvisor" or
+            "Manager" or
+            "Admin"))
+        {
+            throw new ForbiddenException();
+        }
+
+        var workOrder = await query.FirstOrDefaultAsync()
             ?? throw new NotFoundException("Work order not found.");
 
-        return Ok(ApiResponse<object>.Ok(w));
+        return Ok(ApiResponse<object>.Ok(workOrder));
     }
 
     public record CreateWorkOrderRequest(
@@ -83,25 +123,37 @@ public class WorkOrdersController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = "ServiceAdvisor")]
-    public async Task<ActionResult<ApiResponse<object>>> Create([FromBody] CreateWorkOrderRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> Create(
+        [FromBody] CreateWorkOrderRequest request)
     {
-        var customerExists = await _db.Customers.AnyAsync(c => c.Id == request.CustomerId);
-        if (!customerExists) throw new NotFoundException("Customer not found.");
+        var customerExists = await _db.Customers
+            .AnyAsync(c => c.Id == request.CustomerId);
 
-        var vehicle = await _db.Vehicles.FirstOrDefaultAsync(v => v.Id == request.VehicleId)
+        if (!customerExists)
+            throw new NotFoundException("Customer not found.");
+
+        var vehicle = await _db.Vehicles
+            .FirstOrDefaultAsync(v => v.Id == request.VehicleId)
             ?? throw new NotFoundException("Vehicle not found.");
 
         if (vehicle.CustomerId != request.CustomerId)
-            throw new ValidationException("Vehicle does not belong to the specified customer.");
+            throw new ValidationException(
+                "Vehicle does not belong to the specified customer.");
 
-        if (!await _db.Services.AnyAsync(s => s.Id == request.ServiceId && s.IsActive))
-            throw new NotFoundException("Service not found or inactive.");
+        if (!await _db.Services.AnyAsync(
+            s => s.Id == request.ServiceId && s.IsActive))
+        {
+            throw new NotFoundException(
+                "Service not found or inactive.");
+        }
 
         var count = await _db.WorkOrders.CountAsync() + 1;
+
         var workOrder = new WorkOrder
         {
             Id = Guid.NewGuid(),
-            WorkOrderNumber = $"WO-{DateTime.UtcNow:yyyyMMdd}-{count:D4}",
+            WorkOrderNumber =
+                $"WO-{DateTime.UtcNow:yyyyMMdd}-{count:D4}",
             CustomerId = request.CustomerId,
             VehicleId = request.VehicleId,
             ServiceId = request.ServiceId,
@@ -115,41 +167,102 @@ public class WorkOrdersController : ControllerBase
         _db.WorkOrders.Add(workOrder);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetById), new { id = workOrder.Id },
-            ApiResponse<object>.Ok(workOrder, "Work order created."));
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = workOrder.Id },
+            ApiResponse<object>.Ok(
+                workOrder,
+                "Work order created."));
     }
 
-    public record UpdateStatusRequest(WorkOrderStatus Status, string? Notes);
+    public record UpdateStatusRequest(
+        WorkOrderStatus Status,
+        string? Notes);
 
     [HttpPatch("{id:guid}/status")]
     [Authorize(Policy = "Staff")]
-    public async Task<ActionResult<ApiResponse<object>>> UpdateStatus(Guid id, [FromBody] UpdateStatusRequest request)
+    public async Task<ActionResult<ApiResponse<object>>> UpdateStatus(
+        Guid id,
+        [FromBody] UpdateStatusRequest request)
     {
-        var wo = await _db.WorkOrders.FirstOrDefaultAsync(w => w.Id == id)
+        var role = User.GetRole();
+
+        if (role is not (
+            "ServiceAdvisor" or
+            "Manager" or
+            "Mechanic" or
+            "Admin"))
+        {
+            throw new ForbiddenException();
+        }
+
+        var query = _db.WorkOrders.AsQueryable();
+
+        if (role == "Mechanic")
+        {
+            query = query.Where(
+                w => w.AssignedStaffId == User.RequireStaffId());
+        }
+
+        var workOrder = await query
+            .FirstOrDefaultAsync(w => w.Id == id)
             ?? throw new NotFoundException("Work order not found.");
 
-        var allowed = wo.Status switch
+        var allowed = workOrder.Status switch
         {
-            WorkOrderStatus.Open => request.Status is WorkOrderStatus.Assigned or WorkOrderStatus.InProgress or WorkOrderStatus.Cancelled,
-            WorkOrderStatus.Assigned => request.Status is WorkOrderStatus.InProgress or WorkOrderStatus.WaitingForParts or WorkOrderStatus.Cancelled,
-            WorkOrderStatus.InProgress => request.Status is WorkOrderStatus.WaitingForParts or WorkOrderStatus.Completed or WorkOrderStatus.Cancelled,
-            WorkOrderStatus.WaitingForParts => request.Status is WorkOrderStatus.InProgress or WorkOrderStatus.Completed or WorkOrderStatus.Cancelled,
+            WorkOrderStatus.Open =>
+                request.Status is
+                    WorkOrderStatus.Assigned or
+                    WorkOrderStatus.InProgress or
+                    WorkOrderStatus.Cancelled,
+
+            WorkOrderStatus.Assigned =>
+                request.Status is
+                    WorkOrderStatus.InProgress or
+                    WorkOrderStatus.WaitingForParts or
+                    WorkOrderStatus.Cancelled,
+
+            WorkOrderStatus.InProgress =>
+                request.Status is
+                    WorkOrderStatus.WaitingForParts or
+                    WorkOrderStatus.Completed or
+                    WorkOrderStatus.Cancelled,
+
+            WorkOrderStatus.WaitingForParts =>
+                request.Status is
+                    WorkOrderStatus.InProgress or
+                    WorkOrderStatus.Completed or
+                    WorkOrderStatus.Cancelled,
+
             _ => false
         };
 
         if (!allowed)
-            throw new ConflictException($"Cannot transition work order from {wo.Status} to {request.Status}.");
+        {
+            throw new ConflictException(
+                $"Cannot transition work order from {workOrder.Status} to {request.Status}.");
+        }
 
-        wo.Status = request.Status;
+        workOrder.Status = request.Status;
+
         if (!string.IsNullOrWhiteSpace(request.Notes))
-            wo.TechnicianNotes = request.Notes;
-        if (request.Status == WorkOrderStatus.InProgress && wo.StartedAt is null)
-            wo.StartedAt = DateTime.UtcNow;
+            workOrder.TechnicianNotes = request.Notes;
+
+        if (request.Status == WorkOrderStatus.InProgress &&
+            workOrder.StartedAt is null)
+        {
+            workOrder.StartedAt = DateTime.UtcNow;
+        }
+
         if (request.Status == WorkOrderStatus.Completed)
-            wo.CompletedAt = DateTime.UtcNow;
-        wo.UpdatedAt = DateTime.UtcNow;
+            workOrder.CompletedAt = DateTime.UtcNow;
+
+        workOrder.UpdatedAt = DateTime.UtcNow;
 
         await _db.SaveChangesAsync();
-        return Ok(ApiResponse<object>.Ok(wo, "Status updated."));
+
+        return Ok(ApiResponse<object>.Ok(
+            workOrder,
+            "Status updated."));
     }
 }
