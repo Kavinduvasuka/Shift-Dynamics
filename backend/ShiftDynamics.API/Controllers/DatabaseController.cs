@@ -1,3 +1,4 @@
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Infrastructure.Data;
@@ -6,6 +7,7 @@ namespace ShiftDynamics.API.Controllers;
 
 [ApiController]
 [Route("api/database")]
+[AllowAnonymous]
 public class DatabaseController : ControllerBase
 {
     private readonly ShiftDynamicsDbContext _dbContext;
@@ -28,3 +30,4 @@ public class DatabaseController : ControllerBase
         });
     }
 }
+

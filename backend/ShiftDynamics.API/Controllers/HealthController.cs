@@ -1,3 +1,4 @@
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Infrastructure.Data;
@@ -6,6 +7,7 @@ namespace ShiftDynamics.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class HealthController : ControllerBase
 {
     private readonly ShiftDynamicsDbContext _dbContext;
@@ -18,7 +20,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// Basic liveness probe – always returns 200 if the process is running.
+    /// Basic liveness probe â€“ always returns 200 if the process is running.
     /// </summary>
     [HttpGet]
     public IActionResult Get()
@@ -33,7 +35,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// Readiness probe – checks database connectivity.
+    /// Readiness probe â€“ checks database connectivity.
     /// </summary>
     [HttpGet("ready")]
     public async Task<IActionResult> Ready(CancellationToken cancellationToken)
@@ -50,3 +52,4 @@ public class HealthController : ControllerBase
         return canConnect ? Ok(payload) : StatusCode(StatusCodes.Status503ServiceUnavailable, payload);
     }
 }
+

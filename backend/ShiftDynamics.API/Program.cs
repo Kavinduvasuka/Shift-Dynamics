@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -74,6 +75,12 @@ builder.Services
 
 builder.Services.AddAuthorization(options =>
 {
+    // Defense-in-depth: every endpoint requires authentication
+    // unless it explicitly opts out with [AllowAnonymous].
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
     options.AddPolicy("Customer", p => p.RequireRole("Customer"));
     options.AddPolicy("ServiceAdvisor", p => p.RequireRole("ServiceAdvisor", "Manager", "Admin"));
     options.AddPolicy("Manager", p => p.RequireRole("Manager", "Admin"));
@@ -138,4 +145,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
 
