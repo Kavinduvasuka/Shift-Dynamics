@@ -217,4 +217,187 @@ public class VendorsController : ControllerBase
         await _db.SaveChangesAsync();
         return Ok(ApiResponse<object>.Ok(profile, "Vendor status updated."));
     }
+
+
+    // ---------- Vendor procurement (quotes & POs) ----------
+
+    private async Task<VendorProfile> RequireActiveVendorProfileAsync()
+    {
+        var userId = User.RequireUserId();
+        var profile = await _db.VendorProfiles.FirstOrDefaultAsync(v => v.UserId == userId)
+            ?? throw new ForbiddenException("Vendor profile not found.");
+        if (profile.ApprovalStatus != VendorApprovalStatus.Active)
+            throw new ForbiddenException("Vendor account is not active.");
+        return profile;
+    }
+
+    [HttpGet("quote-requests")]
+    [Authorize(Policy = "Vendor")]
+    public async Task<ActionResult<ApiResponse<object>>> OpenQuoteRequests()
+    {
+        var profile = await RequireActiveVendorProfileAsync();
+
+        var quotedIds = await _db.VendorQuotes
+            .Where(q => q.VendorProfileId == profile.Id)
+            .Select(q => q.QuoteRequestId)
+            .ToListAsync();
+
+        var items = await _db.VendorQuoteRequests.AsNoTracking()
+            .Include(r => r.Part)
+            .Where(r => r.Status == ProcurementRequestStatus.Open)
+            .OrderByDescending(r => r.CreatedAt)
+            .Select(r => new
+            {
+                r.Id,
+                r.PartId,
+                PartNumber = r.Part.PartNumber,
+                PartName = r.Part.Name,
+                r.Quantity,
+                r.Specifications,
+                r.Status,
+                r.CreatedAt,
+                AlreadyQuoted = quotedIds.Contains(r.Id)
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse<object>.Ok(items));
+    }
+
+    public record SubmitQuoteDto(decimal UnitPrice, int DeliveryDays, string? Notes);
+
+    [HttpPost("quote-requests/{requestId:guid}/quotes")]
+    [Authorize(Policy = "Vendor")]
+    public async Task<ActionResult<ApiResponse<object>>> SubmitQuote(Guid requestId, [FromBody] SubmitQuoteDto request)
+    {
+        if (request.UnitPrice < 0 || request.DeliveryDays < 0)
+            throw new Common.ValidationException("Unit price and delivery days must be non-negative.");
+
+        var profile = await RequireActiveVendorProfileAsync();
+        var quoteRequest = await _db.VendorQuoteRequests.FirstOrDefaultAsync(r => r.Id == requestId)
+            ?? throw new NotFoundException("Quote request not found.");
+
+        if (quoteRequest.Status != ProcurementRequestStatus.Open)
+            throw new ConflictException("Quote request is not open.");
+
+        if (await _db.VendorQuotes.AnyAsync(q => q.QuoteRequestId == requestId && q.VendorProfileId == profile.Id))
+            throw new ConflictException("You have already submitted a quote for this request.");
+
+        var quote = new VendorQuote
+        {
+            Id = Guid.NewGuid(),
+            QuoteRequestId = requestId,
+            VendorProfileId = profile.Id,
+            UnitPrice = request.UnitPrice,
+            DeliveryDays = request.DeliveryDays,
+            Notes = request.Notes?.Trim(),
+            Status = VendorQuoteStatus.Submitted,
+            SubmittedAt = DateTime.UtcNow
+        };
+
+        _db.VendorQuotes.Add(quote);
+        await _db.SaveChangesAsync();
+
+        return Ok(ApiResponse<object>.Ok(new
+        {
+            quote.Id,
+            quote.QuoteRequestId,
+            quote.UnitPrice,
+            quote.DeliveryDays,
+            quote.Notes,
+            quote.Status,
+            quote.SubmittedAt
+        }, "Quote submitted."));
+    }
+
+    [HttpGet("quotes")]
+    [Authorize(Policy = "Vendor")]
+    public async Task<ActionResult<ApiResponse<object>>> MyQuotes([FromQuery] VendorQuoteStatus? status)
+    {
+        var profile = await RequireActiveVendorProfileAsync();
+        var query = _db.VendorQuotes.AsNoTracking()
+            .Include(q => q.QuoteRequest).ThenInclude(r => r.Part)
+            .Where(q => q.VendorProfileId == profile.Id);
+
+        if (status.HasValue) query = query.Where(q => q.Status == status.Value);
+
+        var items = await query.OrderByDescending(q => q.SubmittedAt)
+            .Select(q => new
+            {
+                q.Id,
+                q.QuoteRequestId,
+                PartNumber = q.QuoteRequest.Part.PartNumber,
+                PartName = q.QuoteRequest.Part.Name,
+                Quantity = q.QuoteRequest.Quantity,
+                q.UnitPrice,
+                q.DeliveryDays,
+                q.Notes,
+                q.Status,
+                q.SubmittedAt,
+                Total = q.UnitPrice * q.QuoteRequest.Quantity
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse<object>.Ok(items));
+    }
+
+    [HttpGet("purchase-orders")]
+    [Authorize(Policy = "Vendor")]
+    public async Task<ActionResult<ApiResponse<object>>> MyPurchaseOrders([FromQuery] PurchaseOrderStatus? status)
+    {
+        var profile = await RequireActiveVendorProfileAsync();
+        var query = _db.PurchaseOrders.AsNoTracking()
+            .Include(po => po.Part)
+            .Where(po => po.VendorProfileId == profile.Id);
+
+        if (status.HasValue) query = query.Where(po => po.Status == status.Value);
+
+        var items = await query.OrderByDescending(po => po.CreatedAt)
+            .Select(po => new
+            {
+                po.Id,
+                po.OrderNumber,
+                PartNumber = po.Part.PartNumber,
+                PartName = po.Part.Name,
+                po.Quantity,
+                po.UnitPrice,
+                po.TotalAmount,
+                po.Status,
+                po.CreatedAt,
+                po.UpdatedAt,
+                po.ReceivedAt
+            })
+            .ToListAsync();
+
+        return Ok(ApiResponse<object>.Ok(items));
+    }
+
+    public record UpdatePoStatusRequest(PurchaseOrderStatus Status);
+
+    [HttpPost("purchase-orders/{id:guid}/status")]
+    [Authorize(Policy = "Vendor")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdatePurchaseOrderStatus(Guid id, [FromBody] UpdatePoStatusRequest request)
+    {
+        var profile = await RequireActiveVendorProfileAsync();
+        var po = await _db.PurchaseOrders.FirstOrDefaultAsync(p => p.Id == id && p.VendorProfileId == profile.Id)
+            ?? throw new NotFoundException("Purchase order not found.");
+
+        var allowed = po.Status switch
+        {
+            PurchaseOrderStatus.PendingVendorAcceptance => request.Status is PurchaseOrderStatus.Accepted or PurchaseOrderStatus.Cancelled,
+            PurchaseOrderStatus.Accepted => request.Status is PurchaseOrderStatus.Processing or PurchaseOrderStatus.Cancelled,
+            PurchaseOrderStatus.Processing => request.Status is PurchaseOrderStatus.Shipped or PurchaseOrderStatus.Cancelled,
+            PurchaseOrderStatus.Shipped => request.Status is PurchaseOrderStatus.Delivered,
+            _ => false
+        };
+
+        if (!allowed)
+            throw new ConflictException($"Cannot transition purchase order from {po.Status} to {request.Status}.");
+
+        po.Status = request.Status;
+        po.UpdatedAt = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+
+        return Ok(ApiResponse<object>.Ok(new { po.Id, po.OrderNumber, po.Status }, "Purchase order status updated."));
+    }
 }
+

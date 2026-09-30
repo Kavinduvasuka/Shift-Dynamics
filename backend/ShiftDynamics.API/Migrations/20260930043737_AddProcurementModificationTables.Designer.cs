@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShiftDynamics.API.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ShiftDynamics.API.Infrastructure.Data;
 namespace ShiftDynamics.API.Migrations
 {
     [DbContext(typeof(ShiftDynamicsDbContext))]
-    partial class ShiftDynamicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260930043737_AddProcurementModificationTables")]
+    partial class AddProcurementModificationTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,6 +177,9 @@ namespace ShiftDynamics.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("MechanicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("MechanicStaffId")
                         .HasColumnType("uniqueidentifier");
 
@@ -188,11 +194,11 @@ namespace ShiftDynamics.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MechanicStaffId");
+                    b.HasIndex("MechanicId");
 
                     b.HasIndex("WorkOrderId");
 
-                    b.ToTable("DiagnosticFindings", (string)null);
+                    b.ToTable("DiagnosticFindings");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.EmergencyRequest", b =>
@@ -585,6 +591,9 @@ namespace ShiftDynamics.API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MechanicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("MechanicStaffId")
                         .HasColumnType("uniqueidentifier");
 
@@ -603,11 +612,11 @@ namespace ShiftDynamics.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MechanicStaffId");
+                    b.HasIndex("MechanicId");
 
                     b.HasIndex("WorkOrderId");
 
-                    b.ToTable("MechanicRecommendations", (string)null);
+                    b.ToTable("MechanicRecommendations");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.ModificationRequest", b =>
@@ -963,6 +972,9 @@ namespace ShiftDynamics.API.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("MechanicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("MechanicStaffId")
                         .HasColumnType("uniqueidentifier");
 
@@ -977,11 +989,11 @@ namespace ShiftDynamics.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MechanicStaffId");
+                    b.HasIndex("MechanicId");
 
                     b.HasIndex("WorkOrderId");
 
-                    b.ToTable("RepairActions", (string)null);
+                    b.ToTable("RepairActions");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Service", b =>
@@ -1549,8 +1561,8 @@ namespace ShiftDynamics.API.Migrations
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "Mechanic")
                         .WithMany()
-                        .HasForeignKey("MechanicStaffId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("MechanicId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
@@ -1678,8 +1690,8 @@ namespace ShiftDynamics.API.Migrations
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "Mechanic")
                         .WithMany()
-                        .HasForeignKey("MechanicStaffId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("MechanicId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
@@ -1810,8 +1822,8 @@ namespace ShiftDynamics.API.Migrations
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "Mechanic")
                         .WithMany()
-                        .HasForeignKey("MechanicStaffId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("MechanicId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")

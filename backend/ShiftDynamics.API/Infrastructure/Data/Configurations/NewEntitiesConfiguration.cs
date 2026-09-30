@@ -186,3 +186,140 @@ public class VendorProfileConfiguration : IEntityTypeConfiguration<VendorProfile
             .OnDelete(DeleteBehavior.SetNull);
     }
 }
+
+public class DiagnosticFindingConfiguration : IEntityTypeConfiguration<DiagnosticFinding>
+{
+    public void Configure(EntityTypeBuilder<DiagnosticFinding> builder)
+    {
+        builder.ToTable("DiagnosticFindings");
+        builder.HasKey(x => x.Id);
+
+        builder.HasOne(x => x.WorkOrder)
+            .WithMany()
+            .HasForeignKey(x => x.WorkOrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.Mechanic)
+            .WithMany()
+            .HasForeignKey(x => x.MechanicStaffId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(x => x.WorkOrderId);
+        builder.HasIndex(x => x.MechanicStaffId);
+    }
+}
+
+public class RepairActionConfiguration : IEntityTypeConfiguration<RepairAction>
+{
+    public void Configure(EntityTypeBuilder<RepairAction> builder)
+    {
+        builder.ToTable("RepairActions");
+        builder.HasKey(x => x.Id);
+
+        builder.HasOne(x => x.WorkOrder)
+            .WithMany()
+            .HasForeignKey(x => x.WorkOrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.Mechanic)
+            .WithMany()
+            .HasForeignKey(x => x.MechanicStaffId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(x => x.WorkOrderId);
+        builder.HasIndex(x => x.MechanicStaffId);
+    }
+}
+
+public class MechanicRecommendationConfiguration : IEntityTypeConfiguration<MechanicRecommendation>
+{
+    public void Configure(EntityTypeBuilder<MechanicRecommendation> builder)
+    {
+        builder.ToTable("MechanicRecommendations");
+        builder.HasKey(x => x.Id);
+
+        builder.HasOne(x => x.WorkOrder)
+            .WithMany()
+            .HasForeignKey(x => x.WorkOrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasIndex(x => x.WorkOrderId);
+        builder.HasIndex(x => x.MechanicStaffId);
+
+        builder.HasOne(x => x.Mechanic)
+            .WithMany()
+            .HasForeignKey(x => x.MechanicStaffId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+
+public class VendorQuoteRequestConfiguration : IEntityTypeConfiguration<VendorQuoteRequest>
+{
+    public void Configure(EntityTypeBuilder<VendorQuoteRequest> builder)
+    {
+        builder.ToTable("vendor_quote_requests");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Specifications).HasMaxLength(1000);
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+        builder.HasOne(x => x.Part).WithMany().HasForeignKey(x => x.PartId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasIndex(x => x.Status);
+        builder.HasIndex(x => x.PartId);
+        builder.ToTable(t => t.HasCheckConstraint("CK_vendor_quote_requests_qty", "\"Quantity\" > 0"));
+    }
+}
+
+public class VendorQuoteConfiguration : IEntityTypeConfiguration<VendorQuote>
+{
+    public void Configure(EntityTypeBuilder<VendorQuote> builder)
+    {
+        builder.ToTable("vendor_quotes");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.UnitPrice).HasPrecision(18, 2);
+        builder.Property(x => x.Notes).HasMaxLength(1000);
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+        builder.HasOne(x => x.QuoteRequest).WithMany().HasForeignKey(x => x.QuoteRequestId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(x => x.VendorProfile).WithMany().HasForeignKey(x => x.VendorProfileId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasIndex(x => new { x.QuoteRequestId, x.VendorProfileId }).IsUnique();
+        builder.ToTable(t => t.HasCheckConstraint("CK_vendor_quotes_price", "\"UnitPrice\" >= 0 AND \"DeliveryDays\" >= 0"));
+    }
+}
+
+public class PurchaseOrderConfiguration : IEntityTypeConfiguration<PurchaseOrder>
+{
+    public void Configure(EntityTypeBuilder<PurchaseOrder> builder)
+    {
+        builder.ToTable("purchase_orders");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.OrderNumber).HasMaxLength(50).IsRequired();
+        builder.Property(x => x.UnitPrice).HasPrecision(18, 2);
+        builder.Property(x => x.TotalAmount).HasPrecision(18, 2);
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(40);
+        builder.HasIndex(x => x.OrderNumber).IsUnique();
+        builder.HasOne(x => x.QuoteRequest).WithMany().HasForeignKey(x => x.QuoteRequestId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.VendorQuote).WithMany().HasForeignKey(x => x.VendorQuoteId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.VendorProfile).WithMany().HasForeignKey(x => x.VendorProfileId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.Part).WithMany().HasForeignKey(x => x.PartId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasIndex(x => x.VendorQuoteId).IsUnique();
+        builder.ToTable(t => t.HasCheckConstraint("CK_purchase_orders_qty", "\"Quantity\" > 0 AND \"UnitPrice\" >= 0 AND \"TotalAmount\" >= 0"));
+    }
+}
+
+public class ModificationRequestConfiguration : IEntityTypeConfiguration<ModificationRequest>
+{
+    public void Configure(EntityTypeBuilder<ModificationRequest> builder)
+    {
+        builder.ToTable("modification_requests");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Request).HasMaxLength(2000).IsRequired();
+        builder.Property(x => x.Notes).HasMaxLength(1000);
+        builder.Property(x => x.ReviewNotes).HasMaxLength(1000);
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+        builder.HasOne(x => x.Customer).WithMany().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.Vehicle).WithMany().HasForeignKey(x => x.VehicleId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasIndex(x => x.CustomerId);
+        builder.HasIndex(x => x.Status);
+    }
+}
+
+

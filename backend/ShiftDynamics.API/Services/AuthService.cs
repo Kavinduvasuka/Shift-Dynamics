@@ -75,6 +75,7 @@ public class AuthService : IAuthService
         var email = request.Email.Trim().ToLowerInvariant();
         var user = await _db.Users
             .AsNoTracking()
+            .Include(u => u.StaffProfile)
             .FirstOrDefaultAsync(u => u.Email == email);
 
         if (user is null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))

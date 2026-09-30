@@ -41,6 +41,9 @@ public class TokenService : ITokenService
         if (user.CustomerId.HasValue)
             claims.Add(new Claim("customerId", user.CustomerId.Value.ToString()));
 
+        if (user.StaffProfile != null)
+            claims.Add(new Claim("staffId", user.StaffProfile.Id.ToString()));
+
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 

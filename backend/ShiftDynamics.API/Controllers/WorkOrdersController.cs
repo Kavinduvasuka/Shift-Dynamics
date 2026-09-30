@@ -128,6 +128,18 @@ public class WorkOrdersController : ControllerBase
         var wo = await _db.WorkOrders.FirstOrDefaultAsync(w => w.Id == id)
             ?? throw new NotFoundException("Work order not found.");
 
+        var allowed = wo.Status switch
+        {
+            WorkOrderStatus.Open => request.Status is WorkOrderStatus.Assigned or WorkOrderStatus.InProgress or WorkOrderStatus.Cancelled,
+            WorkOrderStatus.Assigned => request.Status is WorkOrderStatus.InProgress or WorkOrderStatus.WaitingForParts or WorkOrderStatus.Cancelled,
+            WorkOrderStatus.InProgress => request.Status is WorkOrderStatus.WaitingForParts or WorkOrderStatus.Completed or WorkOrderStatus.Cancelled,
+            WorkOrderStatus.WaitingForParts => request.Status is WorkOrderStatus.InProgress or WorkOrderStatus.Completed or WorkOrderStatus.Cancelled,
+            _ => false
+        };
+
+        if (!allowed)
+            throw new ConflictException($"Cannot transition work order from {wo.Status} to {request.Status}.");
+
         wo.Status = request.Status;
         if (!string.IsNullOrWhiteSpace(request.Notes))
             wo.TechnicianNotes = request.Notes;

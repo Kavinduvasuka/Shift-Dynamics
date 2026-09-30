@@ -33,6 +33,17 @@ public class AppointmentsController : ControllerBase
     {
         if (request.AppointmentDate <= DateTime.UtcNow) throw new ValidationException("Appointment date must be in the future.");
         var vehicle=await _db.Vehicles.FirstOrDefaultAsync(v=>v.Id==request.VehicleId && v.CustomerId==CustomerId) ?? throw new NotFoundException("Vehicle not found.");
+
+        var windowStart = request.AppointmentDate.AddHours(-2);
+        var windowEnd = request.AppointmentDate.AddHours(2);
+        var conflict = await _db.Appointments.AnyAsync(a =>
+            a.VehicleId == vehicle.Id &&
+            a.Status == AppointmentStatus.Scheduled &&
+            a.AppointmentDate >= windowStart &&
+            a.AppointmentDate <= windowEnd);
+        if (conflict)
+            throw new ConflictException("This vehicle already has a scheduled appointment near the requested time.");
+
         var a=new Appointment { Id=Guid.NewGuid(), CustomerId=CustomerId, VehicleId=vehicle.Id, AppointmentDate=request.AppointmentDate, ServiceType=request.ServiceType.Trim(), Notes=string.IsNullOrWhiteSpace(request.Notes)?null:request.Notes.Trim(), Status=AppointmentStatus.Scheduled, CreatedAt=DateTime.UtcNow };
         _db.Appointments.Add(a); await _db.SaveChangesAsync(); a.Customer=(await _db.Customers.FindAsync(CustomerId))!; a.Vehicle=vehicle; return CreatedAtAction(nameof(GetAppointment),new {id=a.Id},Map(a));
     }

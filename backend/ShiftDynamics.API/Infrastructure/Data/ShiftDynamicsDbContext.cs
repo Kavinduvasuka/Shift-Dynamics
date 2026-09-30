@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Domain.Entities;
 
 namespace ShiftDynamics.API.Infrastructure.Data;
@@ -37,6 +37,10 @@ public class ShiftDynamicsDbContext : DbContext
     public DbSet<DiagnosticFinding> DiagnosticFindings => Set<DiagnosticFinding>();
     public DbSet<RepairAction> RepairActions => Set<RepairAction>();
     public DbSet<MechanicRecommendation> MechanicRecommendations => Set<MechanicRecommendation>();
+    public DbSet<VendorQuoteRequest> VendorQuoteRequests => Set<VendorQuoteRequest>();
+    public DbSet<VendorQuote> VendorQuotes => Set<VendorQuote>();
+    public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+    public DbSet<ModificationRequest> ModificationRequests => Set<ModificationRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,4 +48,6 @@ public class ShiftDynamicsDbContext : DbContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShiftDynamicsDbContext).Assembly);
     }
 }
+
+
 

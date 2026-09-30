@@ -194,16 +194,43 @@ public class ManagerController : ControllerBase
 
         var pendingApprovals = pendingVendorApprovals + pendingInvoiceApprovals;
 
-        var vendorQuotes = 0;
+        var vendorQuotes = await _db.VendorQuotes.CountAsync(q => q.Status == VendorQuoteStatus.Submitted);
+        var openQuoteRequests = await _db.VendorQuoteRequests.CountAsync(r => r.Status == ProcurementRequestStatus.Open);
+        var pendingPurchaseOrders = await _db.PurchaseOrders.CountAsync(po =>
+            po.Status != PurchaseOrderStatus.Received && po.Status != PurchaseOrderStatus.Cancelled);
+        var totalCustomers = await _db.Customers.CountAsync();
+        var activeVehicles = await _db.Vehicles.CountAsync();
+        var completedWorkOrders = await _db.WorkOrders.CountAsync(w => w.Status == WorkOrderStatus.Completed);
+        var pendingEstimates = await _db.Estimates.CountAsync(e => e.Status == EstimateStatus.Draft || e.Status == EstimateStatus.Sent);
+        var revenue = await _db.Payments.Where(p => p.Status == PaymentStatus.Completed).SumAsync(p => (decimal?)p.Amount) ?? 0m;
+        var outstandingInvoices = await _db.Invoices.Where(i => i.Status == InvoiceStatus.Issued || i.Status == InvoiceStatus.PartiallyPaid || i.Status == InvoiceStatus.Overdue)
+            .SumAsync(i => (decimal?)i.BalanceDue) ?? 0m;
+        var lowStockParts = await _db.InventoryItems.CountAsync(i => i.OnHandQty <= i.ReorderLevel);
+        var pendingRequisitions = await _db.PartRequisitions.CountAsync(r => r.Status == RequisitionStatus.Pending);
+        var openEmergencies = await _db.EmergencyRequests.CountAsync(e =>
+            e.Status != EmergencyRequestStatus.Completed && e.Status != EmergencyRequestStatus.Cancelled);
+        var pendingModifications = await _db.ModificationRequests.CountAsync(m => m.Status == ModificationRequestStatus.Pending);
 
         return Ok(ApiResponse<object>.Ok(new
         {
             activeJobCards,
             mechanicsOnDuty,
             vendorQuotes,
+            openQuoteRequests,
+            pendingPurchaseOrders,
             pendingApprovals,
             pendingVendorApprovals,
-            pendingInvoiceApprovals
+            pendingInvoiceApprovals,
+            totalCustomers,
+            activeVehicles,
+            completedWorkOrders,
+            pendingEstimates,
+            revenue,
+            outstandingInvoices,
+            lowStockParts,
+            pendingRequisitions,
+            openEmergencies,
+            pendingModifications
         }));
     }
     public record UpsertBayRequest(string Name, BayStatus Status, string? Notes);
@@ -263,7 +290,7 @@ public class ManagerController : ControllerBase
             bay.UpdatedAt = DateTime.UtcNow;
         }
 
-        // End any previous assignment on this work order
+        // End any previous assignment on this work order and free previous bays
         var previous = await _db.JobAssignments
             .Where(a => a.WorkOrderId == request.WorkOrderId && a.IsActive)
             .ToListAsync();
@@ -271,6 +298,15 @@ public class ManagerController : ControllerBase
         {
             p.IsActive = false;
             p.EndedAt = DateTime.UtcNow;
+            if (p.BayId.HasValue && p.BayId != request.BayId)
+            {
+                var prevBay = await _db.WorkshopBays.FirstOrDefaultAsync(b => b.Id == p.BayId.Value);
+                if (prevBay != null)
+                {
+                    prevBay.Status = BayStatus.Available;
+                    prevBay.UpdatedAt = DateTime.UtcNow;
+                }
+            }
         }
 
         var assignment = new JobAssignment
@@ -285,7 +321,8 @@ public class ManagerController : ControllerBase
         };
 
         wo.AssignedStaffId = request.MechanicStaffId;
-        wo.Status = WorkOrderStatus.Assigned;
+        if (wo.Status == WorkOrderStatus.Open)
+            wo.Status = WorkOrderStatus.Assigned;
         wo.UpdatedAt = DateTime.UtcNow;
 
         _db.JobAssignments.Add(assignment);
