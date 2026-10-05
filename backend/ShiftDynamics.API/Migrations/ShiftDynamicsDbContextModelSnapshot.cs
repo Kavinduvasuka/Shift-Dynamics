@@ -161,6 +161,43 @@ namespace ShiftDynamics.API.Migrations
                     b.ToTable("customers", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.DiagnosticFinding", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Finding")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MechanicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MechanicStaffId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Severity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("WorkOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MechanicId");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.ToTable("DiagnosticFindings");
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.EmergencyRequest", b =>
                 {
                     b.Property<Guid>("Id")
@@ -542,6 +579,93 @@ namespace ShiftDynamics.API.Migrations
                     b.ToTable("labor_sessions", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.MechanicRecommendation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MechanicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MechanicStaffId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Priority")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Recommendation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("WorkOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MechanicId");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.ToTable("MechanicRecommendations");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.ModificationRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AdvisorNotes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<decimal?>("ProposedCost")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("RequestType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("modification_requests", (string)null);
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Notification", b =>
                 {
                     b.Property<Guid>("Id")
@@ -759,6 +883,154 @@ namespace ShiftDynamics.API.Migrations
                     b.HasIndex("TransactionReference");
 
                     b.ToTable("payments", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.PurchaseOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ApprovedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ApprovedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ExpectedDeliveryAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PurchaseOrderNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("QuoteRequestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ReceivedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReceivedQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("VendorQuoteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PurchaseOrderNumber")
+                        .IsUnique();
+
+                    b.HasIndex("QuoteRequestId");
+
+                    b.HasIndex("VendorQuoteId")
+                        .IsUnique();
+
+                    b.ToTable("purchase_orders", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.QuoteRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PartDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid?>("PartId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PartRequisitionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RequestNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("RequiredBy")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartId");
+
+                    b.HasIndex("PartRequisitionId");
+
+                    b.HasIndex("RequestNumber")
+                        .IsUnique();
+
+                    b.ToTable("quote_requests", (string)null);
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.RepairAction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("MechanicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MechanicStaffId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("WorkOrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MechanicId");
+
+                    b.HasIndex("WorkOrderId");
+
+                    b.ToTable("RepairActions");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Service", b =>
@@ -1056,6 +1328,52 @@ namespace ShiftDynamics.API.Migrations
                     b.ToTable("vendor_profiles", (string)null);
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.VendorQuote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AvailableQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DeliveryDays")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("QuoteRequestId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime>("SubmittedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("VendorProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VendorProfileId");
+
+                    b.HasIndex("QuoteRequestId", "VendorProfileId")
+                        .IsUnique();
+
+                    b.ToTable("vendor_quotes", (string)null);
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.VendorRegistration", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1236,6 +1554,25 @@ namespace ShiftDynamics.API.Migrations
                     b.Navigation("Vehicle");
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.DiagnosticFinding", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "Mechanic")
+                        .WithMany()
+                        .HasForeignKey("MechanicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
+                        .WithMany()
+                        .HasForeignKey("WorkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mechanic");
+
+                    b.Navigation("WorkOrder");
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.EmergencyRequest", b =>
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "AssignedStaff")
@@ -1346,6 +1683,44 @@ namespace ShiftDynamics.API.Migrations
                     b.Navigation("WorkOrder");
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.MechanicRecommendation", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "Mechanic")
+                        .WithMany()
+                        .HasForeignKey("MechanicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
+                        .WithMany()
+                        .HasForeignKey("WorkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mechanic");
+
+                    b.Navigation("WorkOrder");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.ModificationRequest", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Vehicle");
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Notification", b =>
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.User", "User")
@@ -1403,6 +1778,61 @@ namespace ShiftDynamics.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Invoice");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.PurchaseOrder", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.QuoteRequest", "QuoteRequest")
+                        .WithMany()
+                        .HasForeignKey("QuoteRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.VendorQuote", "VendorQuote")
+                        .WithMany()
+                        .HasForeignKey("VendorQuoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuoteRequest");
+
+                    b.Navigation("VendorQuote");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.QuoteRequest", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Part", "Part")
+                        .WithMany()
+                        .HasForeignKey("PartId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.PartRequisition", "PartRequisition")
+                        .WithMany()
+                        .HasForeignKey("PartRequisitionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Part");
+
+                    b.Navigation("PartRequisition");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.RepairAction", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.Staff", "Mechanic")
+                        .WithMany()
+                        .HasForeignKey("MechanicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.WorkOrder", "WorkOrder")
+                        .WithMany()
+                        .HasForeignKey("WorkOrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Mechanic");
+
+                    b.Navigation("WorkOrder");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Staff", b =>
@@ -1466,6 +1896,25 @@ namespace ShiftDynamics.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.VendorQuote", b =>
+                {
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.QuoteRequest", "QuoteRequest")
+                        .WithMany("Quotes")
+                        .HasForeignKey("QuoteRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShiftDynamics.API.Domain.Entities.VendorProfile", "VendorProfile")
+                        .WithMany()
+                        .HasForeignKey("VendorProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("QuoteRequest");
+
+                    b.Navigation("VendorProfile");
+                });
+
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.WorkOrder", b =>
                 {
                     b.HasOne("ShiftDynamics.API.Domain.Entities.Appointment", "Appointment")
@@ -1515,6 +1964,11 @@ namespace ShiftDynamics.API.Migrations
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.Part", b =>
                 {
                     b.Navigation("Inventory");
+                });
+
+            modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.QuoteRequest", b =>
+                {
+                    b.Navigation("Quotes");
                 });
 
             modelBuilder.Entity("ShiftDynamics.API.Domain.Entities.User", b =>

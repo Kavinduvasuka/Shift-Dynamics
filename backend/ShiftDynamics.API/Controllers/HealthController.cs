@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ShiftDynamics.API.Infrastructure.Data;
+using ShiftDynamics.API.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -8,12 +7,12 @@ namespace ShiftDynamics.API.Controllers;
 [Route("api/[controller]")]
 public class HealthController : ControllerBase
 {
-    private readonly ShiftDynamicsDbContext _dbContext;
+    private readonly IHealthService _health;
     private readonly IHostEnvironment _env;
 
-    public HealthController(ShiftDynamicsDbContext dbContext, IHostEnvironment env)
+    public HealthController(IHealthService health, IHostEnvironment env)
     {
-        _dbContext = dbContext;
+        _health = health;
         _env = env;
     }
 
@@ -23,13 +22,7 @@ public class HealthController : ControllerBase
     [HttpGet]
     public IActionResult Get()
     {
-        return Ok(new
-        {
-            status = "healthy",
-            service = "Shift Dynamics API",
-            environment = _env.EnvironmentName,
-            timestamp = DateTime.UtcNow
-        });
+        return Ok(_health.GetLiveness(_env.EnvironmentName));
     }
 
     /// <summary>
@@ -38,15 +31,7 @@ public class HealthController : ControllerBase
     [HttpGet("ready")]
     public async Task<IActionResult> Ready(CancellationToken cancellationToken)
     {
-        var canConnect = await _dbContext.Database.CanConnectAsync(cancellationToken);
-
-        var payload = new
-        {
-            status = canConnect ? "ready" : "not_ready",
-            database = canConnect,
-            timestamp = DateTime.UtcNow
-        };
-
-        return canConnect ? Ok(payload) : StatusCode(StatusCodes.Status503ServiceUnavailable, payload);
+        var payload = await _health.GetReadinessAsync(cancellationToken);
+        return (string)payload.GetType().GetProperty("status")!.GetValue(payload)! == "ready" ? Ok(payload) : StatusCode(StatusCodes.Status503ServiceUnavailable, payload);
     }
 }

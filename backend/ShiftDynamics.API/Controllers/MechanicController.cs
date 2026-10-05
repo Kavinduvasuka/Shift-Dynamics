@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
+using ShiftDynamics.API.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -13,19 +14,15 @@ namespace ShiftDynamics.API.Controllers;
 public class MechanicController : ControllerBase
 {
     private readonly ShiftDynamicsDbContext _db;
+    private readonly IMechanicService _mechanic;
 
-    public MechanicController(ShiftDynamicsDbContext db) => _db = db;
+    public MechanicController(ShiftDynamicsDbContext db, IMechanicService mechanic) { _db = db; _mechanic = mechanic; }
 
     private async Task<Guid> CurrentMechanicId()
     {
         var userId = User.RequireUserId();
 
-        return (await _db.Staff.AsNoTracking()
-            .FirstOrDefaultAsync(s =>
-                s.UserId == userId &&
-                s.Role == SystemRole.Mechanic &&
-                s.Status == StaffStatus.Active))?.Id
-            ?? throw new ForbiddenException("Active mechanic profile is required.");
+        return await _mechanic.GetCurrentMechanicIdAsync(userId);
     }
 
     private async Task<WorkOrder> GetAssignedWorkOrder(Guid mechanicId, Guid workOrderId)
@@ -164,39 +161,7 @@ public class MechanicController : ControllerBase
         [FromBody] TimerActionRequest request)
     {
         var mechanicId = await CurrentMechanicId();
-        var wo = await GetAssignedWorkOrder(mechanicId, request.WorkOrderId);
-
-        if (wo.Status != WorkOrderStatus.Assigned &&
-            wo.Status != WorkOrderStatus.InProgress &&
-            wo.Status != WorkOrderStatus.WaitingForParts)
-            throw new ConflictException(
-                "This job cannot be started in its current status.");
-
-        var active = await _db.LaborSessions.AnyAsync(s =>
-            s.MechanicStaffId == mechanicId &&
-            s.Status == LaborSessionStatus.Active);
-
-        if (active)
-            throw new ConflictException(
-                "Mechanic already has an active timer.");
-
-        var now = DateTime.UtcNow;
-
-        var session = new LaborSession
-        {
-            Id = Guid.NewGuid(),
-            WorkOrderId = request.WorkOrderId,
-            MechanicStaffId = mechanicId,
-            StartedAt = now,
-            Status = LaborSessionStatus.Active
-        };
-
-        wo.Status = WorkOrderStatus.InProgress;
-        wo.StartedAt ??= now;
-        wo.UpdatedAt = now;
-
-        _db.LaborSessions.Add(session);
-        await _db.SaveChangesAsync();
+        var session = await _mechanic.StartTimerAsync(mechanicId, request.WorkOrderId);
 
         return Ok(ApiResponse<object>.Ok(session, "Timer started."));
     }
@@ -207,29 +172,7 @@ public class MechanicController : ControllerBase
     {
         var mechanicId = await CurrentMechanicId();
 
-        await GetAssignedWorkOrder(mechanicId, request.WorkOrderId);
-
-        var session = await _db.LaborSessions
-            .Where(s =>
-                s.MechanicStaffId == mechanicId &&
-                s.WorkOrderId == request.WorkOrderId &&
-                (s.Status == LaborSessionStatus.Active ||
-                 s.Status == LaborSessionStatus.Paused))
-            .OrderByDescending(s => s.StartedAt)
-            .FirstOrDefaultAsync()
-            ?? throw new NotFoundException(
-                "No active labor session found.");
-
-        session.EndedAt = DateTime.UtcNow;
-        session.Status = LaborSessionStatus.Ended;
-
-        var totalSeconds =
-            (int)(session.EndedAt.Value - session.StartedAt).TotalSeconds
-            - session.PauseSeconds;
-
-        session.DurationSeconds = Math.Max(0, totalSeconds);
-
-        await _db.SaveChangesAsync();
+        var session = await _mechanic.EndTimerAsync(mechanicId, request.WorkOrderId);
 
         return Ok(ApiResponse<object>.Ok(session, "Timer ended."));
     }
@@ -257,31 +200,7 @@ public class MechanicController : ControllerBase
     public async Task<ActionResult<ApiResponse<object>>> AddDiagnostic(
         [FromBody] CreateDiagnosticRequest request)
     {
-        var mechanicId = await CurrentMechanicId();
-        var workOrder =
-            await GetAssignedWorkOrder(mechanicId, request.WorkOrderId);
-
-        if (workOrder.Status is WorkOrderStatus.Completed
-            or WorkOrderStatus.Cancelled)
-            throw new ConflictException(
-                "Diagnostics cannot be added to a completed or cancelled job.");
-
-        if (string.IsNullOrWhiteSpace(request.Finding))
-            throw new ValidationException("Finding is required.");
-
-        var item = new DiagnosticFinding
-        {
-            Id = Guid.NewGuid(),
-            WorkOrderId = request.WorkOrderId,
-            MechanicStaffId = mechanicId,
-            Finding = request.Finding.Trim(),
-            Severity = string.IsNullOrWhiteSpace(request.Severity)
-                ? null
-                : request.Severity.Trim()
-        };
-
-        _db.DiagnosticFindings.Add(item);
-        await _db.SaveChangesAsync();
+        var item = await _mechanic.AddDiagnosticAsync(await CurrentMechanicId(), request.WorkOrderId, request.Finding, request.Severity);
 
         return Ok(ApiResponse<object>.Ok(
             item,
@@ -292,31 +211,7 @@ public class MechanicController : ControllerBase
     public async Task<ActionResult<ApiResponse<object>>> AddRepair(
         [FromBody] CreateRepairRequest request)
     {
-        var mechanicId = await CurrentMechanicId();
-        var workOrder =
-            await GetAssignedWorkOrder(mechanicId, request.WorkOrderId);
-
-        if (workOrder.Status is WorkOrderStatus.Completed
-            or WorkOrderStatus.Cancelled)
-            throw new ConflictException(
-                "Repair actions cannot be added to a completed or cancelled job.");
-
-        if (string.IsNullOrWhiteSpace(request.Action))
-            throw new ValidationException("Repair action is required.");
-
-        var item = new RepairAction
-        {
-            Id = Guid.NewGuid(),
-            WorkOrderId = request.WorkOrderId,
-            MechanicStaffId = mechanicId,
-            Action = request.Action.Trim(),
-            Notes = string.IsNullOrWhiteSpace(request.Notes)
-                ? null
-                : request.Notes.Trim()
-        };
-
-        _db.RepairActions.Add(item);
-        await _db.SaveChangesAsync();
+        var item = await _mechanic.AddRepairAsync(await CurrentMechanicId(), request.WorkOrderId, request.Action, request.Notes);
 
         return Ok(ApiResponse<object>.Ok(
             item,
@@ -327,31 +222,7 @@ public class MechanicController : ControllerBase
     public async Task<ActionResult<ApiResponse<object>>> AddRecommendation(
         [FromBody] CreateRecommendationRequest request)
     {
-        var mechanicId = await CurrentMechanicId();
-        var workOrder =
-            await GetAssignedWorkOrder(mechanicId, request.WorkOrderId);
-
-        if (workOrder.Status is WorkOrderStatus.Completed
-            or WorkOrderStatus.Cancelled)
-            throw new ConflictException(
-                "Recommendations cannot be added to a completed or cancelled job.");
-
-        if (string.IsNullOrWhiteSpace(request.Recommendation))
-            throw new ValidationException("Recommendation is required.");
-
-        var item = new MechanicRecommendation
-        {
-            Id = Guid.NewGuid(),
-            WorkOrderId = request.WorkOrderId,
-            MechanicStaffId = mechanicId,
-            Recommendation = request.Recommendation.Trim(),
-            Priority = string.IsNullOrWhiteSpace(request.Priority)
-                ? null
-                : request.Priority.Trim()
-        };
-
-        _db.MechanicRecommendations.Add(item);
-        await _db.SaveChangesAsync();
+        var item = await _mechanic.AddRecommendationAsync(await CurrentMechanicId(), request.WorkOrderId, request.Recommendation, request.Priority);
 
         return Ok(ApiResponse<object>.Ok(
             item,
@@ -363,47 +234,7 @@ public class MechanicController : ControllerBase
         Guid workOrderId,
         [FromBody] UpdateJobStatusRequest request)
     {
-        var mechanicId = await CurrentMechanicId();
-        var workOrder =
-            await GetAssignedWorkOrder(mechanicId, workOrderId);
-
-        if (workOrder.Status == request.Status)
-            return Ok(ApiResponse<object>.Ok(
-                workOrder,
-                "Job status is already set to the requested value."));
-
-        var allowed = (workOrder.Status, request.Status) switch
-        {
-            (WorkOrderStatus.Assigned, WorkOrderStatus.InProgress) => true,
-            (WorkOrderStatus.InProgress, WorkOrderStatus.WaitingForParts) => true,
-            (WorkOrderStatus.WaitingForParts, WorkOrderStatus.InProgress) => true,
-            (WorkOrderStatus.InProgress, WorkOrderStatus.Completed) => true,
-            _ => false
-        };
-
-        if (!allowed)
-            throw new ConflictException(
-                $"Cannot change job status from {workOrder.Status} to {request.Status}.");
-
-        if (request.Status == WorkOrderStatus.Completed)
-            return await CompleteJobInternal(
-                mechanicId,
-                workOrder,
-                request.Notes);
-
-        var now = DateTime.UtcNow;
-
-        workOrder.Status = request.Status;
-
-        if (request.Status == WorkOrderStatus.InProgress)
-            workOrder.StartedAt ??= now;
-
-        if (!string.IsNullOrWhiteSpace(request.Notes))
-            workOrder.TechnicianNotes = request.Notes.Trim();
-
-        workOrder.UpdatedAt = now;
-
-        await _db.SaveChangesAsync();
+        var workOrder = await _mechanic.UpdateJobStatusAsync(await CurrentMechanicId(), workOrderId, request.Status, request.Notes);
 
         return Ok(ApiResponse<object>.Ok(
             workOrder,
@@ -414,18 +245,8 @@ public class MechanicController : ControllerBase
     public async Task<ActionResult<ApiResponse<object>>> CompleteJob(
         Guid workOrderId)
     {
-        var mechanicId = await CurrentMechanicId();
-        var workOrder =
-            await GetAssignedWorkOrder(mechanicId, workOrderId);
-
-        if (workOrder.Status != WorkOrderStatus.InProgress)
-            throw new ConflictException(
-                "Only an in-progress job can be completed.");
-
-        return await CompleteJobInternal(
-            mechanicId,
-            workOrder,
-            null);
+        var workOrder = await _mechanic.CompleteJobAsync(await CurrentMechanicId(), workOrderId);
+        return Ok(ApiResponse<object>.Ok(workOrder, "Job completed."));
     }
 
     private async Task<ActionResult<ApiResponse<object>>> CompleteJobInternal(
@@ -530,36 +351,7 @@ public class MechanicController : ControllerBase
     public async Task<ActionResult<ApiResponse<object>>> CreateRequisition(
         [FromBody] CreateRequisitionRequest request)
     {
-        var mechanicId = await CurrentMechanicId();
-
-        await GetAssignedWorkOrder(mechanicId, request.WorkOrderId);
-
-        if (request.QtyRequested <= 0)
-            throw new ValidationException(
-                "Quantity must be greater than zero.");
-
-        if (string.IsNullOrWhiteSpace(request.PartSpec))
-            throw new ValidationException(
-                "Part specification is required.");
-
-        var req = new PartRequisition
-        {
-            Id = Guid.NewGuid(),
-            WorkOrderId = request.WorkOrderId,
-            RequestedByStaffId = mechanicId,
-            PartId = request.PartId,
-            PartSpec = request.PartSpec.Trim(),
-            QtyRequested = request.QtyRequested,
-            Urgency = request.Urgency,
-            Reason = string.IsNullOrWhiteSpace(request.Reason)
-                ? null
-                : request.Reason.Trim(),
-            Status = RequisitionStatus.Pending,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        _db.PartRequisitions.Add(req);
-        await _db.SaveChangesAsync();
+        var req = await _mechanic.CreateRequisitionAsync(await CurrentMechanicId(), request.WorkOrderId, request.PartId, request.PartSpec, request.QtyRequested, request.Urgency, request.Reason);
 
         return Ok(ApiResponse<object>.Ok(
             req,

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ShiftDynamics.API.Infrastructure.Data;
+using ShiftDynamics.API.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -8,23 +7,16 @@ namespace ShiftDynamics.API.Controllers;
 [Route("api/database")]
 public class DatabaseController : ControllerBase
 {
-    private readonly ShiftDynamicsDbContext _dbContext;
+    private readonly IDatabaseService _database;
 
-    public DatabaseController(ShiftDynamicsDbContext dbContext)
+    public DatabaseController(IDatabaseService database)
     {
-        _dbContext = dbContext;
+        _database = database;
     }
 
     [HttpGet("health")]
-    public async Task<IActionResult> Health()
+    public async Task<IActionResult> Health(CancellationToken cancellationToken)
     {
-        var canConnect = await _dbContext.Database.CanConnectAsync();
-
-        return Ok(new
-        {
-            database = "shift_dynamics",
-            connected = canConnect,
-            timestamp = DateTime.UtcNow
-        });
+        return Ok(await _database.GetHealthAsync(cancellationToken));
     }
 }

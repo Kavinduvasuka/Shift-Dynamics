@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
-using ShiftDynamics.API.Infrastructure.Data;
+using ShiftDynamics.API.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -13,32 +12,15 @@ namespace ShiftDynamics.API.Controllers;
 [Authorize(Policy = "Storekeeper")]
 public class InventoryController : ControllerBase
 {
-    private readonly ShiftDynamicsDbContext _db;
+    private readonly IInventoryService _inventory;
 
-    public InventoryController(ShiftDynamicsDbContext db) => _db = db;
+    public InventoryController(IInventoryService inventory) => _inventory = inventory;
 
     [HttpGet]
-    public async Task<ActionResult<ApiResponse<object>>> List([FromQuery] string? search, [FromQuery] bool lowStockOnly = false)
+    public async Task<ActionResult<ApiResponse<object>>> List([FromQuery] string? search, [FromQuery] bool lowStockOnly = false, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
     {
-        var query = _db.InventoryItems
-            .AsNoTracking()
-            .Include(i => i.Part)
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            var s = search.Trim().ToLower();
-            query = query.Where(i =>
-                i.Part.Name.ToLower().Contains(s) ||
-                i.Part.PartNumber.ToLower().Contains(s) ||
-                (i.Part.Category != null && i.Part.Category.ToLower().Contains(s)));
-        }
-
-        if (lowStockOnly)
-            query = query.Where(i => i.OnHandQty <= i.ReorderLevel);
-
-        var items = await query
-            .OrderBy(i => i.Part.Name)
+        if (page < 1 || pageSize is < 1 or > 100) throw new ValidationException("Page must be at least 1 and page size must be between 1 and 100.");
+        var items = (await _inventory.ListAsync(search, lowStockOnly))
             .Select(i => new
             {
                 i.Id,
@@ -53,10 +35,10 @@ public class InventoryController : ControllerBase
                 i.Location,
                 IsLowStock = i.OnHandQty <= i.ReorderLevel,
                 i.UpdatedAt
-            })
-            .ToListAsync();
+            }).Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-        return Ok(ApiResponse<object>.Ok(items));
+        var total = (await _inventory.ListAsync(search, lowStockOnly)).Count;
+        return Ok(ApiResponse<object>.Ok(new PagedResult<object> { Items = items, Page = page, PageSize = pageSize, TotalCount = total }));
     }
 
     public record UpsertPartRequest(
@@ -66,37 +48,7 @@ public class InventoryController : ControllerBase
     [HttpPost("parts")]
     public async Task<ActionResult<ApiResponse<object>>> CreatePart([FromBody] UpsertPartRequest request)
     {
-        if (request.OnHandQty < 0 || request.ReorderLevel < 0 || request.UnitCost < 0) throw new ValidationException("Inventory quantities and cost cannot be negative.");
-        if (await _db.Parts.AnyAsync(p => p.PartNumber == request.PartNumber.Trim()))
-            throw new ConflictException("Part number already exists.");
-
-        var part = new Part
-        {
-            Id = Guid.NewGuid(),
-            PartNumber = request.PartNumber.Trim(),
-            Name = request.Name.Trim(),
-            Description = request.Description,
-            Category = request.Category,
-            Compatibility = request.Compatibility,
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-
-        var inventory = new InventoryItem
-        {
-            Id = Guid.NewGuid(),
-            PartId = part.Id,
-            OnHandQty = request.OnHandQty,
-            ReorderLevel = request.ReorderLevel,
-            UnitCost = request.UnitCost,
-            Location = request.Location,
-            UpdatedAt = DateTime.UtcNow
-        };
-
-        _db.Parts.Add(part);
-        _db.InventoryItems.Add(inventory);
-        await _db.SaveChangesAsync();
+        var (part, inventory) = await _inventory.CreatePartAsync(request.PartNumber, request.Name, request.Description, request.Category, request.Compatibility, request.OnHandQty, request.ReorderLevel, request.UnitCost, request.Location);
 
         return Ok(ApiResponse<object>.Ok(new { part, inventory }, "Part created."));
     }
@@ -104,18 +56,7 @@ public class InventoryController : ControllerBase
     [HttpGet("requisitions")]
     public async Task<ActionResult<ApiResponse<object>>> Requisitions([FromQuery] RequisitionStatus? status)
     {
-        var query = _db.PartRequisitions
-            .AsNoTracking()
-            .Include(r => r.WorkOrder)
-            .Include(r => r.RequestedBy)
-            .Include(r => r.Part)
-            .AsQueryable();
-
-        if (status.HasValue)
-            query = query.Where(r => r.Status == status.Value);
-
-        var items = await query.OrderByDescending(r => r.CreatedAt).ToListAsync();
-        return Ok(ApiResponse<object>.Ok(items));
+        return Ok(ApiResponse<object>.Ok(await _inventory.ListRequisitionsAsync(status)));
     }
 
     public record ReviewRequisitionRequest(bool Approve, string? Notes);
@@ -123,62 +64,14 @@ public class InventoryController : ControllerBase
     [HttpPost("requisitions/{id:guid}/review")]
     public async Task<ActionResult<ApiResponse<object>>> Review(Guid id, [FromBody] ReviewRequisitionRequest request)
     {
-        var req = await _db.PartRequisitions.FirstOrDefaultAsync(r => r.Id == id)
-            ?? throw new NotFoundException("Requisition not found.");
-
-        if (req.Status != RequisitionStatus.Pending)
-            throw new ConflictException("Requisition is not pending.");
-
-        req.Status = request.Approve ? RequisitionStatus.Approved : RequisitionStatus.Rejected;
-        req.ReviewNotes = request.Notes;
-        req.ReviewedAt = DateTime.UtcNow;
-        req.ReviewedByUserId = User.RequireUserId();
-
-        await _db.SaveChangesAsync();
+        var req = await _inventory.ReviewAsync(id, request.Approve, request.Notes, User.RequireUserId()) ?? throw new NotFoundException("Requisition not found.");
         return Ok(ApiResponse<object>.Ok(req, request.Approve ? "Approved." : "Rejected."));
     }
 
     [HttpPost("requisitions/{id:guid}/release")]
     public async Task<ActionResult<ApiResponse<object>>> Release(Guid id)
     {
-        await using var tx = await _db.Database.BeginTransactionAsync();
-
-        var req = await _db.PartRequisitions
-            .Include(r => r.Part)
-            .FirstOrDefaultAsync(r => r.Id == id)
-            ?? throw new NotFoundException("Requisition not found.");
-
-        if (req.Status != RequisitionStatus.Approved)
-            throw new ConflictException("Only approved requisitions can be released.");
-
-        if (req.PartId is null)
-            throw new ValidationException("Requisition has no linked part for stock release.");
-
-        var inventory = await _db.InventoryItems.FirstOrDefaultAsync(i => i.PartId == req.PartId)
-            ?? throw new NotFoundException("Inventory item not found.");
-
-        if (inventory.OnHandQty < req.QtyRequested)
-            throw new ConflictException($"Insufficient stock. On hand: {inventory.OnHandQty}, requested: {req.QtyRequested}.");
-
-        inventory.OnHandQty -= req.QtyRequested;
-        inventory.UpdatedAt = DateTime.UtcNow;
-        req.QtyReleased = req.QtyRequested;
-        req.Status = RequisitionStatus.Released;
-
-        _db.StockMovements.Add(new StockMovement
-        {
-            Id = Guid.NewGuid(),
-            PartId = req.PartId.Value,
-            RequisitionId = req.Id,
-            Type = StockMovementType.Release,
-            Quantity = req.QtyRequested,
-            PerformedByUserId = User.RequireUserId(),
-            Reference = req.Id.ToString(),
-            CreatedAt = DateTime.UtcNow
-        });
-
-        await _db.SaveChangesAsync();
-        await tx.CommitAsync();
+        var req = await _inventory.ReleaseAsync(id, User.RequireUserId()) ?? throw new NotFoundException("Requisition not found.");
 
         return Ok(ApiResponse<object>.Ok(req, "Stock released."));
     }

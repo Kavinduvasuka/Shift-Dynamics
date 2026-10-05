@@ -15,7 +15,7 @@ Example MySQL connection string:
 
 Run from backend/ShiftDynamics.API:
 
-    dotnet ef migrations add <MigrationName> --output-dir Infrastructure/Data/Migrations
+    dotnet ef migrations add <MigrationName> --output-dir Migrations
     dotnet ef database update
     dotnet ef migrations script --output migration.sql
     dotnet ef migrations remove
@@ -25,7 +25,7 @@ Run from backend/ShiftDynamics.API:
 
 1. Migration names should be descriptive.
 2. Never edit already-applied migration files. Create a new migration instead.
-3. Keep entity configurations in Infrastructure/Data/Configurations.
+3. Keep entity configurations in Data/Configurations.
 4. Prefer Fluent API configuration over DataAnnotations on domain entities.
 5. Keep MySQL-specific provider configuration in Program.cs.
 6. Do not commit production database credentials.

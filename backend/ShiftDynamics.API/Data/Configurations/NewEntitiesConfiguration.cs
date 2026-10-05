@@ -186,3 +186,64 @@ public class VendorProfileConfiguration : IEntityTypeConfiguration<VendorProfile
             .OnDelete(DeleteBehavior.SetNull);
     }
 }
+
+public class QuoteRequestConfiguration : IEntityTypeConfiguration<QuoteRequest>
+{
+    public void Configure(EntityTypeBuilder<QuoteRequest> builder)
+    {
+        builder.ToTable("quote_requests");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.RequestNumber).HasMaxLength(50).IsRequired();
+        builder.Property(x => x.PartDescription).HasMaxLength(500).IsRequired();
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+        builder.HasIndex(x => x.RequestNumber).IsUnique();
+        builder.HasOne(x => x.Part).WithMany().HasForeignKey(x => x.PartId).OnDelete(DeleteBehavior.SetNull);
+        builder.HasOne(x => x.PartRequisition).WithMany().HasForeignKey(x => x.PartRequisitionId).OnDelete(DeleteBehavior.SetNull);
+    }
+}
+
+public class VendorQuoteConfiguration : IEntityTypeConfiguration<VendorQuote>
+{
+    public void Configure(EntityTypeBuilder<VendorQuote> builder)
+    {
+        builder.ToTable("vendor_quotes");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.UnitPrice).HasPrecision(18, 2);
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+        builder.HasIndex(x => new { x.QuoteRequestId, x.VendorProfileId }).IsUnique();
+        builder.HasOne(x => x.QuoteRequest).WithMany(x => x.Quotes).HasForeignKey(x => x.QuoteRequestId);
+        builder.HasOne(x => x.VendorProfile).WithMany().HasForeignKey(x => x.VendorProfileId);
+    }
+}
+
+public class PurchaseOrderConfiguration : IEntityTypeConfiguration<PurchaseOrder>
+{
+    public void Configure(EntityTypeBuilder<PurchaseOrder> builder)
+    {
+        builder.ToTable("purchase_orders");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.PurchaseOrderNumber).HasMaxLength(50).IsRequired();
+        builder.Property(x => x.UnitPrice).HasPrecision(18, 2);
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+        builder.HasIndex(x => x.PurchaseOrderNumber).IsUnique();
+        builder.HasIndex(x => x.VendorQuoteId).IsUnique();
+        builder.HasOne(x => x.VendorQuote).WithMany().HasForeignKey(x => x.VendorQuoteId);
+        builder.HasOne(x => x.QuoteRequest).WithMany().HasForeignKey(x => x.QuoteRequestId);
+    }
+}
+
+public class ModificationRequestConfiguration : IEntityTypeConfiguration<ModificationRequest>
+{
+    public void Configure(EntityTypeBuilder<ModificationRequest> builder)
+    {
+        builder.ToTable("modification_requests");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.RequestType).HasMaxLength(100).IsRequired();
+        builder.Property(x => x.Description).HasMaxLength(2000).IsRequired();
+        builder.Property(x => x.AdvisorNotes).HasMaxLength(2000);
+        builder.Property(x => x.ProposedCost).HasPrecision(18, 2);
+        builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
+        builder.HasOne(x => x.Customer).WithMany().HasForeignKey(x => x.CustomerId);
+        builder.HasOne(x => x.Vehicle).WithMany().HasForeignKey(x => x.VehicleId);
+    }
+}

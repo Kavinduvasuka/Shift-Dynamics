@@ -17,13 +17,14 @@ public class ServicesController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult<ApiResponse<IEnumerable<Service>>>> GetAll([FromQuery] bool activeOnly = true)
+    public async Task<ActionResult<ApiResponse<object>>> GetAll([FromQuery] bool activeOnly = true, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
     {
+        if (page < 1 || pageSize is < 1 or > 100) throw new ValidationException("Page must be at least 1 and page size must be between 1 and 100.");
         var query = _db.Services.AsNoTracking().AsQueryable();
         if (activeOnly) query = query.Where(s => s.IsActive);
-
-        var items = await query.OrderBy(s => s.Name).ToListAsync();
-        return Ok(ApiResponse<IEnumerable<Service>>.Ok(items));
+        var total = await query.CountAsync();
+        var items = await query.OrderBy(s => s.Name).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        return Ok(ApiResponse<object>.Ok(new PagedResult<Service> { Items = items, Page = page, PageSize = pageSize, TotalCount = total }));
     }
 
     [HttpGet("{id:guid}")]

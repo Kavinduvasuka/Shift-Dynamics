@@ -1,10 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
-using ShiftDynamics.API.Infrastructure.Data;
+using ShiftDynamics.API.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -13,29 +12,16 @@ namespace ShiftDynamics.API.Controllers;
 [Authorize]
 public class WorkOrdersController : ControllerBase
 {
-    private readonly ShiftDynamicsDbContext _db;
+    private readonly IWorkOrderService _workOrders;
 
-    public WorkOrdersController(ShiftDynamicsDbContext db) => _db = db;
+    public WorkOrdersController(IWorkOrderService workOrders) => _workOrders = workOrders;
 
     [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<object>>>> GetAll(
         [FromQuery] WorkOrderStatus? status)
     {
-        var query = _db.WorkOrders
-            .AsNoTracking()
-            .Include(w => w.Customer)
-            .Include(w => w.Vehicle)
-            .Include(w => w.Service)
-            .AsQueryable();
-
-        if (User.IsInRole(SystemRole.Customer.ToString()))
-            query = query.Where(w => w.CustomerId == User.RequireCustomerId());
-
-        if (status.HasValue)
-            query = query.Where(w => w.Status == status.Value);
-
-        var items = await query
-            .OrderByDescending(w => w.CreatedAt)
+        var customerId = User.IsInRole(SystemRole.Customer.ToString()) ? User.RequireCustomerId() : (Guid?)null;
+        var items = (await _workOrders.ListAsync(customerId, status))
             .Select(w => new
             {
                 w.Id,
@@ -52,8 +38,7 @@ public class WorkOrdersController : ControllerBase
                 w.StartedAt,
                 w.CompletedAt,
                 w.CreatedAt
-            })
-            .ToListAsync();
+            }).ToList();
 
         return Ok(ApiResponse<object>.Ok(items));
     }
@@ -62,13 +47,7 @@ public class WorkOrdersController : ControllerBase
     public async Task<ActionResult<ApiResponse<object>>> GetById(Guid id)
     {
         var customerId = User.IsInRole(SystemRole.Customer.ToString()) ? User.RequireCustomerId() : (Guid?)null;
-        var w = await _db.WorkOrders
-            .AsNoTracking()
-            .Include(x => x.Customer)
-            .Include(x => x.Vehicle)
-            .Include(x => x.Service)
-            .Include(x => x.AssignedStaff)
-            .FirstOrDefaultAsync(x => x.Id == id && (!customerId.HasValue || x.CustomerId == customerId.Value))
+        var w = await _workOrders.GetByIdAsync(id, customerId)
             ?? throw new NotFoundException("Work order not found.");
 
         return Ok(ApiResponse<object>.Ok(w));
@@ -85,35 +64,7 @@ public class WorkOrdersController : ControllerBase
     [Authorize(Policy = "ServiceAdvisor")]
     public async Task<ActionResult<ApiResponse<object>>> Create([FromBody] CreateWorkOrderRequest request)
     {
-        var customerExists = await _db.Customers.AnyAsync(c => c.Id == request.CustomerId);
-        if (!customerExists) throw new NotFoundException("Customer not found.");
-
-        var vehicle = await _db.Vehicles.FirstOrDefaultAsync(v => v.Id == request.VehicleId)
-            ?? throw new NotFoundException("Vehicle not found.");
-
-        if (vehicle.CustomerId != request.CustomerId)
-            throw new ValidationException("Vehicle does not belong to the specified customer.");
-
-        if (!await _db.Services.AnyAsync(s => s.Id == request.ServiceId && s.IsActive))
-            throw new NotFoundException("Service not found or inactive.");
-
-        var count = await _db.WorkOrders.CountAsync() + 1;
-        var workOrder = new WorkOrder
-        {
-            Id = Guid.NewGuid(),
-            WorkOrderNumber = $"WO-{DateTime.UtcNow:yyyyMMdd}-{count:D4}",
-            CustomerId = request.CustomerId,
-            VehicleId = request.VehicleId,
-            ServiceId = request.ServiceId,
-            AppointmentId = request.AppointmentId,
-            Description = request.Description,
-            Status = WorkOrderStatus.Open,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-
-        _db.WorkOrders.Add(workOrder);
-        await _db.SaveChangesAsync();
+        var workOrder = await _workOrders.CreateAsync(request.CustomerId, request.VehicleId, request.ServiceId, request.AppointmentId, request.Description);
 
         return CreatedAtAction(nameof(GetById), new { id = workOrder.Id },
             ApiResponse<object>.Ok(workOrder, "Work order created."));
@@ -122,22 +73,11 @@ public class WorkOrdersController : ControllerBase
     public record UpdateStatusRequest(WorkOrderStatus Status, string? Notes);
 
     [HttpPatch("{id:guid}/status")]
-    [Authorize(Policy = "Staff")]
+    [Authorize(Policy = "ServiceAdvisor")]
     public async Task<ActionResult<ApiResponse<object>>> UpdateStatus(Guid id, [FromBody] UpdateStatusRequest request)
     {
-        var wo = await _db.WorkOrders.FirstOrDefaultAsync(w => w.Id == id)
+        var wo = await _workOrders.UpdateStatusAsync(id, request.Status, request.Notes)
             ?? throw new NotFoundException("Work order not found.");
-
-        wo.Status = request.Status;
-        if (!string.IsNullOrWhiteSpace(request.Notes))
-            wo.TechnicianNotes = request.Notes;
-        if (request.Status == WorkOrderStatus.InProgress && wo.StartedAt is null)
-            wo.StartedAt = DateTime.UtcNow;
-        if (request.Status == WorkOrderStatus.Completed)
-            wo.CompletedAt = DateTime.UtcNow;
-        wo.UpdatedAt = DateTime.UtcNow;
-
-        await _db.SaveChangesAsync();
         return Ok(ApiResponse<object>.Ok(wo, "Status updated."));
     }
 }

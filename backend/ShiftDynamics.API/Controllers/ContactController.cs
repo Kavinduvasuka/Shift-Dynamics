@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
-using ShiftDynamics.API.Infrastructure.Data;
+using ShiftDynamics.API.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace ShiftDynamics.API.Controllers;
@@ -12,9 +11,9 @@ namespace ShiftDynamics.API.Controllers;
 [Route("api/contact-inquiries")]
 public class ContactController : ControllerBase
 {
-    private readonly ShiftDynamicsDbContext _db;
+    private readonly IContactService _contact;
 
-    public ContactController(ShiftDynamicsDbContext db) => _db = db;
+    public ContactController(IContactService contact) => _contact = contact;
 
     public class CreateInquiryRequest
     {
@@ -30,21 +29,7 @@ public class ContactController : ControllerBase
     [AllowAnonymous]
     public async Task<ActionResult<ApiResponse<object>>> Create([FromBody] CreateInquiryRequest request)
     {
-        var inquiry = new ContactInquiry
-        {
-            Id = Guid.NewGuid(),
-            Name = request.Name.Trim(),
-            Email = request.Email.Trim().ToLowerInvariant(),
-            Phone = request.Phone,
-            Type = request.Type,
-            Subject = request.Subject.Trim(),
-            Message = request.Message.Trim(),
-            Status = InquiryStatus.New,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        _db.ContactInquiries.Add(inquiry);
-        await _db.SaveChangesAsync();
+        var inquiry = await _contact.CreateAsync(request.Name, request.Email, request.Phone, request.Type, request.Subject, request.Message);
 
         return Ok(ApiResponse<object>.Ok(new { inquiry.Id }, "Message received."));
     }
@@ -53,27 +38,14 @@ public class ContactController : ControllerBase
     [Authorize(Policy = "Manager")]
     public async Task<ActionResult<ApiResponse<object>>> List([FromQuery] InquiryStatus? status)
     {
-        var query = _db.ContactInquiries.AsNoTracking().AsQueryable();
-        if (status.HasValue) query = query.Where(i => i.Status == status.Value);
-
-        var items = await query.OrderByDescending(i => i.CreatedAt).ToListAsync();
-        return Ok(ApiResponse<object>.Ok(items));
+        return Ok(ApiResponse<object>.Ok(await _contact.ListAsync(status)));
     }
 
     [HttpPatch("{id:guid}/status")]
     [Authorize(Policy = "Manager")]
     public async Task<ActionResult<ApiResponse<object>>> UpdateStatus(Guid id, [FromQuery] InquiryStatus status)
     {
-        var inquiry = await _db.ContactInquiries.FirstOrDefaultAsync(i => i.Id == id)
-            ?? throw new NotFoundException("Inquiry not found.");
-
-        inquiry.Status = status;
-        if (status == InquiryStatus.Read && inquiry.ReadAt is null)
-            inquiry.ReadAt = DateTime.UtcNow;
-        if (status == InquiryStatus.Resolved)
-            inquiry.ResolvedAt = DateTime.UtcNow;
-
-        await _db.SaveChangesAsync();
+        var inquiry = await _contact.UpdateStatusAsync(id, status) ?? throw new NotFoundException("Inquiry not found.");
         return Ok(ApiResponse<object>.Ok(inquiry));
     }
 }

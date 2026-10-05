@@ -37,6 +37,10 @@ public class ShiftDynamicsDbContext : DbContext
     public DbSet<DiagnosticFinding> DiagnosticFindings => Set<DiagnosticFinding>();
     public DbSet<RepairAction> RepairActions => Set<RepairAction>();
     public DbSet<MechanicRecommendation> MechanicRecommendations => Set<MechanicRecommendation>();
+    public DbSet<QuoteRequest> QuoteRequests => Set<QuoteRequest>();
+    public DbSet<VendorQuote> VendorQuotes => Set<VendorQuote>();
+    public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+    public DbSet<ModificationRequest> ModificationRequests => Set<ModificationRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
