@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -40,3 +40,4 @@ public class InvoicesController : ControllerBase
         return Ok(ApiResponse<object>.Ok(invoice, "Invoice approved and issued."));
     }
 }
+

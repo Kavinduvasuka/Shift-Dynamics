@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
-using ShiftDynamics.API.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -20,3 +20,4 @@ public class DatabaseController : ControllerBase
         return Ok(await _database.GetHealthAsync(cancellationToken));
     }
 }
+

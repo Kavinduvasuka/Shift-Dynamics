@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -217,3 +217,4 @@ public class ManagerController : ControllerBase
         return Ok(ApiResponse<object>.Ok(await _manager.GetMechanicsAsync()));
     }
 }
+

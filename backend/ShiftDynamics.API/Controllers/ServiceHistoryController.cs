@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -17,3 +17,4 @@ public class ServiceHistoryController : ControllerBase
     public async Task<ActionResult<ApiResponse<object>>> List([FromQuery] Guid? vehicleId) =>
         Ok(ApiResponse<object>.Ok(await _history.GetForCustomerAsync(User.RequireCustomerId(), vehicleId)));
 }
+

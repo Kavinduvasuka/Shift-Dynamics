@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ShiftDynamics.API.Infrastructure.Data;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.Interfaces;
 using ShiftDynamics.API.Middleware;
-using ShiftDynamics.API.Services;
+using ShiftDynamics.API.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -162,4 +162,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
+
 

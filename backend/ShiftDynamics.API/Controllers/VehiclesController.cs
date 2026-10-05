@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
-using ShiftDynamics.API.DTOs.Vehicles;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Vehicles;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -54,3 +54,4 @@ public class VehiclesController : ControllerBase
         return await _vehicles.DeleteAsync(id, CustomerId) ? NoContent() : NotFound();
     }
 }
+

@@ -1,9 +1,9 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -40,3 +40,4 @@ public class ModificationRequestsController : ControllerBase
         return item is null ? NotFound() : Ok(ApiResponse<object>.Ok(item));
     }
 }
+

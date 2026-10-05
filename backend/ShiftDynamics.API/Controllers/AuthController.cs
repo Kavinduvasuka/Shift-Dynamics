@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
-using ShiftDynamics.API.DTOs.Auth;
+using ShiftDynamics.API.Application.DTOs.Auth;
 using ShiftDynamics.API.Infrastructure.Data;
-using ShiftDynamics.API.Services;
+using ShiftDynamics.API.Application.Services;
 using System.Security.Claims;
 
 namespace ShiftDynamics.API.Controllers;
@@ -46,7 +46,6 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<ApiResponse<AuthResponse>>> Me()
     {
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
-            ?? User.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? User.FindFirstValue("sub");
 
         if (!Guid.TryParse(userIdClaim, out var userId))
@@ -94,3 +93,4 @@ public class AuthController : ControllerBase
         return Ok(ApiResponse.Ok("Logged out."));
     }
 }
+

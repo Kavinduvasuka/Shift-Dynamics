@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -76,3 +76,4 @@ public class InventoryController : ControllerBase
         return Ok(ApiResponse<object>.Ok(req, "Stock released."));
     }
 }
+

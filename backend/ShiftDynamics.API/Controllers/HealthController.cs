@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
-using ShiftDynamics.API.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -17,7 +17,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// Basic liveness probe – always returns 200 if the process is running.
+    /// Basic liveness probe â€“ always returns 200 if the process is running.
     /// </summary>
     [HttpGet]
     public IActionResult Get()
@@ -26,7 +26,7 @@ public class HealthController : ControllerBase
     }
 
     /// <summary>
-    /// Readiness probe – checks database connectivity.
+    /// Readiness probe â€“ checks database connectivity.
     /// </summary>
     [HttpGet("ready")]
     public async Task<IActionResult> Ready(CancellationToken cancellationToken)
@@ -35,3 +35,4 @@ public class HealthController : ControllerBase
         return (string)payload.GetType().GetProperty("status")!.GetValue(payload)! == "ready" ? Ok(payload) : StatusCode(StatusCodes.Status503ServiceUnavailable, payload);
     }
 }
+

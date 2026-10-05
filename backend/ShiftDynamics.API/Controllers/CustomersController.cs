@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
-using ShiftDynamics.API.DTOs.Customers;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Customers;
+using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Controllers;
 [ApiController]
@@ -21,3 +21,4 @@ public class CustomersController : ControllerBase
      if (!User.IsInRole(SystemRole.ServiceAdvisor.ToString()) && !User.IsInRole(SystemRole.Manager.ToString()) && !User.IsInRole(SystemRole.Admin.ToString())) throw new ForbiddenException();
  }
 }
+

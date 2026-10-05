@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
-using ShiftDynamics.API.Interfaces;
+using ShiftDynamics.API.Application.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
@@ -116,3 +116,4 @@ public class VendorsController : ControllerBase
         return Ok(ApiResponse<object>.Ok(profile, "Vendor status updated."));
     }
 }
+
