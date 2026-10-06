@@ -5,6 +5,7 @@ using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Mechanic;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -154,8 +155,6 @@ public class MechanicController : ControllerBase
         }));
     }
 
-    public record TimerActionRequest(Guid WorkOrderId);
-
     [HttpPost("timer/start")]
     public async Task<ActionResult<ApiResponse<object>>> StartTimer(
         [FromBody] TimerActionRequest request)
@@ -176,25 +175,6 @@ public class MechanicController : ControllerBase
 
         return Ok(ApiResponse<object>.Ok(session, "Timer ended."));
     }
-
-    public record CreateDiagnosticRequest(
-        Guid WorkOrderId,
-        string Finding,
-        string? Severity);
-
-    public record CreateRepairRequest(
-        Guid WorkOrderId,
-        string Action,
-        string? Notes);
-
-    public record CreateRecommendationRequest(
-        Guid WorkOrderId,
-        string Recommendation,
-        string? Priority);
-
-    public record UpdateJobStatusRequest(
-        WorkOrderStatus Status,
-        string? Notes);
 
     [HttpPost("diagnostics")]
     public async Task<ActionResult<ApiResponse<object>>> AddDiagnostic(
@@ -338,14 +318,6 @@ public class MechanicController : ControllerBase
 
         return Ok(ApiResponse<object>.Ok(jobs));
     }
-
-    public record CreateRequisitionRequest(
-        Guid WorkOrderId,
-        Guid? PartId,
-        string PartSpec,
-        int QtyRequested,
-        RequisitionUrgency Urgency,
-        string? Reason);
 
     [HttpPost("requisitions")]
     public async Task<ActionResult<ApiResponse<object>>> CreateRequisition(

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Invoices;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -21,8 +22,6 @@ public class InvoicesController : ControllerBase
         var customerId = User.IsInRole(SystemRole.Customer.ToString()) ? User.RequireCustomerId() : (Guid?)null;
         return Ok(ApiResponse<object>.Ok(await _invoices.ListAsync(customerId, status)));
     }
-
-    public record CreateInvoiceRequest(Guid WorkOrderId, Guid? EstimateId, decimal LaborCost, decimal PartsCost, decimal TaxAmount = 0, decimal DiscountAmount = 0, string? Notes = null);
 
     [HttpPost]
     [Authorize(Policy = "ServiceAdvisor")]

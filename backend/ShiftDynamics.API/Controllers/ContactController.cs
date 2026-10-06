@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
-using System.ComponentModel.DataAnnotations;
+using ShiftDynamics.API.Application.DTOs.Contact;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -14,16 +14,6 @@ public class ContactController : ControllerBase
     private readonly IContactService _contact;
 
     public ContactController(IContactService contact) => _contact = contact;
-
-    public class CreateInquiryRequest
-    {
-        [Required, StringLength(150)] public string Name { get; set; } = string.Empty;
-        [Required, EmailAddress] public string Email { get; set; } = string.Empty;
-        [StringLength(30)] public string? Phone { get; set; }
-        [StringLength(50)] public string? Type { get; set; }
-        [Required, StringLength(300)] public string Subject { get; set; } = string.Empty;
-        [Required, StringLength(4000)] public string Message { get; set; } = string.Empty;
-    }
 
     [HttpPost]
     [AllowAnonymous]

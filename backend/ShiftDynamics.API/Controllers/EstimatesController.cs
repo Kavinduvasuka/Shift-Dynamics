@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Estimates;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -22,10 +23,6 @@ public class EstimatesController : ControllerBase
         return Ok(ApiResponse<object>.Ok(await _estimates.ListAsync(customerId, workOrderId, status)));
     }
 
-    public record CreateEstimateRequest(
-        Guid WorkOrderId, decimal LaborCost, decimal PartsCost,
-        decimal TaxAmount = 0, decimal DiscountAmount = 0, string? Notes = null);
-
     [HttpPost]
     [Authorize(Policy = "ServiceAdvisor")]
     public async Task<ActionResult<ApiResponse<object>>> Create([FromBody] CreateEstimateRequest request)
@@ -41,8 +38,6 @@ public class EstimatesController : ControllerBase
         var estimate = await _estimates.SendAsync(id) ?? throw new NotFoundException("Estimate not found.");
         return Ok(ApiResponse<object>.Ok(estimate, "Estimate sent to customer."));
     }
-
-    public record DecisionRequest(bool Approve, string? Comment);
 
     [HttpPost("{id:guid}/decision")]
     [Authorize(Policy = "Customer")]

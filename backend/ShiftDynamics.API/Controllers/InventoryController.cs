@@ -4,6 +4,7 @@ using ShiftDynamics.API.Common;
 using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Inventory;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -41,10 +42,6 @@ public class InventoryController : ControllerBase
         return Ok(ApiResponse<object>.Ok(new PagedResult<object> { Items = items, Page = page, PageSize = pageSize, TotalCount = total }));
     }
 
-    public record UpsertPartRequest(
-        string PartNumber, string Name, string? Description, string? Category,
-        string? Compatibility, int OnHandQty, int ReorderLevel, decimal UnitCost, string? Location);
-
     [HttpPost("parts")]
     public async Task<ActionResult<ApiResponse<object>>> CreatePart([FromBody] UpsertPartRequest request)
     {
@@ -58,8 +55,6 @@ public class InventoryController : ControllerBase
     {
         return Ok(ApiResponse<object>.Ok(await _inventory.ListRequisitionsAsync(status)));
     }
-
-    public record ReviewRequisitionRequest(bool Approve, string? Notes);
 
     [HttpPost("requisitions/{id:guid}/review")]
     public async Task<ActionResult<ApiResponse<object>>> Review(Guid id, [FromBody] ReviewRequisitionRequest request)

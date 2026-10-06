@@ -1,7 +1,9 @@
 ﻿namespace ShiftDynamics.API.Application.Interfaces;
 
+using ShiftDynamics.API.Application.DTOs.Reports;
+
 public interface IReportService
 {
-    Task<object> GetOperationalSummaryAsync(DateTime? from, DateTime? to);
+    Task<OperationalSummaryResponse> GetOperationalSummaryAsync(DateTime? from, DateTime? to);
 }
 

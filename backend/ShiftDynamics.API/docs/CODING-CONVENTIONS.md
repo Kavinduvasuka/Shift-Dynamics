@@ -4,16 +4,19 @@
 
 ```
 ShiftDynamics.API/
+├── Application/
+│   ├── DTOs/                # Feature-grouped request / response contracts
+│   ├── Interfaces/          # Application service contracts
+│   └── Services/            # Business workflows
 ├── Common/                 # Shared response models, exceptions
-├── Controllers/            # HTTP endpoints only – thin
-├── DTOs/                   # Request / response contracts (with DataAnnotations)
+├── Controllers/            # HTTP endpoints
 ├── Domain/
 │   └── Entities/           # Domain models + enums
 ├── Infrastructure/
 │   └── Data/
 │       ├── Configurations/ # EF Fluent API configurations
-│       ├── Migrations/
 │       └── ShiftDynamicsDbContext.cs
+│   └── Migrations/
 ├── Middleware/             # Cross-cutting (exception handling, etc.)
 ├── docs/                   # Backend-specific documentation
 └── Program.cs
@@ -21,7 +24,7 @@ ShiftDynamics.API/
 
 ## Rules
 
-1. **Controllers stay thin** – validation, mapping, and business rules should eventually move to application services (future Application layer).
+1. **Controllers stay thin** – keep business rules in application services and request/response contracts in feature DTO folders.
 2. **DTOs carry DataAnnotations** for request validation. Domain entities do not use DataAnnotations for validation.
 3. **Use the standard error model** (`ApiError` / `AppException` hierarchy) so clients always receive consistent JSON.
 4. **Never commit secrets** – connection strings, JWT keys, email credentials go in User Secrets / environment variables / vault.

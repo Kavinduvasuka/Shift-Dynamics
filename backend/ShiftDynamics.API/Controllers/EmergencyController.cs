@@ -4,7 +4,7 @@ using ShiftDynamics.API.Common;
 using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
-using System.ComponentModel.DataAnnotations;
+using ShiftDynamics.API.Application.DTOs.Emergency;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -25,18 +25,6 @@ public class EmergencyController : ControllerBase
         [FromQuery] double radiusKm = 25)
     {
         return Ok(ApiResponse<object>.Ok(await _emergency.FindProvidersAsync(lat, lng, category, radiusKm)));
-    }
-
-    public class CreateEmergencyRequest
-    {
-        public Guid? CustomerId { get; set; }
-        public Guid? VehicleId { get; set; }
-        [Required] public string Location { get; set; } = string.Empty;
-        public decimal? Latitude { get; set; }
-        public decimal? Longitude { get; set; }
-        [Required] public string ProblemDescription { get; set; } = string.Empty;
-        [Required] public string ContactName { get; set; } = string.Empty;
-        [Required] public string ContactPhone { get; set; } = string.Empty;
     }
 
     [HttpPost("requests")]

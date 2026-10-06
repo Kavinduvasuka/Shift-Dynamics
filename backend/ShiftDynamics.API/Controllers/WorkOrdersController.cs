@@ -4,6 +4,7 @@ using ShiftDynamics.API.Common;
 using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.WorkOrders;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -53,13 +54,6 @@ public class WorkOrdersController : ControllerBase
         return Ok(ApiResponse<object>.Ok(w));
     }
 
-    public record CreateWorkOrderRequest(
-        Guid CustomerId,
-        Guid VehicleId,
-        Guid ServiceId,
-        Guid? AppointmentId,
-        string? Description);
-
     [HttpPost]
     [Authorize(Policy = "ServiceAdvisor")]
     public async Task<ActionResult<ApiResponse<object>>> Create([FromBody] CreateWorkOrderRequest request)
@@ -69,8 +63,6 @@ public class WorkOrdersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = workOrder.Id },
             ApiResponse<object>.Ok(workOrder, "Work order created."));
     }
-
-    public record UpdateStatusRequest(WorkOrderStatus Status, string? Notes);
 
     [HttpPatch("{id:guid}/status")]
     [Authorize(Policy = "ServiceAdvisor")]

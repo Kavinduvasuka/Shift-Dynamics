@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Payments;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -14,8 +15,6 @@ public class PaymentsController : ControllerBase
     private readonly IPaymentService _payments;
 
     public PaymentsController(IPaymentService payments) => _payments = payments;
-
-    public record CreatePaymentRequest(Guid InvoiceId, decimal Amount, PaymentMethod Method, string? TransactionReference, string? Notes);
 
     [HttpPost]
     [Authorize(Policy = "Customer")]

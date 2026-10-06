@@ -5,6 +5,7 @@ using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Vendors;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
@@ -18,17 +19,6 @@ public class VendorsController : ControllerBase
     private readonly IVendorService _vendors;
 
     public VendorsController(ShiftDynamicsDbContext db, IVendorService vendors) { _db = db; _vendors = vendors; }
-
-    public class VendorRegisterRequest
-    {
-        [Required, StringLength(200)] public string BusinessName { get; set; } = string.Empty;
-        [Required, StringLength(150)] public string ContactPerson { get; set; } = string.Empty;
-        [Required, StringLength(30)] public string Mobile { get; set; } = string.Empty;
-        [Required, EmailAddress] public string Email { get; set; } = string.Empty;
-        [StringLength(500)] public string? Address { get; set; }
-        [StringLength(200)] public string? Specialization { get; set; }
-        [Required, StringLength(100, MinimumLength = 8)] public string Password { get; set; } = string.Empty;
-    }
 
     [HttpPost("registrations")]
     [AllowAnonymous]
@@ -52,8 +42,6 @@ public class VendorsController : ControllerBase
 
         return Ok(ApiResponse<object>.Ok(items));
     }
-
-    public record ReviewVendorRequest(bool Approve, string? RejectionReason);
 
     [HttpPost("registrations/{id:guid}/review")]
     [Authorize(Policy = "Manager")]
@@ -103,8 +91,6 @@ public class VendorsController : ControllerBase
 
         return Ok(ApiResponse<object>.Ok(items));
     }
-
-    public record UpdateVendorStatusRequest(VendorApprovalStatus Status);
 
     /// <summary>Manager: suspend / reactivate a vendor profile.</summary>
     [HttpPatch("profiles/{id:guid}/status")]

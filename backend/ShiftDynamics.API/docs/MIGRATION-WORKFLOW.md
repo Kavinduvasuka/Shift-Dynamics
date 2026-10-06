@@ -1,49 +1,41 @@
-# Shift Dynamics - Database Migration Workflow
+# Shift Dynamics SQL Server Migration Workflow
 
 ## Prerequisites
 
 - .NET 10 SDK
-- MySQL 8.x running locally (or reachable via connection string)
-- Pomelo.EntityFrameworkCore.MySql
-- Connection string configured via appsettings.Development.json, User Secrets, or the ConnectionStrings__DefaultConnection environment variable.
+- SQL Server reachable through `ConnectionStrings:DefaultConnection`
+- EF Core CLI matching the project EF Core 10 packages
 
-Example MySQL connection string:
-
-    Server=localhost;Port=3306;Database=shift_dynamics;User=root;Password=...
+Configure the connection string through User Secrets, environment variables, or a local development settings file. Do not commit credentials.
 
 ## Common commands
 
-Run from backend/ShiftDynamics.API:
+Run from `backend/ShiftDynamics.API`:
 
-    dotnet ef migrations add <MigrationName> --output-dir Migrations
-    dotnet ef database update
-    dotnet ef migrations script --output migration.sql
-    dotnet ef migrations remove
-    dotnet ef database drop --force
+```powershell
+dotnet ef migrations add <MigrationName> --output-dir Infrastructure/Migrations
+dotnet ef database update
+dotnet ef migrations script --output migration.sql
+dotnet ef migrations remove
+```
 
-## Conventions
+Review generated migrations and scripts before applying them to a shared or production database. Never edit a migration that has already been applied.
 
-1. Migration names should be descriptive.
-2. Never edit already-applied migration files. Create a new migration instead.
-3. Keep entity configurations in Data/Configurations.
-4. Prefer Fluent API configuration over DataAnnotations on domain entities.
-5. Keep MySQL-specific provider configuration in Program.cs.
-6. Do not commit production database credentials.
+## Initial setup
 
-## Initial setup for a new developer
+```powershell
+cd backend/ShiftDynamics.API
+dotnet restore
+dotnet ef database update
+dotnet run
+```
 
-    cd backend/ShiftDynamics.API
-    dotnet restore
-    dotnet ef database update
-    dotnet run
+Swagger is available at the HTTPS URL printed by the app, commonly `https://localhost:7249/swagger`.
 
-Swagger UI will be available at https://localhost:7249/swagger, or the HTTP/HTTPS port shown in the console.
+## Current provider
 
-## Database Provider
-
-- Database: MySQL 8.x
-- EF Core: 9.0.9
-- Provider: Pomelo.EntityFrameworkCore.MySql 9.0.0
-- Target Framework: .NET 10
-
-The current baseline migration is InitialMySqlSchema.
+- Database: Microsoft SQL Server
+- EF Core: 10.0
+- Provider: `Microsoft.EntityFrameworkCore.SqlServer`
+- Target framework: .NET 10
+- Migration directory: `Infrastructure/Migrations`

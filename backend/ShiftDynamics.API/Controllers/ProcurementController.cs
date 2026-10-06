@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Procurement;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -14,11 +15,6 @@ public class ProcurementController : ControllerBase
 {
     private readonly IProcurementService _procurement;
     public ProcurementController(IProcurementService procurement) => _procurement = procurement;
-    public record CreateQuoteRequestDto(Guid? PartId, Guid? PartRequisitionId, [Required, StringLength(500)] string PartDescription, [Range(1, int.MaxValue)] int Quantity, DateTime RequiredBy);
-    public record SubmitQuoteDto([Range(typeof(decimal), "0.01", "999999999")] decimal UnitPrice, [Range(1, int.MaxValue)] int AvailableQuantity, [Range(0, 365)] int DeliveryDays, string? Notes);
-    public record DeliveryUpdate(DateTime? ExpectedDeliveryAt);
-    public record ReceiveStock([Range(1, int.MaxValue)] int QuantityReceived);
-
     [HttpPost("quote-requests")]
     [Authorize(Policy = "Storekeeper")]
     public async Task<ActionResult<ApiResponse<object>>> CreateQuoteRequest(CreateQuoteRequestDto request)

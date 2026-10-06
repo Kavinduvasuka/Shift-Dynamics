@@ -6,6 +6,7 @@ using System.Security.Claims;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.Manager;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -192,16 +193,12 @@ public class ManagerController : ControllerBase
             pendingInvoiceApprovals
         }));
     }
-    public record UpsertBayRequest(string Name, BayStatus Status, string? Notes);
-
     [HttpPost("bays")]
     public async Task<ActionResult<ApiResponse<object>>> CreateBay([FromBody] UpsertBayRequest request)
     {
         var bay = await _manager.CreateBayAsync(request.Name, request.Status, request.Notes);
         return Ok(ApiResponse<object>.Ok(bay));
     }
-
-    public record AssignJobRequest(Guid WorkOrderId, Guid MechanicStaffId, Guid? BayId);
 
     [HttpPost("assignments")]
     public async Task<ActionResult<ApiResponse<object>>> Assign([FromBody] AssignJobRequest request)

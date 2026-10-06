@@ -5,6 +5,8 @@ using ShiftDynamics.API.Application.Interfaces;
 
 namespace ShiftDynamics.API.Application.Services;
 
+using ShiftDynamics.API.Application.DTOs.Notifications;
+
 public class NotificationService : INotificationService
 {
     private readonly ShiftDynamicsDbContext _db;
@@ -16,8 +18,12 @@ public class NotificationService : INotificationService
         await _db.SaveChangesAsync();
     }
 
-    public async Task<IReadOnlyList<Notification>> GetForUserAsync(Guid userId, bool unreadOnly) =>
-        await _db.Notifications.AsNoTracking().Where(n => n.UserId == userId && (!unreadOnly || !n.IsRead)).OrderByDescending(n => n.CreatedAt).ToListAsync();
+    public async Task<IReadOnlyList<NotificationResponse>> GetForUserAsync(Guid userId, bool unreadOnly) =>
+        await _db.Notifications.AsNoTracking()
+            .Where(n => n.UserId == userId && (!unreadOnly || !n.IsRead))
+            .OrderByDescending(n => n.CreatedAt)
+            .Select(n => new NotificationResponse(n.Id, n.Type, n.Title, n.Body, n.EntityType, n.EntityId, n.IsRead, n.CreatedAt))
+            .ToListAsync();
 
     public async Task<bool> MarkReadAsync(Guid id, Guid userId)
     {

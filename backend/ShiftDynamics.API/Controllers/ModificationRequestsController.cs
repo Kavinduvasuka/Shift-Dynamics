@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.Interfaces;
+using ShiftDynamics.API.Application.DTOs.ModificationRequests;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -14,9 +15,6 @@ public class ModificationRequestsController : ControllerBase
 {
     private readonly IModificationRequestService _requests;
     public ModificationRequestsController(IModificationRequestService requests) => _requests = requests;
-    public record CreateRequest(Guid VehicleId, [Required, StringLength(100)] string RequestType, [Required, StringLength(2000)] string Description);
-    public record ReviewRequest(ModificationRequestStatus Status, decimal? ProposedCost, string? AdvisorNotes);
-
     [HttpPost]
     [Authorize(Policy = "Customer")]
     public async Task<ActionResult<ApiResponse<object>>> Create(CreateRequest request)

@@ -78,7 +78,6 @@ Branch: `integration/full-stack`
 ```bash
 cd backend/ShiftDynamics.API
 dotnet restore
-dotnet ef migrations add FullWorkflowExpansion --output-dir Migrations
 dotnet ef database update
 dotnet run
 ```

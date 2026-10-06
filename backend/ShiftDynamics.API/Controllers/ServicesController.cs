@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
+using ShiftDynamics.API.Application.DTOs.Services;
 
 namespace ShiftDynamics.API.Controllers;
 
@@ -35,8 +36,6 @@ public class ServicesController : ControllerBase
             ?? throw new NotFoundException("Service not found.");
         return Ok(ApiResponse<Service>.Ok(service));
     }
-
-    public record UpsertServiceRequest(string Name, string? Description, decimal BasePrice, int EstimatedDurationMinutes, bool IsActive = true);
 
     [HttpPost]
     [Authorize(Policy = "Manager")]
