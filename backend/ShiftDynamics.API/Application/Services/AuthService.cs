@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Application.DTOs.Auth;
 using ShiftDynamics.API.Infrastructure.Data;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net;
+using System.Net.Mail;
 
 namespace ShiftDynamics.API.Application.Services;
 
@@ -13,21 +15,29 @@ public class AuthService : IAuthService
     private readonly ShiftDynamicsDbContext _db;
     private readonly ITokenService _tokenService;
     private readonly ILogger<AuthService> _logger;
+    private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _environment;
 
     public AuthService(
         ShiftDynamicsDbContext db,
         ITokenService tokenService,
-        ILogger<AuthService> logger)
+        ILogger<AuthService> logger, IConfiguration configuration, IHostEnvironment environment)
     {
         _db = db;
         _tokenService = tokenService;
         _logger = logger;
+        _configuration = configuration;
+        _environment = environment;
     }
 
     public async Task<AuthResponse> RegisterCustomerAsync(RegisterRequest request)
     {
         var email = request.Email.Trim().ToLowerInvariant();
         var phone = request.Phone.Trim();
+        var fullName = request.FullName.Trim();
+        var names = fullName.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (email.Length > 191 || names.Length == 0 || names[0].Length > 100 || (names.Length > 1 && names[1].Length > 100))
+            throw new ValidationException("Email must be at most 191 characters and each name at most 100 characters.");
 
         if (await _db.Users.AnyAsync(u => u.Email == email))
             throw new ConflictException("An account with this email already exists.");
@@ -38,10 +48,8 @@ public class AuthService : IAuthService
         var customer = new Customer
         {
             Id = Guid.NewGuid(),
-            FirstName = request.FullName.Split(' ', 2)[0],
-            LastName = request.FullName.Contains(' ')
-                ? request.FullName[(request.FullName.IndexOf(' ') + 1)..]
-                : string.Empty,
+            FirstName = names[0],
+            LastName = names.Length > 1 ? names[1] : string.Empty,
             Email = email,
             Phone = phone,
             Address = request.Address?.Trim() ?? string.Empty,
@@ -120,10 +128,31 @@ public class AuthService : IAuthService
         _db.PasswordResetTokens.Add(reset);
         await _db.SaveChangesAsync();
 
-        _logger.LogInformation(
-            "Password reset requested for user {UserId}; token expires at {Expires}",
-            user.Id,
-            reset.ExpiresAt);
+        var frontendUrl = _configuration["Frontend:BaseUrl"] ?? "http://127.0.0.1:5500";
+        var link = $"{frontendUrl.TrimEnd('/')}/reset-password.html?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(rawToken)}";
+        var host = _configuration["Smtp:Host"];
+        var from = _configuration["Smtp:From"];
+        if (string.IsNullOrWhiteSpace(host) || string.IsNullOrWhiteSpace(from))
+        {
+            if (_environment.IsDevelopment()) _logger.LogInformation("Development password reset link: {ResetLink}", link);
+            else _logger.LogError("Password reset email could not be sent: configure Smtp:Host and Smtp:From.");
+            return;
+        }
+        try
+        {
+            using var client = new SmtpClient(host, _configuration.GetValue<int?>("Smtp:Port") ?? 587)
+            { EnableSsl = _configuration.GetValue<bool?>("Smtp:EnableSsl") ?? true };
+            var username = _configuration["Smtp:Username"];
+            if (!string.IsNullOrWhiteSpace(username)) client.Credentials = new NetworkCredential(username, _configuration["Smtp:Password"]);
+            using var mail = new MailMessage(from, email, "Reset your Shift Dynamics password",
+                $"Use this link to reset your password within one hour:\n{link}\nIf you did not request this, ignore this email.");
+            await client.SendMailAsync(mail);
+        }
+        catch (Exception error)
+        {
+            // The public endpoint must give the same response for known and unknown accounts.
+            _logger.LogError(error, "Password reset email delivery failed for user {UserId}.", user.Id);
+        }
     }
 
     public async Task ResetPasswordAsync(ResetPasswordRequest request)
@@ -166,4 +195,3 @@ public class AuthService : IAuthService
         ExpiresAt = expires
     };
 }
-

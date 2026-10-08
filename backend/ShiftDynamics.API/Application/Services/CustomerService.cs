@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Application.DTOs.Customers;
 using ShiftDynamics.API.Infrastructure.Data;
 using ShiftDynamics.API.Application.Interfaces;
@@ -27,15 +27,51 @@ public class CustomerService : ICustomerService
         var customer = await _db.Customers.FindAsync(id);
         if (customer is null) return false;
 
-        customer.FirstName = request.FirstName.Trim();
-        customer.LastName = request.LastName.Trim();
-        customer.Phone = request.Phone.Trim();
-        customer.Email = request.Email.Trim();
-        customer.Address = request.Address.Trim();
+        var user = await _db.Users
+            .FirstOrDefaultAsync(u => u.CustomerId == id);
+
+        if (user is null)
+            throw new ShiftDynamics.API.Common.ConflictException(
+                "This customer has no linked login account.");
+
+        var firstName = request.FirstName.Trim();
+        var lastName = request.LastName.Trim();
+        var fullName = (firstName + " " + lastName).Trim();
+        var email = request.Email.Trim().ToLowerInvariant();
+        var phone = request.Phone.Trim();
+
+        if (fullName.Length > 150)
+            throw new ShiftDynamics.API.Common.ValidationException(
+                "Full name cannot exceed 150 characters.");
+
+        if (email.Length > 191)
+            throw new ShiftDynamics.API.Common.ValidationException(
+                "Email cannot exceed 191 characters.");
+
+        if (await _db.Users.AnyAsync(u =>
+            u.Id != user.Id && u.Email == email))
+            throw new ShiftDynamics.API.Common.ConflictException(
+                "This email is already used by another account.");
+
+        if (await _db.Users.AnyAsync(u =>
+            u.Id != user.Id && u.Phone == phone))
+            throw new ShiftDynamics.API.Common.ConflictException(
+                "This phone number is already used by another account.");
+
+        customer.FirstName = firstName;
+        customer.LastName = lastName;
+        customer.Email = email;
+        customer.Phone = phone;
+        customer.Address = request.Address?.Trim() ?? string.Empty;
+
+        user.FullName = fullName;
+        user.Email = email;
+        user.Phone = phone;
+        user.UpdatedAt = DateTime.UtcNow;
+
         await _db.SaveChangesAsync();
         return true;
     }
-
     private static CustomerResponse Map(Customer customer) => new()
     {
         Id = customer.Id,

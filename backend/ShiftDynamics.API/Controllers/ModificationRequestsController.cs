@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
@@ -10,7 +10,7 @@ namespace ShiftDynamics.API.Controllers;
 
 [ApiController]
 [Route("api/modification-requests")]
-[Authorize]
+[Authorize(Roles = "Customer,ServiceAdvisor,Manager,Admin")]
 public class ModificationRequestsController : ControllerBase
 {
     private readonly IModificationRequestService _requests;
@@ -37,5 +37,12 @@ public class ModificationRequestsController : ControllerBase
         var item = await _requests.ReviewAsync(id, request.Status, request.ProposedCost, request.AdvisorNotes);
         return item is null ? NotFound() : Ok(ApiResponse<object>.Ok(item));
     }
+    [HttpPost("{id:guid}/decision")]
+    [Authorize(Policy = "Customer")]
+    public async Task<ActionResult<ApiResponse<object>>> Decision(Guid id, [FromBody] ModificationDecisionRequest request)
+    {
+        var item = await _requests.DecideAsync(User.RequireCustomerId(), id, request.Approve)
+            ?? throw new NotFoundException("Modification request not found.");
+        return Ok(ApiResponse<object>.Ok(item, request.Approve ? "Quotation accepted." : "Quotation declined."));
+    }
 }
-

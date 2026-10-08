@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
@@ -66,7 +66,8 @@ public class MechanicController : ControllerBase
                 Customer = a.WorkOrder.Customer.FirstName + " " + a.WorkOrder.Customer.LastName,
                 Service = a.WorkOrder.Service.Name,
                 a.BayId,
-                a.AssignedAt
+                a.AssignedAt,
+                HasActiveTimer = _db.LaborSessions.Any(t => t.WorkOrderId == a.WorkOrderId && t.MechanicStaffId == mechanicId && (t.Status == LaborSessionStatus.Active || t.Status == LaborSessionStatus.Paused))
             })
             .ToListAsync();
 
@@ -330,4 +331,3 @@ public class MechanicController : ControllerBase
             "Requisition submitted."));
     }
 }
-

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
@@ -9,7 +9,7 @@ namespace ShiftDynamics.API.Controllers;
 
 [ApiController]
 [Route("api/invoices")]
-[Authorize]
+[Authorize(Roles = "Customer,ServiceAdvisor,Manager,Admin")]
 public class InvoicesController : ControllerBase
 {
     private readonly IInvoiceService _invoices;
@@ -39,4 +39,3 @@ public class InvoicesController : ControllerBase
         return Ok(ApiResponse<object>.Ok(invoice, "Invoice approved and issued."));
     }
 }
-

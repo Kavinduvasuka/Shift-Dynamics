@@ -33,6 +33,7 @@ public class User
 
     public string Phone { get; set; } = string.Empty;
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public string PasswordHash { get; set; } = string.Empty;
 
     public SystemRole Role { get; set; } = SystemRole.Customer;

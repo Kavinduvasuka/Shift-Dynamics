@@ -1,0 +1,97 @@
+.all-module {
+    min-width: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.all-module .all-card {
+    padding: 26px !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    background: #fff;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, .04);
+}
+
+.all-module .all-card h3 {
+    margin: 0 0 22px;
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.all-module dl.vendor-profile-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px !important;
+    margin: 0;
+}
+
+.vendor-profile-field {
+    padding: 18px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f8fafc;
+    min-width: 0;
+}
+
+.vendor-profile-field dt {
+    margin: 0 0 9px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.all-module .vendor-profile-field dd {
+    margin: 0 !important;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.all-module table {
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.all-module th,
+.all-module td {
+    padding: 14px 12px !important;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.all-module th {
+    background: #f8fafc;
+    color: #475569;
+}
+
+.all-module label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-weight: 600;
+}
+
+.all-module input,
+.all-module select,
+.all-module textarea,
+.all-module button,
+.all-tabs button {
+    font-family: inherit;
+}
+
+.all-module input,
+.all-module select {
+    min-height: 44px;
+}
+
+@media (max-width: 700px) {
+    .all-module dl.vendor-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .all-module .all-card {
+        padding: 18px !important;
+    }
+}

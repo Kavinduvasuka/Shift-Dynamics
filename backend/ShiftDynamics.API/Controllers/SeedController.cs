@@ -30,26 +30,22 @@ public class SeedController : ControllerBase
         if (!_env.IsDevelopment())
             throw new ForbiddenException("Seeding is only allowed in Development.");
 
-        // Services catalog
-        if (!await _db.Services.AnyAsync())
-        {
-            _db.Services.AddRange(
-                new Service { Id = Guid.NewGuid(), Name = "Oil Change", Description = "Full synthetic oil change", BasePrice = 75, EstimatedDurationMinutes = 45, IsActive = true },
-                new Service { Id = Guid.NewGuid(), Name = "Brake Inspection", Description = "Complete brake system check", BasePrice = 50, EstimatedDurationMinutes = 30, IsActive = true },
-                new Service { Id = Guid.NewGuid(), Name = "Full Service", Description = "Comprehensive vehicle service", BasePrice = 250, EstimatedDurationMinutes = 180, IsActive = true },
-                new Service { Id = Guid.NewGuid(), Name = "Wheel Alignment", Description = "4-wheel alignment", BasePrice = 90, EstimatedDurationMinutes = 60, IsActive = true }
-            );
-        }
+        if (HttpContext.Connection.RemoteIpAddress is not { } address || !System.Net.IPAddress.IsLoopback(address))
+            throw new ForbiddenException("Run development seeding from this computer using localhost.");
 
-        // Workshop bays
-        if (!await _db.WorkshopBays.AnyAsync())
-        {
-            _db.WorkshopBays.AddRange(
-                new WorkshopBay { Id = Guid.NewGuid(), Name = "Bay 1", Status = BayStatus.Available },
-                new WorkshopBay { Id = Guid.NewGuid(), Name = "Bay 2", Status = BayStatus.Available },
-                new WorkshopBay { Id = Guid.NewGuid(), Name = "Bay 3", Status = BayStatus.Available },
-                new WorkshopBay { Id = Guid.NewGuid(), Name = "Bay 4", Status = BayStatus.Maintenance }
-            );
+        // Ensure required catalogue entries even when the database is partly seeded.
+        var services = new[] {
+            new Service { Id = Guid.NewGuid(), Name = "Oil Change", Description = "Full synthetic oil change", BasePrice = 75, EstimatedDurationMinutes = 45, IsActive = true },
+            new Service { Id = Guid.NewGuid(), Name = "Brake Inspection", Description = "Complete brake system check", BasePrice = 50, EstimatedDurationMinutes = 30, IsActive = true },
+            new Service { Id = Guid.NewGuid(), Name = "Full Service", Description = "Comprehensive vehicle service", BasePrice = 250, EstimatedDurationMinutes = 180, IsActive = true },
+            new Service { Id = Guid.NewGuid(), Name = "Wheel Alignment", Description = "4-wheel alignment", BasePrice = 90, EstimatedDurationMinutes = 60, IsActive = true }
+        };
+        foreach (var service in services)
+            if (!await _db.Services.AnyAsync(x => x.Name == service.Name)) _db.Services.Add(service);
+        for (var number = 1; number <= 4; number++) {
+            var name = $"Bay {number}";
+            if (!await _db.WorkshopBays.AnyAsync(x => x.Name == name))
+                _db.WorkshopBays.Add(new WorkshopBay { Id = Guid.NewGuid(), Name = name, Status = number == 4 ? BayStatus.Maintenance : BayStatus.Available });
         }
 
         // Emergency providers (Colombo-ish sample coords)
@@ -111,6 +107,8 @@ public class SeedController : ControllerBase
         await EnsureStaff("mechanic2@shiftdynamics.lk", "Kasun Technician", "+94110000005", SystemRole.Mechanic, "EMP-MEC-002");
         await EnsureStaff("mechanic3@shiftdynamics.lk", "Ruwan Technician", "+94110000006", SystemRole.Mechanic, "EMP-MEC-003");
         await EnsureStaff("store@shiftdynamics.lk", "Demo Storekeeper", "+94110000004", SystemRole.Storekeeper, "EMP-STK-001");
+
+        await _db.SaveChangesAsync(); // Dependent queries below must see newly added staff and services.
 
         // Demo workshop data
         if (!await _db.WorkOrders.AnyAsync())

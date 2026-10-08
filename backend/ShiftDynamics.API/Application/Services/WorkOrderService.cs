@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
@@ -50,6 +50,27 @@ public class WorkOrderService : IWorkOrderService
         if (status == WorkOrderStatus.InProgress && workOrder.StartedAt is null) workOrder.StartedAt = DateTime.UtcNow;
         if (status == WorkOrderStatus.Completed) workOrder.CompletedAt = DateTime.UtcNow;
         workOrder.UpdatedAt = DateTime.UtcNow;
+        if (status == WorkOrderStatus.Completed)
+        {
+        // SD_SYNC_LINKED_APPOINTMENT
+        if (workOrder.AppointmentId.HasValue)
+        {
+            var linkedAppointment = await _db.Appointments
+                .FirstOrDefaultAsync(a =>
+                    a.Id == workOrder.AppointmentId.Value &&
+                    a.CustomerId == workOrder.CustomerId &&
+                    a.VehicleId == workOrder.VehicleId);
+
+            if (linkedAppointment is not null &&
+                (linkedAppointment.Status == AppointmentStatus.Scheduled ||
+                 linkedAppointment.Status == AppointmentStatus.Confirmed))
+            {
+                linkedAppointment.Status = AppointmentStatus.Completed;
+            }
+        }
+
+        }
+
         await _db.SaveChangesAsync();
         return workOrder;
     }

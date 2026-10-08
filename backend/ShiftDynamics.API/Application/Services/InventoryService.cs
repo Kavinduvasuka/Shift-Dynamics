@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
@@ -51,6 +51,10 @@ public class InventoryService : IInventoryService
 
     public async Task<PartRequisition?> ReleaseAsync(Guid id, Guid performedByUserId)
     {
+        // Integration retry wrapper: ReleaseAsync
+        return await _db.Database.CreateExecutionStrategy().ExecuteAsync<PartRequisition?>(async () =>
+        {
+        _db.ChangeTracker.Clear();
         await using var transaction = await _db.Database.BeginTransactionAsync();
         var requisition = await _db.PartRequisitions.Include(r => r.Part).FirstOrDefaultAsync(r => r.Id == id);
         if (requisition is null) return null;
@@ -66,6 +70,7 @@ public class InventoryService : IInventoryService
         await _db.SaveChangesAsync();
         await transaction.CommitAsync();
         return requisition;
+    
+        });
     }
 }
-

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShiftDynamics.API.Application.DTOs.Auth;
 
@@ -7,7 +7,7 @@ public class RegisterRequest
     [Required, StringLength(150, MinimumLength = 2)]
     public string FullName { get; set; } = string.Empty;
 
-    [Required, EmailAddress, StringLength(256)]
+    [Required, EmailAddress, StringLength(191)]
     public string Email { get; set; } = string.Empty;
 
     [Required, StringLength(30, MinimumLength = 7)]
@@ -19,4 +19,3 @@ public class RegisterRequest
     [StringLength(500)]
     public string? Address { get; set; }
 }
-

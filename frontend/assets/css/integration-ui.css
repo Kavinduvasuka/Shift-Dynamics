@@ -1,0 +1,128 @@
+/* Styles for the live dashboard controls. */
+.all-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 20px;
+}
+
+.all-tabs.all-has-sidebar {
+    justify-content: flex-end;
+}
+
+.all-tabs.all-has-sidebar > .all-module-tab {
+    display: none;
+}
+
+.all-module {
+    min-width: 0;
+}
+
+.all-card {
+    margin-bottom: 20px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, .04);
+}
+
+.all-card h3 {
+    margin: 0 0 18px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.all-card table {
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.all-card th {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+}
+
+.all-card td,
+.all-card th {
+    padding: 14px 12px;
+    vertical-align: middle;
+}
+
+.all-card tbody tr:hover {
+    background: #fff7ed;
+}
+
+.all-card label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.all-module .sd-secondary-button,
+.all-module .sd-primary-button,
+.all-tabs .sd-secondary-button {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 10px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    color: #334155;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.all-module .sd-primary-button {
+    border-color: #f97316;
+    background: #f97316;
+    color: #fff;
+}
+
+.all-module .sd-secondary-button:hover,
+.all-tabs .sd-secondary-button:hover {
+    background: #fff7ed;
+    border-color: #f97316;
+    color: #c2410c;
+}
+
+.all-module button:disabled,
+.all-tabs button:disabled {
+    opacity: .55;
+    cursor: wait;
+}
+
+.all-module input,
+.all-module select,
+.all-module textarea {
+    box-sizing: border-box;
+    font: inherit;
+}
+
+.all-module input:focus,
+.all-module select:focus,
+.all-module textarea:focus {
+    outline: 2px solid #fdba74;
+    outline-offset: 2px;
+}
+
+.all-tabs button:focus-visible,
+.all-module button:focus-visible {
+    outline: 2px solid #f97316;
+    outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+    .all-card {
+        padding: 16px;
+    }
+}

@@ -13,7 +13,7 @@
     try { response = await fetch(`${base}${path}`, { ...options, headers }); }
     catch { throw new Error("Unable to reach Shift Dynamics. Please check your connection and try again."); }
     let payload = null; try { payload = await response.json(); } catch { /* no response body */ }
-    if (response.status === 401) { clear(); if (!location.pathname.endsWith("login.html") && !location.pathname.endsWith("staff-login.html")) location.href = `${location.pathname.includes("/customer/") ? "../" : ""}login.html`; }
+    if (response.status === 401) { clear(); if (!location.pathname.endsWith("login.html") && !location.pathname.endsWith("staff-login.html")) location.href = (/\/(advisor|manager|mechanic|storekeeper|vendor)\//.test(location.pathname) ? "../staff-login.html" : `${location.pathname.includes("/customer/") ? "../" : ""}login.html`); }
     if (!response.ok) throw new Error(payload?.message || payload?.title || "The request could not be completed.");
     return payload?.data ?? payload;
   }

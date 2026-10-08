@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using System.Security.Claims;
@@ -29,6 +29,7 @@ public class InventoryController : ControllerBase
                 i.Part.PartNumber,
                 i.Part.Name,
                 i.Part.Category,
+                i.Part.ImageUrl,
                 i.OnHandQty,
                 i.ReservedQty,
                 i.ReorderLevel,
@@ -71,4 +72,3 @@ public class InventoryController : ControllerBase
         return Ok(ApiResponse<object>.Ok(req, "Stock released."));
     }
 }
-

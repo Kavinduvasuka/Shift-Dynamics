@@ -1,0 +1,482 @@
+/* Wireframe layout with the Shift Dynamics navy/orange theme. */
+:root {
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --paper: #ffffff;
+    --wash: #f8fafc;
+    --accent: #f97316;
+
+    --sd-navy: #0b132b;
+    --sd-navy-light: #16213e;
+    --sd-navy-soft: #1e2a48;
+    --sd-orange: #f97316;
+    --sd-orange-dark: #ea580c;
+    --sd-orange-light: #fff1e6;
+    --sd-background: #f8fafc;
+    --sd-text: #0f172a;
+    --sd-text-secondary: #64748b;
+    --sd-border: #e2e8f0;
+
+    --sd-login-navy: #0b132b;
+    --sd-login-navy-light: #16213e;
+    --sd-login-orange: #f97316;
+    --sd-login-orange-dark: #ea580c;
+    --sd-login-bg: #f8fafc;
+    --sd-login-text: #0f172a;
+    --sd-login-border: #e2e8f0;
+}
+
+/* Portal colours. Layout sizes and positions remain unchanged. */
+body.wf-app {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.wf-sidebar {
+    background: #0b132b;
+    color: #ffffff;
+}
+
+.wf-brand {
+    color: #ffffff;
+    border-bottom-color: #ffffff26;
+}
+
+.wf-brand span:last-child {
+    color: #f97316;
+}
+
+.wf-mark {
+    background: #f97316;
+    border-color: #f97316;
+    color: #ffffff;
+}
+
+.wf-role {
+    background: #16213e;
+    border-color: #ffffff26;
+    color: #ffffff;
+}
+
+.wf-role small {
+    color: #cbd5e1;
+}
+
+.wf-nav button {
+    color: #cbd5e1;
+}
+
+.wf-nav-icon {
+    color: inherit;
+}
+
+.wf-nav button:hover {
+    background: #ffffff12;
+    color: #ffffff;
+}
+
+.wf-nav button.active {
+    background: #f9731626;
+    color: #fb923c;
+    border-color: #f9731655;
+    box-shadow: inset 3px 0 #f97316;
+}
+
+.wf-account {
+    border-top-color: #ffffff26;
+}
+
+.wf-account small {
+    color: #cbd5e1;
+}
+
+.wf-account .wf-btn {
+    background: transparent;
+    border-color: #ffffff40;
+    color: #ffffff;
+}
+
+.wf-account .wf-btn:hover {
+    background: #ffffff12;
+}
+
+.wf-avatar {
+    background: #fff1e6;
+    border-color: #fed7aa;
+    color: #c2410c;
+    border-radius: 50%;
+}
+
+.wf-top {
+    background: #ffffff;
+    border-bottom-color: #e2e8f0;
+}
+
+.wf-top h1,
+.wf-page-head h2,
+.wf-card h3 {
+    color: #0f172a;
+}
+
+.wf-top small,
+.wf-label,
+.wf-user small,
+.wf-page-head p {
+    color: #64748b;
+}
+
+.wf-card,
+.wf-stat {
+    background: #ffffff;
+    border-color: #e2e8f0;
+}
+
+.wf-card p {
+    color: #64748b;
+}
+
+.wf-hero {
+    background: linear-gradient(115deg, #0b132b, #16213e);
+    color: #ffffff;
+}
+
+.wf-hero h2,
+.wf-hero p {
+    color: #ffffff;
+}
+
+.wf-hero .wf-label {
+    color: #fdba74;
+}
+
+.wf-hero .wf-emblem {
+    color: #fb923c;
+    background: #ffffff0d;
+    border-color: #ffffff40;
+}
+
+.wf-btn {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+.wf-btn.primary {
+    background: #f97316;
+    border-color: #f97316;
+    color: #ffffff;
+}
+
+.wf-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.wf-btn.primary:hover {
+    background: #ea580c;
+    border-color: #ea580c;
+    color: #ffffff;
+}
+
+.wf-hero .wf-btn {
+    background: #f97316;
+    border-color: #f97316;
+    color: #ffffff;
+}
+
+.wf-hero .wf-btn:hover {
+    background: #ea580c;
+}
+
+.wf-btn.danger {
+    color: #dc2626;
+}
+
+.wf-stat-icon {
+    color: #f97316;
+    background: #fff1e6;
+    border-color: #fed7aa;
+}
+
+.wf-stat strong,
+.wf-stat small {
+    color: #0f172a;
+}
+
+.wf-info dt {
+    color: #64748b;
+}
+
+.wf-info dd {
+    color: #0f172a;
+}
+
+.wf-active-grid > .wf-card:first-child .wf-info > div {
+    border-color: #e2e8f0;
+    background: #ffffff;
+}
+
+.wf-active-grid > .wf-card:first-child .wf-info > div:last-child {
+    background: #fff7ed;
+    border-left-color: #f97316;
+}
+
+.wf-active-grid > .wf-card:nth-child(2) .wf-actions .wf-btn {
+    background: #ffffff;
+}
+
+.wf-active-grid > .wf-card:nth-child(2) .wf-actions .wf-btn.primary {
+    background: #f97316;
+    color: #ffffff;
+}
+
+.wf-check {
+    background: #ffffff;
+    border-color: #e2e8f0;
+}
+
+.wf-check input {
+    accent-color: #f97316;
+}
+
+.wf-notes-panel textarea,
+.wf-field input,
+.wf-field select,
+.wf-field textarea,
+.wf-search {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+}
+
+.wf-field input:focus,
+.wf-field select:focus,
+.wf-field textarea:focus,
+.wf-notes-panel textarea:focus {
+    background: #ffffff;
+    border-color: #f97316;
+    outline-color: #f97316;
+}
+
+.wf-notes-panel .wf-btn {
+    background: #f97316;
+    border-color: #f97316;
+    color: #ffffff;
+}
+
+.wf-table th {
+    background: #f8fafc;
+    color: #64748b;
+    border-color: #e2e8f0;
+}
+
+.wf-table td {
+    border-color: #e2e8f0;
+}
+
+.wf-badge {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+.wf-badge.good {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #166534;
+}
+
+.wf-badge.warn {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.wf-badge.bad {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.wf-progress {
+    background: #e2e8f0;
+}
+
+.wf-progress span {
+    background: #f97316;
+}
+
+.wf-timeline li.done {
+    color: #166534;
+}
+
+.wf-timeline li.done::before {
+    background: #16a34a;
+    border-color: #16a34a;
+}
+
+.wf-timeline li.current {
+    color: #ea580c;
+}
+
+.wf-timeline li.current::before {
+    border-color: #f97316;
+    background: #fff1e6;
+}
+
+.wf-notice {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: #166534;
+}
+
+.wf-notice.error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.wf-empty,
+.wf-modal,
+.wf-modal-head {
+    border-color: #e2e8f0;
+}
+
+.wf-product.selected {
+    border-color: #f97316;
+    box-shadow: 0 0 0 1px #f97316;
+}
+
+/* Public pages retain their existing brand colours. */
+body:not(.wf-app) {
+    background: #f8fafc !important;
+    color: #0f172a;
+}
+
+.sd-login-header,
+.sd-register-header,
+.sd-auth-header,
+.sd-navbar {
+    background: #0b132b !important;
+    border-bottom-color: #ffffff26 !important;
+}
+
+.sd-login-brand-name,
+.sd-register-brand-name,
+.sd-brand-name,
+.sd-login-header a,
+.sd-register-header a,
+.sd-auth-header a,
+.sd-navbar a {
+    color: #ffffff !important;
+}
+
+.sd-login-brand-name span,
+.sd-register-brand-name span,
+.sd-brand-name span {
+    color: #f97316 !important;
+}
+
+.sd-login-back-home,
+.sd-register-signin,
+.sd-auth-back,
+.sd-nav-login {
+    background: #16213e !important;
+    border-color: #ffffff40 !important;
+    color: #ffffff !important;
+}
+
+.sd-hero,
+.sd-contact-hero,
+.sd-brand-panel,
+.sd-login-page > .sd-login-brand {
+    background: #0b132b !important;
+    color: #ffffff !important;
+}
+
+.sd-hero-title,
+.sd-hero-description,
+.sd-hero-trust,
+.sd-hero-trust span,
+.sd-contact-hero h1,
+.sd-contact-hero p,
+.sd-login-brand h1,
+.sd-login-brand p,
+.sd-brand-panel h1,
+.sd-brand-panel p,
+.sd-brand-panel .sd-eyebrow,
+.sd-login-brand .sd-eyebrow {
+    color: #ffffff !important;
+}
+
+.sd-hero-title span {
+    color: #f97316 !important;
+}
+
+.sd-role-list div,
+.sd-feature-list div {
+    color: #ffffff !important;
+}
+
+.sd-role-list div {
+    background: #16213e !important;
+    border-color: #ffffff26 !important;
+}
+
+.sd-login-card,
+.sd-register-card,
+.sd-forgot-card,
+.sd-contact-card,
+.sd-contact-info-card,
+.sd-hours-card,
+.sd-map-card,
+.sd-garage-list-card,
+.sd-auth-card {
+    background: #ffffff !important;
+    border-color: #e2e8f0 !important;
+}
+
+.sd-login-main,
+.sd-register-main {
+    background: #f8fafc !important;
+}
+
+body:not(.wf-app) input,
+body:not(.wf-app) select,
+body:not(.wf-app) textarea {
+    background: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+}
+
+.sd-primary-button,
+.sd-login-submit,
+.sd-register-submit,
+.sd-submit-button,
+.sd-contact-submit,
+.sd-forgot-submit {
+    background: #f97316 !important;
+    border-color: #f97316 !important;
+    color: #ffffff !important;
+}
+
+.sd-footer,
+.sd-login-footer,
+.sd-register-footer,
+.sd-auth-footer {
+    background: #0b132b !important;
+    color: #cbd5e1 !important;
+    border-top-color: #ffffff26 !important;
+}
+
+.sd-footer a,
+.sd-footer h3 {
+    color: #ffffff !important;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+    outline-color: #f97316;
+}

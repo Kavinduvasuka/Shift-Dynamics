@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
@@ -46,6 +46,10 @@ public class ProcurementService : IProcurementService
 
     public async Task<PurchaseOrder> AwardAsync(Guid managerUserId, Guid vendorQuoteId)
     {
+        // Integration retry wrapper: AwardAsync
+        return await _db.Database.CreateExecutionStrategy().ExecuteAsync<PurchaseOrder>(async () =>
+        {
+        _db.ChangeTracker.Clear();
         await using var tx = await _db.Database.BeginTransactionAsync();
         var quote = await _db.VendorQuotes.Include(q => q.QuoteRequest).FirstOrDefaultAsync(q => q.Id == vendorQuoteId) ?? throw new NotFoundException("Vendor quote not found.");
         if (quote.Status != VendorQuoteStatus.Submitted || quote.QuoteRequest.Status != QuoteRequestStatus.Open) throw new ConflictException("This quote cannot be awarded.");
@@ -59,6 +63,8 @@ public class ProcurementService : IProcurementService
         await _db.SaveChangesAsync();
         await tx.CommitAsync();
         return order;
+    
+        });
     }
 
     public async Task<PurchaseOrder?> UpdateDeliveryAsync(Guid vendorUserId, Guid purchaseOrderId, DateTime? expectedDeliveryAt)
@@ -74,7 +80,11 @@ public class ProcurementService : IProcurementService
 
     public async Task<PurchaseOrder?> ReceiveAsync(Guid storekeeperUserId, Guid purchaseOrderId, int quantityReceived)
     {
+        // Integration retry wrapper: ReceiveAsync
+        return await _db.Database.CreateExecutionStrategy().ExecuteAsync<PurchaseOrder?>(async () =>
+        {
         if (quantityReceived <= 0) throw new ValidationException("Received quantity must be greater than zero.");
+        _db.ChangeTracker.Clear();
         await using var tx = await _db.Database.BeginTransactionAsync();
         var order = await _db.PurchaseOrders.Include(o => o.QuoteRequest).FirstOrDefaultAsync(o => o.Id == purchaseOrderId) ?? throw new NotFoundException("Purchase order not found.");
         if (order.Status is PurchaseOrderStatus.Received or PurchaseOrderStatus.Cancelled) throw new ConflictException("This purchase order is closed.");
@@ -91,6 +101,7 @@ public class ProcurementService : IProcurementService
         await _db.SaveChangesAsync();
         await tx.CommitAsync();
         return order;
+    
+        });
     }
 }
-

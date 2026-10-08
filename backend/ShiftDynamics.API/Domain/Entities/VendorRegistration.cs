@@ -16,6 +16,7 @@ public class VendorRegistration
     public string Email { get; set; } = string.Empty;
     public string? Address { get; set; }
     public string? Specialization { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore]
     public string PasswordHash { get; set; } = string.Empty;
     public VendorRegistrationStatus Status { get; set; } = VendorRegistrationStatus.Pending;
     public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;

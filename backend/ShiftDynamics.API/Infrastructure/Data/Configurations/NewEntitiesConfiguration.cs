@@ -62,6 +62,7 @@ public class PartConfiguration : IEntityTypeConfiguration<Part>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.PartNumber).HasMaxLength(50).IsRequired();
         builder.Property(x => x.Name).HasMaxLength(200).IsRequired();
+        builder.Property(x => x.ImageUrl).HasMaxLength(500);
         builder.HasIndex(x => x.PartNumber).IsUnique();
         builder.HasOne(x => x.Inventory).WithOne(i => i.Part).HasForeignKey<InventoryItem>(i => i.PartId);
     }
@@ -211,8 +212,8 @@ public class VendorQuoteConfiguration : IEntityTypeConfiguration<VendorQuote>
         builder.Property(x => x.UnitPrice).HasPrecision(18, 2);
         builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
         builder.HasIndex(x => new { x.QuoteRequestId, x.VendorProfileId }).IsUnique();
-        builder.HasOne(x => x.QuoteRequest).WithMany(x => x.Quotes).HasForeignKey(x => x.QuoteRequestId);
-        builder.HasOne(x => x.VendorProfile).WithMany().HasForeignKey(x => x.VendorProfileId);
+        builder.HasOne(x => x.QuoteRequest).WithMany(x => x.Quotes).HasForeignKey(x => x.QuoteRequestId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.VendorProfile).WithMany().HasForeignKey(x => x.VendorProfileId).OnDelete(DeleteBehavior.Restrict);
     }
 }
 
@@ -227,8 +228,8 @@ public class PurchaseOrderConfiguration : IEntityTypeConfiguration<PurchaseOrder
         builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
         builder.HasIndex(x => x.PurchaseOrderNumber).IsUnique();
         builder.HasIndex(x => x.VendorQuoteId).IsUnique();
-        builder.HasOne(x => x.VendorQuote).WithMany().HasForeignKey(x => x.VendorQuoteId);
-        builder.HasOne(x => x.QuoteRequest).WithMany().HasForeignKey(x => x.QuoteRequestId);
+        builder.HasOne(x => x.VendorQuote).WithMany().HasForeignKey(x => x.VendorQuoteId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.QuoteRequest).WithMany().HasForeignKey(x => x.QuoteRequestId).OnDelete(DeleteBehavior.Restrict);
     }
 }
 
@@ -243,7 +244,37 @@ public class ModificationRequestConfiguration : IEntityTypeConfiguration<Modific
         builder.Property(x => x.AdvisorNotes).HasMaxLength(2000);
         builder.Property(x => x.ProposedCost).HasPrecision(18, 2);
         builder.Property(x => x.Status).HasConversion<string>().HasMaxLength(30);
-        builder.HasOne(x => x.Customer).WithMany().HasForeignKey(x => x.CustomerId);
-        builder.HasOne(x => x.Vehicle).WithMany().HasForeignKey(x => x.VehicleId);
+        builder.HasOne(x => x.Customer).WithMany().HasForeignKey(x => x.CustomerId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.Vehicle).WithMany().HasForeignKey(x => x.VehicleId).OnDelete(DeleteBehavior.Restrict);
+    }
+}
+
+public class DiagnosticFindingConfiguration : IEntityTypeConfiguration<DiagnosticFinding>
+{
+    public void Configure(EntityTypeBuilder<DiagnosticFinding> builder)
+    {
+        builder.HasKey(x => x.Id);
+        builder.HasOne(x => x.Mechanic).WithMany().HasForeignKey(x => x.MechanicStaffId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.WorkOrder).WithMany().HasForeignKey(x => x.WorkOrderId).OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
+public class RepairActionConfiguration : IEntityTypeConfiguration<RepairAction>
+{
+    public void Configure(EntityTypeBuilder<RepairAction> builder)
+    {
+        builder.HasKey(x => x.Id);
+        builder.HasOne(x => x.Mechanic).WithMany().HasForeignKey(x => x.MechanicStaffId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.WorkOrder).WithMany().HasForeignKey(x => x.WorkOrderId).OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
+public class MechanicRecommendationConfiguration : IEntityTypeConfiguration<MechanicRecommendation>
+{
+    public void Configure(EntityTypeBuilder<MechanicRecommendation> builder)
+    {
+        builder.HasKey(x => x.Id);
+        builder.HasOne(x => x.Mechanic).WithMany().HasForeignKey(x => x.MechanicStaffId).OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne(x => x.WorkOrder).WithMany().HasForeignKey(x => x.WorkOrderId).OnDelete(DeleteBehavior.Cascade);
     }
 }

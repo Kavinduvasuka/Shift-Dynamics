@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
@@ -9,7 +9,7 @@ namespace ShiftDynamics.API.Controllers;
 
 [ApiController]
 [Route("api/estimates")]
-[Authorize]
+[Authorize(Roles = "Customer,ServiceAdvisor,Manager,Admin")]
 public class EstimatesController : ControllerBase
 {
     private readonly IEstimateService _estimates;
@@ -48,4 +48,3 @@ public class EstimatesController : ControllerBase
         return Ok(ApiResponse<object>.Ok(estimate, request.Approve ? "Approved." : "Rejected."));
     }
 }
-

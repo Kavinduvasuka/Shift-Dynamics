@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ShiftDynamics.API.Common;
 using ShiftDynamics.API.Domain.Entities;
 using ShiftDynamics.API.Infrastructure.Data;
@@ -14,7 +14,7 @@ public class MechanicService : IMechanicService
     public async Task<LaborSession> StartTimerAsync(Guid mechanicId, Guid workOrderId)
     {
         var workOrder = await AssignedAsync(mechanicId, workOrderId); if (workOrder.Status is not (WorkOrderStatus.Assigned or WorkOrderStatus.InProgress or WorkOrderStatus.WaitingForParts)) throw new ConflictException("This job cannot be started in its current status.");
-        if (await _db.LaborSessions.AnyAsync(s => s.MechanicStaffId == mechanicId && s.Status == LaborSessionStatus.Active)) throw new ConflictException("Mechanic already has an active timer.");
+        if (await _db.LaborSessions.AnyAsync(s => s.MechanicStaffId == mechanicId && (s.Status == LaborSessionStatus.Active || s.Status == LaborSessionStatus.Paused))) throw new ConflictException("Mechanic already has an active timer.");
         var now = DateTime.UtcNow; var session = new LaborSession { Id = Guid.NewGuid(), WorkOrderId = workOrderId, MechanicStaffId = mechanicId, StartedAt = now, Status = LaborSessionStatus.Active }; workOrder.Status = WorkOrderStatus.InProgress; workOrder.StartedAt ??= now; workOrder.UpdatedAt = now; _db.LaborSessions.Add(session); await _db.SaveChangesAsync(); return session;
     }
     public async Task<LaborSession> EndTimerAsync(Guid mechanicId, Guid workOrderId)
@@ -42,11 +42,33 @@ public class MechanicService : IMechanicService
     }
     public async Task<WorkOrder> CompleteJobAsync(Guid mechanicId, Guid workOrderId, string? notes = null)
     {
+        // Integration retry wrapper: CompleteJobAsync
+        return await _db.Database.CreateExecutionStrategy().ExecuteAsync<WorkOrder>(async () =>
+        {
+        _db.ChangeTracker.Clear();
         await using var transaction = await _db.Database.BeginTransactionAsync(); var workOrder = await AssignedAsync(mechanicId, workOrderId); if (workOrder.Status != WorkOrderStatus.InProgress) throw new ConflictException("Only an in-progress job can be completed.");
         var now = DateTime.UtcNow; var session = await _db.LaborSessions.Where(s => s.MechanicStaffId == mechanicId && s.WorkOrderId == workOrderId && (s.Status == LaborSessionStatus.Active || s.Status == LaborSessionStatus.Paused)).OrderByDescending(s => s.StartedAt).FirstOrDefaultAsync(); if (session is not null) { session.EndedAt = now; session.Status = LaborSessionStatus.Ended; session.DurationSeconds = Math.Max(0, (int)(now - session.StartedAt).TotalSeconds - session.PauseSeconds); }
         var assignment = await _db.JobAssignments.FirstAsync(a => a.WorkOrderId == workOrderId && a.MechanicStaffId == mechanicId && a.IsActive); assignment.IsActive = false; assignment.EndedAt = now;
         if (assignment.BayId.HasValue) { var bay = await _db.WorkshopBays.FindAsync(assignment.BayId.Value); if (bay is not null) { bay.Status = BayStatus.Available; bay.UpdatedAt = now; } }
-        workOrder.Status = WorkOrderStatus.Completed; workOrder.CompletedAt = now; workOrder.UpdatedAt = now; if (!string.IsNullOrWhiteSpace(notes)) workOrder.TechnicianNotes = notes.Trim(); await _db.SaveChangesAsync(); await transaction.CommitAsync(); return workOrder;
+                // SD_SYNC_LINKED_APPOINTMENT
+        if (workOrder.AppointmentId.HasValue)
+        {
+            var linkedAppointment = await _db.Appointments
+                .FirstOrDefaultAsync(a =>
+                    a.Id == workOrder.AppointmentId.Value &&
+                    a.CustomerId == workOrder.CustomerId &&
+                    a.VehicleId == workOrder.VehicleId);
+
+            if (linkedAppointment is not null &&
+                (linkedAppointment.Status == AppointmentStatus.Scheduled ||
+                 linkedAppointment.Status == AppointmentStatus.Confirmed))
+            {
+                linkedAppointment.Status = AppointmentStatus.Completed;
+            }
+        }
+
+workOrder.Status = WorkOrderStatus.Completed; workOrder.CompletedAt = now; workOrder.UpdatedAt = now; if (!string.IsNullOrWhiteSpace(notes)) workOrder.TechnicianNotes = notes.Trim(); await _db.SaveChangesAsync(); await transaction.CommitAsync(); return workOrder;
+    
+        });
     }
 }
-

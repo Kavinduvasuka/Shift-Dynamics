@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     const form =
         document.getElementById("staffLoginForm");
@@ -135,9 +135,7 @@
        LOGIN
        ===================================================== */
 
-    form.addEventListener(
-        "submit",
-        event => {
+    form.addEventListener("submit", async (event) => {
 
             event.preventDefault();
 
@@ -216,5 +214,3 @@
     );
 
 });
-
-
