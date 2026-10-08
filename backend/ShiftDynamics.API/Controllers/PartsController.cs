@@ -23,7 +23,7 @@ public class PartsController(ShiftDynamicsDbContext db, IWebHostEnvironment envi
     [HttpPost("{id:guid}/image")]
     [Authorize(Policy = "Storekeeper")]
     [RequestSizeLimit(6 * 1024 * 1024)]
-    public async Task<ActionResult<ApiResponse<object>>> UploadImage(Guid id, [FromForm] IFormFile file)
+    public async Task<ActionResult<ApiResponse<object>>> UploadImage(Guid id, IFormFile file)
     {
         var part = await db.Parts.FindAsync(id) ?? throw new NotFoundException("Part not found.");
         if (file.Length is <= 0 or > 5 * 1024 * 1024)
